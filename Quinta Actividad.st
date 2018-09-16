@@ -21,16 +21,16 @@ I class
 
 	^unNumeroDePeano next! !
 
-!I class methodsFor: 'as yet unclassified' stamp: 'ARM 9/6/2018 22:03:11'!
+!I class methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 9/16/2018 12:13:47'!
 - unNumeroDePeano
+	self error: self descripcionDeErrorDeNumerosNegativosNoSoportados 
+	"self error: 'No se puede restar un numero menor a un numero mayor o igual'"! !
 
-	self error: 'No se puede restar un numero menor a un numero mayor o igual'! !
-
-!I class methodsFor: 'as yet unclassified' stamp: 'GP 9/10/2018 15:38:35'!
+!I class methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 9/16/2018 12:15:25'!
 / unNumeroDePeano
 	
 	unNumeroDePeano = I ifTrue: [^ I].
-	self error: 'No se puede dividir'.! !
+	self error: self descripcionDeErrorDeNoSePuedeDividirPorUnNumeroMayor .! !
 
 !I class methodsFor: 'as yet unclassified' stamp: 'GP 9/10/2018 15:33:40'!
 > unNumeroDePeano
@@ -86,10 +86,10 @@ II class
 	^self previous - unNumeroDePeano previous"
 	^unNumeroDePeano restar: self.! !
 
-!II class methodsFor: 'as yet unclassified' stamp: 'GP 9/10/2018 15:38:27'!
+!II class methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 9/16/2018 12:29:39'!
 / unNumeroDePeano
+	self > unNumeroDePeano ifFalse: [self error: self descripcionDeErrorDeNoSePuedeDividirPorUnNumeroMayor].
 	self = unNumeroDePeano ifTrue:[^I].
-
 	^ I + ((self - unNumeroDePeano) / unNumeroDePeano)
 	! !
 
@@ -104,7 +104,7 @@ II class
 descripcionDeErrorDeNoSePuedeDividirPorUnNumeroMayor
 	^'No se puede dividir un numero menor a un numero mayor o igual'! !
 
-!II class methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 9/16/2018 09:28:20'!
+!II class methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 9/16/2018 15:54:17'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
@@ -195,7 +195,7 @@ III class
 descripcionDeErrorDeNoSePuedeDividirPorUnNumeroMayor
 	^'No se puede dividir un numero menor a un numero mayor o igual'! !
 
-!III class methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 9/16/2018 09:28:20'!
+!III class methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 9/16/2018 15:54:17'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
@@ -286,7 +286,7 @@ IIII class
 descripcionDeErrorDeNoSePuedeDividirPorUnNumeroMayor
 	^'No se puede dividir un numero menor a un numero mayor o igual'! !
 
-!IIII class methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 9/16/2018 09:28:20'!
+!IIII class methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 9/16/2018 15:54:17'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
