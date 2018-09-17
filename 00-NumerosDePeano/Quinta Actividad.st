@@ -115,11 +115,11 @@ divideA: unNumeroDePeano
 	
 	^ I + (self divideA: (unNumeroDePeano - self)).! !
 
-!II class methodsFor: 'as yet unclassified' stamp: 'GP 9/16/2018 17:17:28'!
+!II class methodsFor: 'as yet unclassified' stamp: 'GP 9/17/2018 15:12:18'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
-	next := nil.
+	next := III.
 	prev := I.! !
 
 !II class methodsFor: 'as yet unclassified' stamp: 'ARM 9/6/2018 21:48:10'!
@@ -161,4 +161,210 @@ removeAllNext
 restar: unNumerodePeano
 	^ (unNumerodePeano previous) - (self previous)! !
 
+
+!classDefinition: #III category: #'Quinta Actividad'!
+DenotativeObject subclass: #III
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Quinta Actividad'!
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'III class' category: #'Quinta Actividad'!
+III class
+	instanceVariableNames: 'next prev'!
+
+!III class methodsFor: 'as yet unclassified' stamp: 'GP 9/17/2018 15:11:53'!
+* unNumeroDePeano
+
+	^unNumeroDePeano + (self previous * unNumeroDePeano)! !
+
+!III class methodsFor: 'as yet unclassified' stamp: 'GP 9/17/2018 15:11:53'!
++ unNumeroDePeano
+
+	^self previous + unNumeroDePeano next! !
+
+!III class methodsFor: 'as yet unclassified' stamp: 'GP 9/17/2018 15:11:53'!
+- unNumeroDePeano
+
+"	unNumeroDePeano = I ifTrue: [^self previous].
+
+	^self previous - unNumeroDePeano previous"
+	^unNumeroDePeano restar: self.! !
+
+!III class methodsFor: 'as yet unclassified' stamp: 'GP 9/17/2018 15:11:54'!
+/ unNumeroDePeano
+	self > unNumeroDePeano ifFalse: [self error: self descripcionDeErrorDeNoSePuedeDividirPorUnNumeroMayor].
+
+	^ unNumeroDePeano divideA: self.
+	! !
+
+!III class methodsFor: 'as yet unclassified' stamp: 'GP 9/17/2018 15:11:54'!
+> unNumeroDePeano
+
+	self previous = unNumeroDePeano ifTrue:[^true]. 
+	^self previous > unNumeroDePeano.
+	! !
+
+!III class methodsFor: 'as yet unclassified' stamp: 'GP 9/17/2018 15:11:54'!
+descripcionDeErrorDeNoSePuedeDividirPorUnNumeroMayor
+	^'No se puede dividir un numero menor a un numero mayor o igual'! !
+
+!III class methodsFor: 'as yet unclassified' stamp: 'GP 9/17/2018 15:11:54'!
+divideA: unNumeroDePeano
+	self = unNumeroDePeano ifTrue:[^I].
+	
+	^ I + (self divideA: (unNumeroDePeano - self)).! !
+
+!III class methodsFor: 'as yet unclassified' stamp: 'GP 9/17/2018 15:12:18'!
+initializeCollaboratorsFromFile
+	"Auto generated method for loading purposes - Do not modify it"
+
+	next := IIII.
+	prev := II.! !
+
+!III class methodsFor: 'as yet unclassified' stamp: 'GP 9/17/2018 15:11:54'!
+next
+	
+	next ifNil:
+	[
+		next _ self cloneNamed: self name , 'I'.
+		next prev: self.
+	].
+	^next! !
+
+!III class methodsFor: 'as yet unclassified' stamp: 'GP 9/17/2018 15:11:54'!
+prev
+
+	^prev! !
+
+!III class methodsFor: 'as yet unclassified' stamp: 'GP 9/17/2018 15:11:54'!
+prev: unNumeroDePeano
+
+	prev _ unNumeroDePeano! !
+
+!III class methodsFor: 'as yet unclassified' stamp: 'GP 9/17/2018 15:11:54'!
+previous
+
+	^prev! !
+
+!III class methodsFor: 'as yet unclassified' stamp: 'GP 9/17/2018 15:11:54'!
+removeAllNext
+
+	next ifNotNil:
+	[
+		next removeAllNext.
+		next removeFromSystem.
+		next := nil.
+	]! !
+
+!III class methodsFor: 'as yet unclassified' stamp: 'GP 9/17/2018 15:11:54'!
+restar: unNumerodePeano
+	^ (unNumerodePeano previous) - (self previous)! !
+
+
+!classDefinition: #IIII category: #'Quinta Actividad'!
+DenotativeObject subclass: #IIII
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Quinta Actividad'!
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'IIII class' category: #'Quinta Actividad'!
+IIII class
+	instanceVariableNames: 'next prev'!
+
+!IIII class methodsFor: 'as yet unclassified' stamp: 'GP 9/17/2018 15:11:54'!
+* unNumeroDePeano
+
+	^unNumeroDePeano + (self previous * unNumeroDePeano)! !
+
+!IIII class methodsFor: 'as yet unclassified' stamp: 'GP 9/17/2018 15:11:54'!
++ unNumeroDePeano
+
+	^self previous + unNumeroDePeano next! !
+
+!IIII class methodsFor: 'as yet unclassified' stamp: 'GP 9/17/2018 15:11:54'!
+- unNumeroDePeano
+
+"	unNumeroDePeano = I ifTrue: [^self previous].
+
+	^self previous - unNumeroDePeano previous"
+	^unNumeroDePeano restar: self.! !
+
+!IIII class methodsFor: 'as yet unclassified' stamp: 'GP 9/17/2018 15:11:54'!
+/ unNumeroDePeano
+	self > unNumeroDePeano ifFalse: [self error: self descripcionDeErrorDeNoSePuedeDividirPorUnNumeroMayor].
+
+	^ unNumeroDePeano divideA: self.
+	! !
+
+!IIII class methodsFor: 'as yet unclassified' stamp: 'GP 9/17/2018 15:11:54'!
+> unNumeroDePeano
+
+	self previous = unNumeroDePeano ifTrue:[^true]. 
+	^self previous > unNumeroDePeano.
+	! !
+
+!IIII class methodsFor: 'as yet unclassified' stamp: 'GP 9/17/2018 15:11:54'!
+descripcionDeErrorDeNoSePuedeDividirPorUnNumeroMayor
+	^'No se puede dividir un numero menor a un numero mayor o igual'! !
+
+!IIII class methodsFor: 'as yet unclassified' stamp: 'GP 9/17/2018 15:11:54'!
+divideA: unNumeroDePeano
+	self = unNumeroDePeano ifTrue:[^I].
+	
+	^ I + (self divideA: (unNumeroDePeano - self)).! !
+
+!IIII class methodsFor: 'as yet unclassified' stamp: 'GP 9/17/2018 15:12:18'!
+initializeCollaboratorsFromFile
+	"Auto generated method for loading purposes - Do not modify it"
+
+	next := nil.
+	prev := III.! !
+
+!IIII class methodsFor: 'as yet unclassified' stamp: 'GP 9/17/2018 15:11:54'!
+next
+	
+	next ifNil:
+	[
+		next _ self cloneNamed: self name , 'I'.
+		next prev: self.
+	].
+	^next! !
+
+!IIII class methodsFor: 'as yet unclassified' stamp: 'GP 9/17/2018 15:11:54'!
+prev
+
+	^prev! !
+
+!IIII class methodsFor: 'as yet unclassified' stamp: 'GP 9/17/2018 15:11:54'!
+prev: unNumeroDePeano
+
+	prev _ unNumeroDePeano! !
+
+!IIII class methodsFor: 'as yet unclassified' stamp: 'GP 9/17/2018 15:11:54'!
+previous
+
+	^prev! !
+
+!IIII class methodsFor: 'as yet unclassified' stamp: 'GP 9/17/2018 15:11:54'!
+removeAllNext
+
+	next ifNotNil:
+	[
+		next removeAllNext.
+		next removeFromSystem.
+		next := nil.
+	]! !
+
+!IIII class methodsFor: 'as yet unclassified' stamp: 'GP 9/17/2018 15:11:54'!
+restar: unNumerodePeano
+	^ (unNumerodePeano previous) - (self previous)! !
+
 II initializeAfterFileIn!
+III initializeAfterFileIn!
+IIII initializeAfterFileIn!
