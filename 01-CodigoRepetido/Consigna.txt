@@ -1,0 +1,9 @@
+Este ejercicio tiene por objetivo que saquen el código repetido que encuentren en el modelo y en los tests. Por ej. entre el test01 y test02.
+
+Los tests provistos ya funcionan, simplemente hay que sacar el código repetido y los tests deben seguir funcionando.
+
+Se puede modificar las clases provistas sólo para eliminar código repetido. 
+No se puede modificar lo que verifican los tests. O sea, sólo se puede hacer un cambio de diseño de tal manera que siga testeando lo mismo, que la funcionalidad sea la misma, pero que no haya código repetido.
+
+
+
