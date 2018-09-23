@@ -46,6 +46,14 @@ PaulMcCartney
 
 	^PaulMcCartney! !
 
+!CustomerBookTest methodsFor: 'testing' stamp: 'GP 9/23/2018 19:45:13'!
+evaluate: aClosureToEvaluate OnFail: errorType Assert2: aClosureToAssert
+	aClosureToEvaluate 
+		on: errorType 
+		do: [aClosureToAssert value]
+
+! !
+
 !CustomerBookTest methodsFor: 'testing' stamp: 'Uriel Jonathan Rozenberg 9/20/2018 21:24:13'!
 evaluate: aClosureToEvaluate OnFail: errorType Assert: aClosureToAssert
 	aClosureToEvaluate 
@@ -119,30 +127,26 @@ test04CanNotRemoveAnInvalidCustomer
 		Assert: [CustomerBookWithLennon numberOfCustomers = 1 &  (CustomerBookWithLennon includesCustomerNamed: JohnLennon) ]
 ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'GP 9/23/2018 19:37:56'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'GP 9/23/2018 20:11:06'!
 test05SuspendingACustomerShouldNotRemoveItFromCustomerBook
 	
 	CustomerBookWithMcCartney suspendCustomerNamed: PaulMcCartney.
 	
-	self assert: 0 equals: CustomerBookWithMcCartney numberOfActiveCustomers.
-	self assert: 1 equals: CustomerBookWithMcCartney numberOfSuspendedCustomers.
-	self assert: 1 equals: CustomerBookWithMcCartney numberOfCustomers.
+	self testBookNumbers: CustomerBookWithMcCartney actives: 0 suspended: 1  customers: 1.
 	self assert: (CustomerBookWithMcCartney includesCustomerNamed: PaulMcCartney).
 	
 
 	
 ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'GP 9/23/2018 19:38:16'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'GP 9/23/2018 20:10:56'!
 test06RemovingASuspendedCustomerShouldRemoveItFromCustomerBook
 
 	
 	CustomerBookWithMcCartney suspendCustomerNamed: PaulMcCartney.
 	CustomerBookWithMcCartney removeCustomerNamed: PaulMcCartney.
 	
-	self assert: 0 equals: CustomerBookWithMcCartney numberOfActiveCustomers.
-	self assert: 0 equals: CustomerBookWithMcCartney numberOfSuspendedCustomers.
-	self assert: 0 equals: CustomerBookWithMcCartney numberOfCustomers.
+	self testBookNumbers: CustomerBookWithMcCartney actives: 0 suspended: 0 customers: 0.
 	self deny: (CustomerBookWithMcCartney includesCustomerNamed: PaulMcCartney).
 
 
@@ -168,6 +172,13 @@ test08CanNotSuspendAnAlreadySuspendedCustomer
 		OnFail: CantSuspend 
 		Assert: [ CustomerBookWithLennon numberOfCustomers = 1 & (CustomerBookWithLennon includesCustomerNamed: JohnLennon) ]
 ! !
+
+!CustomerBookTest methodsFor: 'testing' stamp: 'GP 9/23/2018 20:06:41'!
+testBookNumbers: aCustomerBook actives: numberOfActives suspended: numberOfSuspended customers: numberOfCustomers
+
+	self assert: numberOfActives equals: aCustomerBook numberOfActiveCustomers.
+	self assert: numberOfSuspended equals: aCustomerBook numberOfSuspendedCustomers.
+	self assert: numberOfCustomers equals: aCustomerBook numberOfCustomers.! !
 
 
 !classDefinition: #CustomerBook category: #'CodigoRepetido-Ejercicio'!
