@@ -258,18 +258,6 @@ suspendCustomerNamed: aName
 ! !
 
 
-!CustomerBook methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 9/20/2018 21:59:12'!
-remove: aCollection Customer:aName
-aCollection= aCollection reject: [:a|a=aName]
-! !
-
-!CustomerBook methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 9/23/2018 10:57:57'!
-remove: aCollection CustomerName:aName
-	|posIndex|
-	posIndex:= aCollection  findFirst: [:a|a == aName].
-	[posIndex=0] ifFalse: [aCollection removeAt: posIndex .
-		^aName. ]! !
-
 !CustomerBook methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 9/23/2018 11:25:02'!
 removeCustomer: aCollection CustomerName:aName
 	|posIndex|
