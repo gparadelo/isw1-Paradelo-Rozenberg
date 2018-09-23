@@ -17,9 +17,14 @@ Error subclass: #NotFound
 !classDefinition: #CustomerBookTest category: #'CodigoRepetido-Ejercicio'!
 TestCase subclass: #CustomerBookTest
 	instanceVariableNames: ''
-	classVariableNames: ''
+	classVariableNames: 'CustomerBookInstance'
 	poolDictionaries: ''
 	category: 'CodigoRepetido-Ejercicio'!
+
+!CustomerBookTest methodsFor: 'testing' stamp: 'GP 9/23/2018 19:10:40'!
+CustomerBookInstance
+
+	^CustomerBookInstance! !
 
 !CustomerBookTest methodsFor: 'testing' stamp: 'Uriel Jonathan Rozenberg 9/20/2018 21:24:13'!
 evaluate: aClosureToEvaluate OnFail: errorType Assert: aClosureToAssert
@@ -47,136 +52,132 @@ measureMilliSeconds: aClosure
 	millisecondsAfterRunning := Time millisecondClockValue * millisecond.
 	^millisecondsAfterRunning - millisecondsBeforeRunning ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'Uriel Jonathan Rozenberg 9/20/2018 21:02:03'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'GP 9/23/2018 19:11:58'!
+setUp
+
+	CustomerBookInstance _ CustomerBook new! !
+
+!CustomerBookTest methodsFor: 'testing' stamp: 'GP 9/23/2018 19:12:38'!
 test01AddingCustomerShouldNotTakeMoreThan50Milliseconds
 
-	| customerBook elapsedMiliSeconds |
+	| elapsedMiliSeconds |
 	
-	customerBook := CustomerBook  new.
-	
-	elapsedMiliSeconds := self measureMilliSeconds: [customerBook addCustomerNamed: 'John Lennon'.].
+	elapsedMiliSeconds := self measureMilliSeconds: [CustomerBookInstance addCustomerNamed: 'John Lennon'.].
 	
 	self assert: (elapsedMiliSeconds ) < (50 * millisecond)
 	
 ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'Uriel Jonathan Rozenberg 9/20/2018 21:05:50'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'GP 9/23/2018 19:13:05'!
 test02RemovingCustomerShouldNotTakeMoreThan100Milliseconds
 
-	| customerBook paulMcCartney elapsedMilliseconds |
+	| paulMcCartney elapsedMilliseconds |
 	
-	customerBook := CustomerBook  new.
+	CustomerBookInstance := CustomerBook  new.
 	paulMcCartney := 'Paul McCartney'.
 	
-	customerBook addCustomerNamed: paulMcCartney.
+	CustomerBookInstance addCustomerNamed: paulMcCartney.
 	  
 	
-	elapsedMilliseconds := self measureMilliSeconds: [customerBook removeCustomerNamed: paulMcCartney.].
+	elapsedMilliseconds := self measureMilliSeconds: [CustomerBookInstance removeCustomerNamed: paulMcCartney.].
 	
 	
 	self assert: (elapsedMilliseconds )< (100 * millisecond)
 	
 ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'HernanWilkinson 5/9/2012 18:12'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'GP 9/23/2018 19:13:26'!
 test03CanNotAddACustomerWithEmptyName 
 
-	| customerBook |
-			
-	customerBook := CustomerBook new.
-
-	[ customerBook addCustomerNamed: ''.
+	[ CustomerBookInstance addCustomerNamed: ''.
 	self fail ]
 		on: Error 
 		do: [ :anError | 
 			self assert: anError messageText = CustomerBook customerCanNotBeEmptyErrorMessage.
-			self assert: customerBook isEmpty ]! !
+			self assert: CustomerBookInstance isEmpty ]! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'Uriel Jonathan Rozenberg 9/20/2018 21:26:41'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'GP 9/23/2018 19:13:51'!
 test04CanNotRemoveAnInvalidCustomer
 	
-	| customerBook johnLennon |
+	| johnLennon |
 			
-	customerBook := CustomerBook new.
 	johnLennon := 'John Lennon'.
-	customerBook addCustomerNamed: johnLennon.
+	CustomerBookInstance addCustomerNamed: johnLennon.
 	
- self evaluate:	[ customerBook removeCustomerNamed: 'Paul McCartney'.
+ self evaluate:	[ CustomerBookInstance removeCustomerNamed: 'Paul McCartney'.
 	self fail ]
 		OnFail: NotFound 
-		Assert: [customerBook numberOfCustomers = 1 &  (customerBook includesCustomerNamed: johnLennon) ]
+		Assert: [CustomerBookInstance numberOfCustomers = 1 &  (CustomerBookInstance includesCustomerNamed: johnLennon) ]
 ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'HAW 9/20/2018 09:21:59'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'GP 9/23/2018 19:14:28'!
 test05SuspendingACustomerShouldNotRemoveItFromCustomerBook
 
-	| customerBook paulMcCartney|
+	| paulMcCartney |
 	
-	customerBook := CustomerBook  new.
+	CustomerBookInstance := CustomerBook  new.
 	paulMcCartney := 'Paul McCartney'.
 	
-	customerBook addCustomerNamed: paulMcCartney.
-	customerBook suspendCustomerNamed: paulMcCartney.
+	CustomerBookInstance addCustomerNamed: paulMcCartney.
+	CustomerBookInstance suspendCustomerNamed: paulMcCartney.
 	
-	self assert: 0 equals: customerBook numberOfActiveCustomers.
-	self assert: 1 equals: customerBook numberOfSuspendedCustomers.
-	self assert: 1 equals: customerBook numberOfCustomers.
-	self assert: (customerBook includesCustomerNamed: paulMcCartney).
+	self assert: 0 equals: CustomerBookInstance numberOfActiveCustomers.
+	self assert: 1 equals: CustomerBookInstance numberOfSuspendedCustomers.
+	self assert: 1 equals: CustomerBookInstance numberOfCustomers.
+	self assert: (CustomerBookInstance includesCustomerNamed: paulMcCartney).
 	
 
 	
 ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'HAW 9/20/2018 09:23:02'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'GP 9/23/2018 19:14:46'!
 test06RemovingASuspendedCustomerShouldRemoveItFromCustomerBook
 
-	| customerBook paulMcCartney|
+	| paulMcCartney|
 	
-	customerBook := CustomerBook  new.
 	paulMcCartney := 'Paul McCartney'.
 	
-	customerBook addCustomerNamed: paulMcCartney.
-	customerBook suspendCustomerNamed: paulMcCartney.
-	customerBook removeCustomerNamed: paulMcCartney.
+	CustomerBookInstance addCustomerNamed: paulMcCartney.
+	CustomerBookInstance suspendCustomerNamed: paulMcCartney.
+	CustomerBookInstance removeCustomerNamed: paulMcCartney.
 	
-	self assert: 0 equals: customerBook numberOfActiveCustomers.
-	self assert: 0 equals: customerBook numberOfSuspendedCustomers.
-	self assert: 0 equals: customerBook numberOfCustomers.
-	self deny: (customerBook includesCustomerNamed: paulMcCartney).
+	self assert: 0 equals: CustomerBookInstance numberOfActiveCustomers.
+	self assert: 0 equals: CustomerBookInstance numberOfSuspendedCustomers.
+	self assert: 0 equals: CustomerBookInstance numberOfCustomers.
+	self deny: (CustomerBookInstance includesCustomerNamed: paulMcCartney).
 
 
 	
 ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'Uriel Jonathan Rozenberg 9/20/2018 21:25:01'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'GP 9/23/2018 19:15:01'!
 test07CanNotSuspendAnInvalidCustomer
 	
-	| customerBook johnLennon |
+	| johnLennon |
 			
-	customerBook := CustomerBook new.
 	johnLennon := 'John Lennon'.
-	customerBook addCustomerNamed: johnLennon.
+	CustomerBookInstance addCustomerNamed: johnLennon.
 	
-self evaluate:	[ customerBook suspendCustomerNamed: 'Paul McCartney'.
+self evaluate:	[ CustomerBookInstance suspendCustomerNamed: 'Paul McCartney'.
 	self fail ]
 		OnFail: CantSuspend 
-		Assert: [customerBook numberOfCustomers = 1 & (customerBook includesCustomerNamed: johnLennon) ]
+		Assert: [CustomerBookInstance numberOfCustomers = 1 & (CustomerBookInstance includesCustomerNamed: johnLennon) ]
 ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'Uriel Jonathan Rozenberg 9/20/2018 21:23:48'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'GP 9/23/2018 19:15:12'!
 test08CanNotSuspendAnAlreadySuspendedCustomer
 	
-	| customerBook johnLennon |
+	| johnLennon |
 			
-	customerBook := CustomerBook new.
+	CustomerBookInstance := CustomerBook new.
 	johnLennon := 'John Lennon'.
-	customerBook addCustomerNamed: johnLennon.
-	customerBook suspendCustomerNamed: johnLennon.
+	CustomerBookInstance addCustomerNamed: johnLennon.
+	CustomerBookInstance suspendCustomerNamed: johnLennon.
 	
-	self evaluate:[ customerBook suspendCustomerNamed: johnLennon.
+	self evaluate:[ CustomerBookInstance suspendCustomerNamed: johnLennon.
 	self fail ]
 		OnFail: CantSuspend 
-		Assert: [ customerBook numberOfCustomers = 1 & (customerBook includesCustomerNamed: johnLennon) ]
+		Assert: [ CustomerBookInstance numberOfCustomers = 1 & (CustomerBookInstance includesCustomerNamed: johnLennon) ]
 ! !
 
 
