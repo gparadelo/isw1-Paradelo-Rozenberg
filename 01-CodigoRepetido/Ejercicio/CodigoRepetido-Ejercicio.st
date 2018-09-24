@@ -259,7 +259,7 @@ suspendCustomerNamed: aName
 ! !
 
 
-!CustomerBook methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 9/23/2018 11:25:02'!
+!CustomerBook methodsFor: 'auxiliary' stamp: 'Uriel Jonathan Rozenberg 9/23/2018 11:25:02'!
 removeCustomer: aCollection CustomerName:aName
 	|posIndex|
 	posIndex:= aCollection  findFirst: [:a|a == aName].
