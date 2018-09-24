@@ -230,11 +230,10 @@ numberOfSuspendedCustomers
 	
 	^suspended size! !
 
-!CustomerBook methodsFor: 'customer management' stamp: 'Uriel Jonathan Rozenberg 9/23/2018 17:17:10'!
+!CustomerBook methodsFor: 'customer management' stamp: 'Uriel Jonathan Rozenberg 9/24/2018 00:27:56'!
 removeCustomerNamed: aName 
-aName = (self removeCustomer: active CustomerName: aName) ifTrue: [^aName].
-aName = (self removeCustomer: suspended CustomerName: aName) ifTrue: [^aName].
-
+	aName = (self removeCustomer: active CustomerName: aName) ifTrue: [^aName].
+	aName = (self removeCustomer: suspended CustomerName: aName) ifTrue: [^aName].
 	^ NotFound signal.
 ! !
 
