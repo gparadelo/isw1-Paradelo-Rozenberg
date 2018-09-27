@@ -363,30 +363,39 @@ Numero subclass: #Entero
 	poolDictionaries: ''
 	category: 'Numero-Exercise'!
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:13'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'Uriel Jonathan Rozenberg 9/27/2018 00:57:56'!
 * aMultiplier 
 	
-	^self class with: value * aMultiplier integerValue
-	! !
+	^ aMultiplier multiplicarEntero: self! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'Uriel Jonathan Rozenberg 9/26/2018 22:23:18'!
 + anAdder 
 	^anAdder sumarEntero: self.! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'NR 9/23/2018 23:40:37'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'Uriel Jonathan Rozenberg 9/27/2018 01:33:23'!
 - aSubtrahend 
 	
-	^ self class with: value - aSubtrahend integerValue.! !
+	^ self + ( (Entero with: -1) * aSubtrahend ).! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:14'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'Uriel Jonathan Rozenberg 9/27/2018 01:04:37'!
 / aDivisor 
 	
-	^Fraccion with: self over: aDivisor! !
+	^aDivisor dividirEntero: self.! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 21:55'!
 // aDivisor 
 	
 	^self class with: value // aDivisor integerValue! !
+
+!Entero methodsFor: 'arithmetic operations' stamp: 'Uriel Jonathan Rozenberg 9/27/2018 01:12:40'!
+dividirEntero: aDividend
+	
+	^Fraccion with: aDividend over: self! !
+
+!Entero methodsFor: 'arithmetic operations' stamp: 'Uriel Jonathan Rozenberg 9/27/2018 01:03:08'!
+dividirFraccion: aDividend
+	
+	^( aDividend numerator) / (self * aDividend denominator )! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'HAW 9/24/2018 08:47:50'!
 fibonacci
@@ -406,6 +415,11 @@ fibonacci
 greatestCommonDivisorWith: anEntero 
 	
 	^self class with: (value gcd: anEntero integerValue)! !
+
+!Entero methodsFor: 'arithmetic operations' stamp: 'Uriel Jonathan Rozenberg 9/27/2018 00:54:46'!
+multiplicarEntero: aMultiplier 
+	
+	^self class with: value * aMultiplier integerValue! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'Uriel Jonathan Rozenberg 9/26/2018 22:23:03'!
 sumarEntero: anAdder
@@ -444,6 +458,12 @@ integerValue
 	"Usamos integerValue en vez de value para que no haya problemas con el mensaje value implementado en Object - Hernan"
 	
 	^value! !
+
+!Entero methodsFor: 'value' stamp: 'Uriel Jonathan Rozenberg 9/27/2018 00:52:10'!
+multiplicarFraccion: aMultiplier 
+	
+	^(self * aMultiplier numerator) / ( aMultiplier denominator)
+	! !
 
 
 !Entero methodsFor: 'printing' stamp: 'HAW 9/24/2018 08:53:19'!
@@ -493,31 +513,47 @@ Numero subclass: #Fraccion
 	poolDictionaries: ''
 	category: 'Numero-Exercise'!
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:14'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'Uriel Jonathan Rozenberg 9/27/2018 00:58:14'!
 * aMultiplier 
 	
-	^(numerator * aMultiplier numerator) / (denominator * aMultiplier denominator)
+	^aMultiplier multiplicarFraccion: self.
 	! !
 
 !Fraccion methodsFor: 'arithmetic operations' stamp: 'Uriel Jonathan Rozenberg 9/26/2018 23:24:40'!
 + anAdder 
 	^ anAdder sumarFraccion: self.! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'NR 9/23/2018 23:43:50'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'Uriel Jonathan Rozenberg 9/27/2018 01:31:01'!
 - aSubtrahend 
-	
-	| newNumerator newDenominator |
+	^self + ((Entero with: -1)*aSubtrahend ).
+	"| newNumerator newDenominator |
 	
 	newNumerator := (numerator * aSubtrahend denominator) - (denominator * aSubtrahend numerator).
 	newDenominator := denominator * aSubtrahend denominator.
 	
-	^newNumerator / newDenominator 
+	^newNumerator / newDenominator "
 ! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:14'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'Uriel Jonathan Rozenberg 9/27/2018 01:05:46'!
 / aDivisor 
 	
-	^(numerator * aDivisor denominator) / (denominator * aDivisor numerator)! !
+	^aDivisor dividirFraccion: self.! !
+
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'Uriel Jonathan Rozenberg 9/27/2018 01:01:44'!
+dividirEntero: aDividend 
+	
+	^(denominator * aDividend ) /  numerator! !
+
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'Uriel Jonathan Rozenberg 9/27/2018 01:15:18'!
+dividirFraccion: aDividend 
+	
+	^(aDividend numerator *  denominator) / (aDividend denominator *  numerator)! !
+
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'Uriel Jonathan Rozenberg 9/27/2018 00:39:52'!
+multiplicarFraccion: aMultiplier 
+	
+	^(numerator * aMultiplier numerator) / (denominator * aMultiplier denominator)
+	! !
 
 !Fraccion methodsFor: 'arithmetic operations' stamp: 'Uriel Jonathan Rozenberg 9/26/2018 19:35:19'!
 sumarEntero: anAdder
@@ -548,6 +584,12 @@ sumarFraccion: anAdder
 hash
 
 	^(numerator hash / denominator hash) hash! !
+
+!Fraccion methodsFor: 'comparing' stamp: 'Uriel Jonathan Rozenberg 9/27/2018 00:53:19'!
+multiplicarEntero: aMultiplier 
+	
+	^(numerator * aMultiplier ) / denominator
+	! !
 
 
 !Fraccion methodsFor: 'accessing' stamp: 'HernanWilkinson 5/7/2016 21:56'!
