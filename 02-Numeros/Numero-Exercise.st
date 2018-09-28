@@ -372,10 +372,10 @@ Numero subclass: #Entero
 + anAdder 
 	^anAdder sumarEntero: self.! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'Uriel Jonathan Rozenberg 9/27/2018 01:33:23'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'GP 9/28/2018 15:20:06'!
 - aSubtrahend 
 	
-	^ self + ( (Entero with: -1) * aSubtrahend ).! !
+	^ aSubtrahend restarAEntero: self.! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'Uriel Jonathan Rozenberg 9/27/2018 01:04:37'!
 / aDivisor 
@@ -420,6 +420,20 @@ greatestCommonDivisorWith: anEntero
 multiplicarEntero: aMultiplier 
 	
 	^self class with: value * aMultiplier integerValue! !
+
+!Entero methodsFor: 'arithmetic operations' stamp: 'GP 9/28/2018 15:28:06'!
+restarAEntero: aSubtrahend
+	^ self class with: aSubtrahend integerValue - value.
+	! !
+
+!Entero methodsFor: 'arithmetic operations' stamp: 'GP 9/28/2018 15:38:50'!
+restarAFraccion: aSubtrahend
+
+	| newNumerator |
+	
+	newNumerator := ( aSubtrahend numerator ) - ( self * aSubtrahend denominator ).
+	
+	^ newNumerator / aSubtrahend denominator.! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'Uriel Jonathan Rozenberg 9/26/2018 22:23:03'!
 sumarEntero: anAdder
@@ -523,9 +537,12 @@ Numero subclass: #Fraccion
 + anAdder 
 	^ anAdder sumarFraccion: self.! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'Uriel Jonathan Rozenberg 9/27/2018 01:31:01'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'GP 9/28/2018 15:32:09'!
 - aSubtrahend 
-	^self + ((Entero with: -1)*aSubtrahend ).
+
+	^ aSubtrahend restarAFraccion: self.
+	
+	"^self + ((Entero with: -1)*aSubtrahend )."
 	"| newNumerator newDenominator |
 	
 	newNumerator := (numerator * aSubtrahend denominator) - (denominator * aSubtrahend numerator).
@@ -554,6 +571,25 @@ multiplicarFraccion: aMultiplier
 	
 	^(numerator * aMultiplier numerator) / (denominator * aMultiplier denominator)
 	! !
+
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'GP 9/28/2018 15:31:07'!
+restarAEntero: aSubtrahend
+
+	| newNumerator |
+	
+	newNumerator := ( denominator * aSubtrahend ) - numerator.
+	
+	^ newNumerator / denominator.! !
+
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'GP 9/28/2018 15:36:03'!
+restarAFraccion: aSubtrahend
+
+	| newNumerator newDenominator|
+	
+	newNumerator := ( denominator * aSubtrahend numerator ) - ( numerator * aSubtrahend denominator ).
+	newDenominator := denominator * aSubtrahend denominator.
+	
+	^ newNumerator/ newDenominator.! !
 
 !Fraccion methodsFor: 'arithmetic operations' stamp: 'Uriel Jonathan Rozenberg 9/26/2018 19:35:19'!
 sumarEntero: anAdder
