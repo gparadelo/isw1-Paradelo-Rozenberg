@@ -1,0 +1,12 @@
+El objetivo de este ejercicio es seguir ejercitando cómo reemplazar IFs por polimorfismo, en particular, implementando una cola (Queue).
+
+Hay que hacer pasar todos los tests del ejercicio y la implementacion del Queue no debe tener IFs.
+
+No se pueden modificar los tests.
+
+Ayudas:
+1) Primero hagan pasar todos los tests usando IF y despues apliquen la tecnica para sacar IFs que vimos.
+2) Hay múltiples alternativas de solución, algunas más fáciles que otras, así que no duden en probar y preguntar.
+
+Ojo: Tampoco se puede usar manejo de excepciones para ocultar lo que seria, en definitiva, un if.
+
