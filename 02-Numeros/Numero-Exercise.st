@@ -382,10 +382,10 @@ Numero subclass: #Entero
 	
 	^aDivisor dividirEntero: self.! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 21:55'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'GP 9/29/2018 16:28:05'!
 // aDivisor 
 	
-	^self class with: value // aDivisor integerValue! !
+	^ Entero with: value // aDivisor integerValue! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'Uriel Jonathan Rozenberg 9/27/2018 01:12:40'!
 dividirEntero: aDividend
@@ -397,7 +397,7 @@ dividirFraccion: aDividend
 	
 	^( aDividend numerator) / (self * aDividend denominator )! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'HAW 9/24/2018 08:47:50'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'GP 9/29/2018 16:19:05'!
 fibonacci
 
 	| one two |
@@ -406,24 +406,23 @@ fibonacci
 	two := Entero with: 2.
 	
 	self isNegative ifTrue: [self error: Entero negativeFibonacciErrorDescription ].	
-	(self isZero or: [self isOne]) ifTrue: [^one].
 	
 	^ (self - one) fibonacci + (self - two) fibonacci
 		! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 21:00'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'GP 9/29/2018 16:27:40'!
 greatestCommonDivisorWith: anEntero 
 	
-	^self class with: (value gcd: anEntero integerValue)! !
+	^ Entero with: (value gcd: anEntero integerValue)! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'Uriel Jonathan Rozenberg 9/27/2018 00:54:46'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'GP 9/29/2018 16:27:29'!
 multiplicarEntero: aMultiplier 
 	
-	^self class with: value * aMultiplier integerValue! !
+	^ Entero with: value * aMultiplier integerValue! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'GP 9/28/2018 15:28:06'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'GP 9/29/2018 16:27:22'!
 restarAEntero: aSubtrahend
-	^ self class with: aSubtrahend integerValue - value.
+	^ Entero with: aSubtrahend integerValue - value.
 	! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'GP 9/28/2018 15:38:50'!
@@ -435,9 +434,9 @@ restarAFraccion: aSubtrahend
 	
 	^ newNumerator / aSubtrahend denominator.! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'Uriel Jonathan Rozenberg 9/26/2018 22:23:03'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'GP 9/29/2018 16:27:11'!
 sumarEntero: anAdder
-	^self class with: value + anAdder integerValue! !
+	^Entero with: value + anAdder integerValue! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'Uriel Jonathan Rozenberg 9/26/2018 23:35:39'!
 sumarFraccion: anAdder 
@@ -511,13 +510,13 @@ Entero class
 negativeFibonacciErrorDescription
 	^ ' Fibonacci no está definido aquí para enteros negativos'! !
 
-!Entero class methodsFor: 'instance creation' stamp: 'GP 9/29/2018 16:13:33'!
+!Entero class methodsFor: 'instance creation' stamp: 'GP 9/29/2018 16:23:10'!
 with: aValue 
 	
 	"Esta verificacion esta puesta por si se equivocan y quieren crear un Entero pasando otra cosa que un Integer - Hernan"
 	aValue isInteger ifFalse: [  self error: 'aValue debe ser anInteger' ].
-	aValue value = 1 ifTrue: [ Uno crear ].
-	aValue value = 0 ifTrue: [ Cero crear ].
+	aValue value = 1 ifTrue: [ ^Uno crear ].
+	aValue value = 0 ifTrue: [ ^Cero crear ].
 		
 	^self new initalizeWith: aValue! !
 
@@ -529,10 +528,20 @@ Entero subclass: #Cero
 	poolDictionaries: ''
 	category: 'Numero-Exercise'!
 
-!Cero methodsFor: 'as yet unclassified' stamp: 'GP 9/29/2018 16:16:26'!
+!Cero methodsFor: 'as yet unclassified' stamp: 'GP 9/29/2018 16:24:36'!
+/ aDividend
+
+	^ self.! !
+
+!Cero methodsFor: 'as yet unclassified' stamp: 'GP 9/29/2018 16:19:33'!
+fibonacci
+
+	^Entero with: 1.! !
+
+!Cero methodsFor: 'as yet unclassified' stamp: 'GP 9/29/2018 16:26:19'!
 initialize
 
-	value := value.! !
+	value := 0.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -552,6 +561,11 @@ Entero subclass: #Uno
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Numero-Exercise'!
+
+!Uno methodsFor: 'as yet unclassified' stamp: 'GP 9/29/2018 16:19:21'!
+fibonacci
+
+	^self.! !
 
 !Uno methodsFor: 'as yet unclassified' stamp: 'GP 9/29/2018 16:16:07'!
 initialize
