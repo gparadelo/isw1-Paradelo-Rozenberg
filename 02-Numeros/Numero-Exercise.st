@@ -508,14 +508,14 @@ Entero class
 negativeFibonacciErrorDescription
 	^ ' Fibonacci no está definido aquí para enteros negativos'! !
 
-!Entero class methodsFor: 'instance creation' stamp: 'GP 9/29/2018 16:35:23'!
+!Entero class methodsFor: 'instance creation' stamp: 'GP 9/29/2018 19:19:54'!
 with: aValue 
 	
 	"Esta verificacion esta puesta por si se equivocan y quieren crear un Entero pasando otra cosa que un Integer - Hernan"
 	aValue isInteger ifFalse: [  self error: 'aValue debe ser anInteger' ].
-	aValue value = 1 ifTrue: [ ^Uno crear ].
-	aValue value = 0 ifTrue: [ ^Cero crear ].
-	aValue value < 0 ifTrue: [ ^EnteroNegativo crearCon: aValue ].		
+	( Uno isFor: aValue ) ifTrue: [ ^Uno crear ].
+	( Cero isFor: aValue ) ifTrue: [ ^Cero crear ].
+	( EnteroNegativo isFor: aValue ) ifTrue: [ ^EnteroNegativo crearCon: aValue ].		
 					
 	^self new initalizeWith: aValue! !
 
@@ -553,6 +553,11 @@ crear
 
 	^ self new initialize.! !
 
+!Cero class methodsFor: 'as yet unclassified' stamp: 'GP 9/29/2018 19:20:53'!
+isFor: aValue
+
+	^ 0 = aValue.! !
+
 
 !classDefinition: #EnteroNegativo category: #'Numero-Exercise'!
 Entero subclass: #EnteroNegativo
@@ -582,6 +587,11 @@ crearCon: aValue
 
 	^ self new inicializarCon: aValue.! !
 
+!EnteroNegativo class methodsFor: 'as yet unclassified' stamp: 'GP 9/29/2018 19:21:29'!
+isFor: aValue
+
+	^ 0 > aValue.! !
+
 
 !classDefinition: #Uno category: #'Numero-Exercise'!
 Entero subclass: #Uno
@@ -610,6 +620,11 @@ Uno class
 crear
 
 	^ self new initialize.! !
+
+!Uno class methodsFor: 'as yet unclassified' stamp: 'GP 9/29/2018 19:20:36'!
+isFor: aValue
+
+	^ 1 = aValue.! !
 
 
 !classDefinition: #Fraccion category: #'Numero-Exercise'!
