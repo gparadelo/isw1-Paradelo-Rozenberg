@@ -397,15 +397,13 @@ dividirFraccion: aDividend
 	
 	^( aDividend numerator) / (self * aDividend denominator )! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'GP 9/29/2018 16:19:05'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'GP 9/29/2018 16:33:47'!
 fibonacci
 
 	| one two |
 	
 	one := Entero with: 1.
 	two := Entero with: 2.
-	
-	self isNegative ifTrue: [self error: Entero negativeFibonacciErrorDescription ].	
 	
 	^ (self - one) fibonacci + (self - two) fibonacci
 		! !
@@ -510,14 +508,15 @@ Entero class
 negativeFibonacciErrorDescription
 	^ ' Fibonacci no está definido aquí para enteros negativos'! !
 
-!Entero class methodsFor: 'instance creation' stamp: 'GP 9/29/2018 16:23:10'!
+!Entero class methodsFor: 'instance creation' stamp: 'GP 9/29/2018 16:35:23'!
 with: aValue 
 	
 	"Esta verificacion esta puesta por si se equivocan y quieren crear un Entero pasando otra cosa que un Integer - Hernan"
 	aValue isInteger ifFalse: [  self error: 'aValue debe ser anInteger' ].
 	aValue value = 1 ifTrue: [ ^Uno crear ].
 	aValue value = 0 ifTrue: [ ^Cero crear ].
-		
+	aValue value < 0 ifTrue: [ ^EnteroNegativo crearCon: aValue ].		
+					
 	^self new initalizeWith: aValue! !
 
 
@@ -553,6 +552,35 @@ Cero class
 crear
 
 	^ self new initialize.! !
+
+
+!classDefinition: #EnteroNegativo category: #'Numero-Exercise'!
+Entero subclass: #EnteroNegativo
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Numero-Exercise'!
+
+!EnteroNegativo methodsFor: 'as yet unclassified' stamp: 'GP 9/29/2018 16:34:23'!
+fibonacci
+
+	^self error: Entero negativeFibonacciErrorDescription ! !
+
+!EnteroNegativo methodsFor: 'as yet unclassified' stamp: 'GP 9/29/2018 16:39:38'!
+inicializarCon: aValue 
+	
+	value := aValue! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'EnteroNegativo class' category: #'Numero-Exercise'!
+EnteroNegativo class
+	instanceVariableNames: ''!
+
+!EnteroNegativo class methodsFor: 'as yet unclassified' stamp: 'GP 9/29/2018 16:39:51'!
+crearCon: aValue
+
+	^ self new inicializarCon: aValue.! !
 
 
 !classDefinition: #Uno category: #'Numero-Exercise'!
