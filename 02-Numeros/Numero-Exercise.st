@@ -387,6 +387,11 @@ Numero subclass: #Entero
 	
 	^ Entero with: value // aDivisor integerValue! !
 
+!Entero methodsFor: 'arithmetic operations' stamp: 'GP 9/29/2018 20:22:40'!
+assertIsAValidDivisor
+
+	^ true.! !
+
 !Entero methodsFor: 'arithmetic operations' stamp: 'Uriel Jonathan Rozenberg 9/27/2018 01:12:40'!
 dividirEntero: aDividend
 	
@@ -417,6 +422,23 @@ greatestCommonDivisorWith: anEntero
 multiplicarEntero: aMultiplier 
 	
 	^ Entero with: value * aMultiplier integerValue! !
+
+!Entero methodsFor: 'arithmetic operations' stamp: 'GP 9/29/2018 20:33:36'!
+over: aDivisor
+	
+	| greatestCommonDivisor numerator denominator |
+	
+	aDivisor isNegative ifTrue:[ ^self negated / aDivisor negated].
+	
+	greatestCommonDivisor := self greatestCommonDivisorWith: aDivisor. 
+	numerator := self // greatestCommonDivisor.
+	denominator := aDivisor // greatestCommonDivisor.
+	
+	denominator isOne ifTrue: [ ^numerator ].
+
+	^Fraccion new initializeWith: numerator over: denominator
+	
+	! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'GP 9/29/2018 16:27:22'!
 restarAEntero: aSubtrahend
@@ -532,6 +554,11 @@ Entero subclass: #Cero
 
 	^ self.! !
 
+!Cero methodsFor: 'as yet unclassified' stamp: 'GP 9/29/2018 20:25:54'!
+assertIsAValidDivisor
+
+	self error: Numero canNotDivideByZeroErrorDescription.! !
+
 !Cero methodsFor: 'as yet unclassified' stamp: 'GP 9/29/2018 16:19:33'!
 fibonacci
 
@@ -541,6 +568,11 @@ fibonacci
 initialize
 
 	value := 0.! !
+
+!Cero methodsFor: 'as yet unclassified' stamp: 'GP 9/29/2018 20:32:02'!
+over: aDivisor
+
+	^ self.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -787,21 +819,11 @@ printOn: aStream
 Fraccion class
 	instanceVariableNames: ''!
 
-!Fraccion class methodsFor: 'intance creation' stamp: 'NR 9/23/2018 23:45:19'!
+!Fraccion class methodsFor: 'intance creation' stamp: 'GP 9/29/2018 20:36:15'!
 with: aDividend over: aDivisor
-
-	| greatestCommonDivisor numerator denominator |
 	
-	aDivisor isZero ifTrue: [ self error: self canNotDivideByZeroErrorDescription ].
-	aDividend isZero ifTrue: [ ^aDividend ].
+	aDivisor assertIsAValidDivisor .
 	
-	aDivisor isNegative ifTrue:[ ^aDividend negated / aDivisor negated].
+	^ aDividend over: aDivisor.
 	
-	greatestCommonDivisor := aDividend greatestCommonDivisorWith: aDivisor. 
-	numerator := aDividend // greatestCommonDivisor.
-	denominator := aDivisor // greatestCommonDivisor.
-	
-	denominator isOne ifTrue: [ ^numerator ].
-
-	^self new initializeWith: numerator over: denominator
-	! !
+! !
