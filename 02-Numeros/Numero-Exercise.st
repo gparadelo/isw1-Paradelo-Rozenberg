@@ -418,26 +418,26 @@ greatestCommonDivisorWith: anEntero
 	
 	^ Entero with: (value gcd: anEntero integerValue)! !
 
+!Entero methodsFor: 'arithmetic operations' stamp: 'GP 9/29/2018 20:56:41'!
+initializeFractionOverSelf: aDividend
+
+	^ Fraccion new initializeWith: aDividend over: self! !
+
 !Entero methodsFor: 'arithmetic operations' stamp: 'GP 9/29/2018 16:27:29'!
 multiplicarEntero: aMultiplier 
 	
 	^ Entero with: value * aMultiplier integerValue! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'GP 9/29/2018 20:33:36'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'GP 9/29/2018 20:56:55'!
 over: aDivisor
 	
 	| greatestCommonDivisor numerator denominator |
-	
-	aDivisor isNegative ifTrue:[ ^self negated / aDivisor negated].
 	
 	greatestCommonDivisor := self greatestCommonDivisorWith: aDivisor. 
 	numerator := self // greatestCommonDivisor.
 	denominator := aDivisor // greatestCommonDivisor.
 	
-	denominator isOne ifTrue: [ ^numerator ].
-
-	^Fraccion new initializeWith: numerator over: denominator
-	
+	^ denominator initializeFractionOverSelf: numerator.
 	! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'GP 9/29/2018 16:27:22'!
@@ -608,6 +608,11 @@ inicializarCon: aValue
 	
 	value := aValue! !
 
+!EnteroNegativo methodsFor: 'as yet unclassified' stamp: 'GP 9/29/2018 20:43:43'!
+over: aDivisor
+
+	^ self negated / aDivisor negated.! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'EnteroNegativo class' category: #'Numero-Exercise'!
@@ -641,6 +646,11 @@ fibonacci
 initialize
 
 	value := 1.! !
+
+!Uno methodsFor: 'as yet unclassified' stamp: 'GP 9/29/2018 20:57:06'!
+initializeFractionOverSelf: aDividend
+
+	^ aDividend! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
