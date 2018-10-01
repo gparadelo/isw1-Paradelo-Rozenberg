@@ -358,7 +358,7 @@ invalidNumberTypeErrorDescription
 
 !classDefinition: #Entero category: #'Numero-Exercise'!
 Numero subclass: #Entero
-	instanceVariableNames: 'value'
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Numero-Exercise'!
@@ -382,15 +382,14 @@ Numero subclass: #Entero
 	
 	^aDivisor dividirEntero: self.! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'GP 9/29/2018 16:28:05'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'GP 10/1/2018 15:24:24'!
 // aDivisor 
 	
-	^ Entero with: value // aDivisor integerValue! !
+	^ Entero with: self integerValue // aDivisor integerValue! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'GP 9/29/2018 20:22:40'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'GP 10/1/2018 15:55:18'!
 assertIsAValidDivisor
-
-	^ true.! !
+! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'Uriel Jonathan Rozenberg 9/27/2018 01:12:40'!
 dividirEntero: aDividend
@@ -413,20 +412,20 @@ fibonacci
 	^ (self - one) fibonacci + (self - two) fibonacci
 		! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'GP 9/29/2018 16:27:40'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'GP 10/1/2018 15:24:43'!
 greatestCommonDivisorWith: anEntero 
 	
-	^ Entero with: (value gcd: anEntero integerValue)! !
+	^ Entero with: (self integerValue gcd: anEntero integerValue)! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'GP 9/29/2018 20:56:41'!
 initializeFractionOverSelf: aDividend
 
 	^ Fraccion new initializeWith: aDividend over: self! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'GP 9/29/2018 16:27:29'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'GP 10/1/2018 15:24:53'!
 multiplicarEntero: aMultiplier 
 	
-	^ Entero with: value * aMultiplier integerValue! !
+	^ Entero with: self integerValue * aMultiplier integerValue! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'GP 9/29/2018 20:56:55'!
 over: aDivisor
@@ -440,9 +439,9 @@ over: aDivisor
 	^ denominator initializeFractionOverSelf: numerator.
 	! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'GP 9/29/2018 16:27:22'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'GP 10/1/2018 15:25:07'!
 restarAEntero: aSubtrahend
-	^ Entero with: aSubtrahend integerValue - value.
+	^ Entero with: aSubtrahend integerValue - self integerValue.
 	! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'GP 9/28/2018 15:38:50'!
@@ -454,9 +453,9 @@ restarAFraccion: aSubtrahend
 	
 	^ newNumerator / aSubtrahend denominator.! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'GP 9/29/2018 16:27:11'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'GP 10/1/2018 15:26:07'!
 sumarEntero: anAdder
-	^Entero with: value + anAdder integerValue! !
+	^Entero with: self integerValue + anAdder integerValue! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'Uriel Jonathan Rozenberg 9/26/2018 23:35:39'!
 sumarFraccion: anAdder 
@@ -468,29 +467,17 @@ sumarFraccion: anAdder
 	^newNumerator / anAdder denominator ! !
 
 
-!Entero methodsFor: 'comparing' stamp: 'HernanWilkinson 5/7/2016 21:01'!
+!Entero methodsFor: 'comparing' stamp: 'GP 10/1/2018 15:33:17'!
 = anObject
 
-	^(anObject isKindOf: self class) and: [ value = anObject integerValue ]! !
+	^(anObject isKindOf: self class) and: [ self integerValue = anObject integerValue ]! !
 
-!Entero methodsFor: 'comparing' stamp: 'HernanWilkinson 5/7/2016 20:17'!
+!Entero methodsFor: 'comparing' stamp: 'GP 10/1/2018 15:51:24'!
 hash
 
-	^value hash! !
+	^self integerValue hash! !
 
 
-!Entero methodsFor: 'initialization' stamp: 'HernanWilkinson 5/7/2016 20:09'!
-initalizeWith: aValue 
-	
-	value := aValue! !
-
-
-!Entero methodsFor: 'value' stamp: 'HernanWilkinson 5/7/2016 21:02'!
-integerValue
-
-	"Usamos integerValue en vez de value para que no haya problemas con el mensaje value implementado en Object - Hernan"
-	
-	^value! !
 
 !Entero methodsFor: 'value' stamp: 'Uriel Jonathan Rozenberg 9/27/2018 00:52:10'!
 multiplicarFraccion: aMultiplier 
@@ -499,26 +486,26 @@ multiplicarFraccion: aMultiplier
 	! !
 
 
-!Entero methodsFor: 'printing' stamp: 'HAW 9/24/2018 08:53:19'!
+!Entero methodsFor: 'printing' stamp: 'GP 10/1/2018 15:49:44'!
 printOn: aStream
 
-	aStream print: value ! !
+	aStream print: self integerValue ! !
 
 
-!Entero methodsFor: 'testing' stamp: 'NR 9/23/2018 22:17:55'!
+!Entero methodsFor: 'testing' stamp: 'GP 10/1/2018 15:29:13'!
 isNegative
 	
-	^value < 0! !
+	^ self integerValue < 0! !
 
-!Entero methodsFor: 'testing' stamp: 'HernanWilkinson 5/7/2016 20:14'!
+!Entero methodsFor: 'testing' stamp: 'GP 10/1/2018 15:29:06'!
 isOne
 	
-	^value = 1! !
+	^ self integerValue = 1! !
 
-!Entero methodsFor: 'testing' stamp: 'HernanWilkinson 5/7/2016 20:12'!
+!Entero methodsFor: 'testing' stamp: 'GP 10/1/2018 15:28:57'!
 isZero
 	
-	^value = 0! !
+	^self integerValue = 0! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -530,16 +517,18 @@ Entero class
 negativeFibonacciErrorDescription
 	^ ' Fibonacci no está definido aquí para enteros negativos'! !
 
-!Entero class methodsFor: 'instance creation' stamp: 'GP 9/29/2018 19:19:54'!
+!Entero class methodsFor: 'instance creation' stamp: 'GP 10/1/2018 15:48:59'!
 with: aValue 
+	
+	| enteroClass |
 	
 	"Esta verificacion esta puesta por si se equivocan y quieren crear un Entero pasando otra cosa que un Integer - Hernan"
 	aValue isInteger ifFalse: [  self error: 'aValue debe ser anInteger' ].
-	( Uno isFor: aValue ) ifTrue: [ ^Uno crear ].
-	( Cero isFor: aValue ) ifTrue: [ ^Cero crear ].
-	( EnteroNegativo isFor: aValue ) ifTrue: [ ^EnteroNegativo crearCon: aValue ].		
-					
-	^self new initalizeWith: aValue! !
+
+	enteroClass _ self subclasses detect: [ :unEnteroClass | unEnteroClass isFor: aValue ].
+	
+	^ enteroClass crearCon: aValue.
+! !
 
 
 !classDefinition: #Cero category: #'Numero-Exercise'!
@@ -564,15 +553,20 @@ fibonacci
 
 	^Entero with: 1.! !
 
-!Cero methodsFor: 'as yet unclassified' stamp: 'GP 9/29/2018 16:26:19'!
-initialize
+!Cero methodsFor: 'as yet unclassified' stamp: 'GP 10/1/2018 15:23:22'!
+integerValue
 
-	value := 0.! !
+	^ 0.! !
 
 !Cero methodsFor: 'as yet unclassified' stamp: 'GP 9/29/2018 20:32:02'!
 over: aDivisor
 
 	^ self.! !
+
+!Cero methodsFor: 'as yet unclassified' stamp: 'GP 10/1/2018 15:44:39'!
+value
+
+	^ 0.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -580,10 +574,15 @@ over: aDivisor
 Cero class
 	instanceVariableNames: ''!
 
-!Cero class methodsFor: 'as yet unclassified' stamp: 'GP 9/29/2018 16:16:14'!
+!Cero class methodsFor: 'as yet unclassified' stamp: 'GP 10/1/2018 15:20:48'!
 crear
 
-	^ self new initialize.! !
+	^ self new.! !
+
+!Cero class methodsFor: 'as yet unclassified' stamp: 'GP 10/1/2018 15:38:34'!
+crearCon: aValue
+
+	^ self new.! !
 
 !Cero class methodsFor: 'as yet unclassified' stamp: 'GP 9/29/2018 19:20:53'!
 isFor: aValue
@@ -591,43 +590,82 @@ isFor: aValue
 	^ 0 = aValue.! !
 
 
-!classDefinition: #EnteroNegativo category: #'Numero-Exercise'!
-Entero subclass: #EnteroNegativo
-	instanceVariableNames: ''
+!classDefinition: #Negativo category: #'Numero-Exercise'!
+Entero subclass: #Negativo
+	instanceVariableNames: 'value'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Numero-Exercise'!
 
-!EnteroNegativo methodsFor: 'as yet unclassified' stamp: 'GP 9/29/2018 16:34:23'!
+!Negativo methodsFor: 'as yet unclassified' stamp: 'GP 9/29/2018 16:34:23'!
 fibonacci
 
 	^self error: Entero negativeFibonacciErrorDescription ! !
 
-!EnteroNegativo methodsFor: 'as yet unclassified' stamp: 'GP 9/29/2018 16:39:38'!
+!Negativo methodsFor: 'as yet unclassified' stamp: 'GP 9/29/2018 16:39:38'!
 inicializarCon: aValue 
 	
 	value := aValue! !
 
-!EnteroNegativo methodsFor: 'as yet unclassified' stamp: 'GP 9/29/2018 20:43:43'!
+!Negativo methodsFor: 'as yet unclassified' stamp: 'GP 10/1/2018 15:24:06'!
+integerValue
+
+	^ value! !
+
+!Negativo methodsFor: 'as yet unclassified' stamp: 'GP 9/29/2018 20:43:43'!
 over: aDivisor
 
 	^ self negated / aDivisor negated.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'EnteroNegativo class' category: #'Numero-Exercise'!
-EnteroNegativo class
+!classDefinition: 'Negativo class' category: #'Numero-Exercise'!
+Negativo class
 	instanceVariableNames: ''!
 
-!EnteroNegativo class methodsFor: 'as yet unclassified' stamp: 'GP 9/29/2018 16:39:51'!
+!Negativo class methodsFor: 'as yet unclassified' stamp: 'GP 9/29/2018 16:39:51'!
 crearCon: aValue
 
 	^ self new inicializarCon: aValue.! !
 
-!EnteroNegativo class methodsFor: 'as yet unclassified' stamp: 'GP 9/29/2018 19:21:29'!
+!Negativo class methodsFor: 'as yet unclassified' stamp: 'GP 9/29/2018 19:21:29'!
 isFor: aValue
 
 	^ 0 > aValue.! !
+
+
+!classDefinition: #Positivo category: #'Numero-Exercise'!
+Entero subclass: #Positivo
+	instanceVariableNames: 'value'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Numero-Exercise'!
+
+!Positivo methodsFor: 'as yet unclassified' stamp: 'GP 10/1/2018 15:28:32'!
+inicializarCon: aValue
+
+	value := aValue.! !
+
+!Positivo methodsFor: 'as yet unclassified' stamp: 'GP 10/1/2018 15:23:54'!
+integerValue
+
+	^ value! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'Positivo class' category: #'Numero-Exercise'!
+Positivo class
+	instanceVariableNames: ''!
+
+!Positivo class methodsFor: 'as yet unclassified' stamp: 'GP 10/1/2018 15:28:01'!
+crearCon: aValue
+
+	^self new inicializarCon: aValue.! !
+
+!Positivo class methodsFor: 'as yet unclassified' stamp: 'GP 10/1/2018 15:27:32'!
+isFor: aValue
+
+	^ aValue > 1.! !
 
 
 !classDefinition: #Uno category: #'Numero-Exercise'!
@@ -642,15 +680,20 @@ fibonacci
 
 	^self.! !
 
-!Uno methodsFor: 'as yet unclassified' stamp: 'GP 9/29/2018 16:16:07'!
-initialize
-
-	value := 1.! !
-
 !Uno methodsFor: 'as yet unclassified' stamp: 'GP 9/29/2018 20:57:06'!
 initializeFractionOverSelf: aDividend
 
 	^ aDividend! !
+
+!Uno methodsFor: 'as yet unclassified' stamp: 'GP 10/1/2018 15:23:35'!
+integerValue
+
+	^ 1.! !
+
+!Uno methodsFor: 'as yet unclassified' stamp: 'GP 10/1/2018 15:44:05'!
+value
+
+	^ 1.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -658,10 +701,10 @@ initializeFractionOverSelf: aDividend
 Uno class
 	instanceVariableNames: ''!
 
-!Uno class methodsFor: 'as yet unclassified' stamp: 'GP 9/29/2018 16:15:52'!
-crear
+!Uno class methodsFor: 'as yet unclassified' stamp: 'GP 10/1/2018 15:38:45'!
+crearCon: aValue
 
-	^ self new initialize.! !
+	^ self new.! !
 
 !Uno class methodsFor: 'as yet unclassified' stamp: 'GP 9/29/2018 19:20:36'!
 isFor: aValue
