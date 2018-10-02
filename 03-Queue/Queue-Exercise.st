@@ -135,6 +135,47 @@ Object subclass: #Queue
 	poolDictionaries: ''
 	category: 'Queue-Exercise'!
 
+!Queue methodsFor: 'enqueueing' stamp: 'Uriel Jonathan Rozenberg 10/1/2018 21:55:24'!
+enqueue: aNewElementToEnqueue
+contents addFirst: aNewElementToEnqueue! !
+
+
+!Queue methodsFor: 'initialization' stamp: 'Uriel Jonathan Rozenberg 10/1/2018 21:39:34'!
+createEmptyQueue
+contents _ OrderedCollection new.! !
+
+!Queue methodsFor: 'initialization' stamp: 'Uriel Jonathan Rozenberg 10/1/2018 21:50:05'!
+initialize
+contents _ OrderedCollection new.! !
+
+
+!Queue methodsFor: 'accessing' stamp: 'Uriel Jonathan Rozenberg 10/2/2018 10:13:14'!
+next
+	self testEmpty .
+	^ contents last.! !
+
+!Queue methodsFor: 'accessing' stamp: 'Uriel Jonathan Rozenberg 10/1/2018 22:00:31'!
+size
+^contents size! !
+
+
+!Queue methodsFor: 'dequeueing' stamp: 'Uriel Jonathan Rozenberg 10/2/2018 10:12:58'!
+dequeue
+| lastElement |
+	self testEmpty.
+	lastElement _ self next.
+	contents removeLast.
+ 	^lastElement ! !
+
+
+!Queue methodsFor: 'testing' stamp: 'Uriel Jonathan Rozenberg 10/1/2018 21:40:20'!
+isEmpty
+^contents isEmpty ! !
+
+!Queue methodsFor: 'testing' stamp: 'Uriel Jonathan Rozenberg 10/2/2018 10:10:48'!
+testEmpty
+	self isEmpty ifTrue:[^self error: self class queueEmptyErrorDescription]! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'Queue class' category: #'Queue-Exercise'!
@@ -144,3 +185,4 @@ Queue class
 !Queue class methodsFor: 'error descriptions'!
 queueEmptyErrorDescription
 	^ 'Queue is empty'.! !
+
