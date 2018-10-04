@@ -149,9 +149,14 @@ initialize
 contents _ OrderedCollection new.! !
 
 
-!Queue methodsFor: 'accessing' stamp: 'Uriel Jonathan Rozenberg 10/2/2018 10:13:14'!
+!Queue methodsFor: 'accessing' stamp: 'Uriel Jonathan Rozenberg 10/3/2018 20:57:36'!
 next
-	self testEmpty .
+	
+	^ (QueueValidatedAccesor nuevo: self) next! !
+
+!Queue methodsFor: 'accessing' stamp: 'Uriel Jonathan Rozenberg 10/3/2018 18:29:27'!
+safeNext
+	
 	^ contents last.! !
 
 !Queue methodsFor: 'accessing' stamp: 'Uriel Jonathan Rozenberg 10/1/2018 22:00:31'!
@@ -159,10 +164,17 @@ size
 ^contents size! !
 
 
-!Queue methodsFor: 'dequeueing' stamp: 'Uriel Jonathan Rozenberg 10/2/2018 10:12:58'!
+!Queue methodsFor: 'dequeueing' stamp: 'Uriel Jonathan Rozenberg 10/3/2018 20:57:36'!
 dequeue
-| lastElement |
-	self testEmpty.
+
+	^(QueueValidatedAccesor nuevo: self) dequeue
+! !
+
+!Queue methodsFor: 'dequeueing' stamp: 'Uriel Jonathan Rozenberg 10/3/2018 17:55:45'!
+safeDequeue
+
+	| lastElement |
+	
 	lastElement _ self next.
 	contents removeLast.
  	^lastElement ! !
@@ -172,9 +184,10 @@ dequeue
 isEmpty
 ^contents isEmpty ! !
 
-!Queue methodsFor: 'testing' stamp: 'Uriel Jonathan Rozenberg 10/2/2018 10:10:48'!
+!Queue methodsFor: 'testing' stamp: 'Uriel Jonathan Rozenberg 10/3/2018 09:17:52'!
 testEmpty
-	self isEmpty ifTrue:[^self error: self class queueEmptyErrorDescription]! !
+	^contents detect: [True] ifNone:[^ self error: self class queueEmptyErrorDescription].
+	"self isEmpty ifTrue:[^self error: self class queueEmptyErrorDescription]"! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -186,3 +199,89 @@ Queue class
 queueEmptyErrorDescription
 	^ 'Queue is empty'.! !
 
+
+
+!classDefinition: #QueueValidatedAccesor category: #'Queue-Exercise'!
+Object subclass: #QueueValidatedAccesor
+	instanceVariableNames: 'queue'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Queue-Exercise'!
+
+!QueueValidatedAccesor methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/3/2018 21:02:06'!
+inicializarPara: aQueue
+
+	queue := aQueue! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'QueueValidatedAccesor class' category: #'Queue-Exercise'!
+QueueValidatedAccesor class
+	instanceVariableNames: ''!
+
+!QueueValidatedAccesor class methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/3/2018 18:18:00'!
+nuevo: aQueue
+
+	| chabonClass |
+
+	chabonClass _ self subclasses detect: [ :unChabonClass | unChabonClass isFor: aQueue ].
+	
+	^ chabonClass new inicializarPara: aQueue.! !
+
+
+!classDefinition: #EmptyQueueValidated category: #'Queue-Exercise'!
+QueueValidatedAccesor subclass: #EmptyQueueValidated
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Queue-Exercise'!
+
+!EmptyQueueValidated methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/3/2018 18:28:08'!
+dequeue
+
+	self error: Queue  queueEmptyErrorDescription ! !
+
+!EmptyQueueValidated methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/3/2018 18:30:20'!
+next
+
+	self error: Queue  queueEmptyErrorDescription ! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'EmptyQueueValidated class' category: #'Queue-Exercise'!
+EmptyQueueValidated class
+	instanceVariableNames: ''!
+
+!EmptyQueueValidated class methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/3/2018 18:12:14'!
+isFor: aQueue
+
+	^ aQueue isEmpty ! !
+
+
+!classDefinition: #NonEmptyQueueValidated category: #'Queue-Exercise'!
+QueueValidatedAccesor subclass: #NonEmptyQueueValidated
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Queue-Exercise'!
+
+!NonEmptyQueueValidated methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/3/2018 21:02:22'!
+dequeue
+
+	^queue safeDequeue! !
+
+!NonEmptyQueueValidated methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/3/2018 21:02:18'!
+next
+
+	^queue safeNext! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'NonEmptyQueueValidated class' category: #'Queue-Exercise'!
+NonEmptyQueueValidated class
+	instanceVariableNames: ''!
+
+!NonEmptyQueueValidated class methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/3/2018 18:12:04'!
+isFor: aQueue
+
+	^ aQueue isEmpty not.! !
