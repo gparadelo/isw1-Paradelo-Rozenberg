@@ -149,10 +149,10 @@ initialize
 contents _ OrderedCollection new.! !
 
 
-!Queue methodsFor: 'accessing' stamp: 'Uriel Jonathan Rozenberg 10/4/2018 11:55:28'!
+!Queue methodsFor: 'accessing' stamp: 'GP 10/4/2018 15:16:32'!
 next
 	
-	^ (QueueAccesor nuevo: self) next! !
+	^ (QueueAccesor initializeWith: self) next! !
 
 !Queue methodsFor: 'accessing' stamp: 'Uriel Jonathan Rozenberg 10/3/2018 18:29:27'!
 safeNext
@@ -164,10 +164,10 @@ size
 ^contents size! !
 
 
-!Queue methodsFor: 'dequeueing' stamp: 'Uriel Jonathan Rozenberg 10/4/2018 11:55:28'!
+!Queue methodsFor: 'dequeueing' stamp: 'GP 10/4/2018 15:15:47'!
 dequeue
 
-	^(QueueAccesor nuevo: self) dequeue
+	^(QueueAccesor initializeWith: self) dequeue
 ! !
 
 !Queue methodsFor: 'dequeueing' stamp: 'Uriel Jonathan Rozenberg 10/3/2018 17:55:45'!
@@ -194,7 +194,6 @@ Queue class
 queueEmptyErrorDescription
 	^ 'Queue is empty'.! !
 
-
 
 !classDefinition: #QueueAccesor category: #'Queue-Exercise'!
 Object subclass: #QueueAccesor
@@ -214,14 +213,14 @@ inicializarPara: aQueue
 QueueAccesor class
 	instanceVariableNames: ''!
 
-!QueueAccesor class methodsFor: 'instance creator' stamp: 'Uriel Jonathan Rozenberg 10/3/2018 18:18:00'!
-nuevo: aQueue
+!QueueAccesor class methodsFor: 'instance creator' stamp: 'GP 10/4/2018 15:15:23'!
+initializeWith: aQueue
 
-	| chabonClass |
+	| accessorClass |
 
-	chabonClass _ self subclasses detect: [ :unChabonClass | unChabonClass isFor: aQueue ].
+	accessorClass _ self subclasses detect: [ :anAccessorClass | anAccessorClass isFor: aQueue ].
 	
-	^ chabonClass new inicializarPara: aQueue.! !
+	^ accessorClass new inicializarPara: aQueue.! !
 
 
 !classDefinition: #EmptyQueueAccessor category: #'Queue-Exercise'!
