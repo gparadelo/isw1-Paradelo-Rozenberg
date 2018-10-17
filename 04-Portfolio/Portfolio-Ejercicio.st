@@ -40,6 +40,11 @@ initializeFor: aValue
 	value := aValue ! !
 
 
+!Deposit methodsFor: 'value' stamp: 'GP 10/17/2018 10:57:09'!
+addTo: aBalance
+
+	^ self value + aBalance! !
+
 !Deposit methodsFor: 'value' stamp: 'HernanWilkinson 7/13/2011 18:38'!
 value
 
@@ -69,6 +74,11 @@ initializeFor: aValue
 
 	value := aValue ! !
 
+
+!Withdraw methodsFor: 'value' stamp: 'GP 10/17/2018 10:57:25'!
+addTo: aBalance
+
+	^ aBalance - self value! !
 
 !Withdraw methodsFor: 'value' stamp: 'HernanWilkinson 7/13/2011 18:33'!
 value
@@ -160,9 +170,12 @@ transactionsOf: anAccount
 initialize
 	accounts := OrderedCollection new.! !
 
-!Portfolio methodsFor: 'initialization' stamp: 'Uriel Jonathan Rozenberg 10/16/2018 15:04:41'!
+!Portfolio methodsFor: 'initialization' stamp: 'GP 10/17/2018 11:40:49'!
 initializeAccounts: aCollectionOfAccounts
-	accounts:= aCollectionOfAccounts  asOrderedCollection ! !
+
+	self initialize.
+	aCollectionOfAccounts do: [ :each | ( self doesManage: each ) ifTrue: [ self error: self class accountAlreadyManagedErrorMessage ] ifFalse: [ accounts add: each ] ]
+	! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -218,10 +231,10 @@ transactions
 	^ transactions copy! !
 
 
-!ReceptiveAccount methodsFor: 'balance' stamp: 'Uriel Jonathan Rozenberg 10/16/2018 14:04:20'!
+!ReceptiveAccount methodsFor: 'balance' stamp: 'GP 10/17/2018 10:56:21'!
 balance
 
-	^ transactions inject: 0 into: [ :balance :transaction | balance + transaction value ].! !
+	^ transactions inject: 0 into: [ :balance :transaction | transaction addTo: balance ].! !
 
 
 !ReceptiveAccount methodsFor: 'testing' stamp: 'HAW 10/11/2018 16:53:28'!
