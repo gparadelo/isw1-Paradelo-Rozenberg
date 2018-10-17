@@ -1,0 +1,4 @@
+Este es el primer ejercicio de la serie que haremos para descubrir patrones
+de diseño.
+En este caso, lo que deben hacer es hacer pasar los tests y luego buscar
+el patron de comportamiento que se repite.
