@@ -109,6 +109,11 @@ doesManage: anAccount
 
 	self subclassResponsibility ! !
 
+!SummarizingAccount methodsFor: 'testing' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 13:03:51'!
+doesManageAny: anAccount
+
+	self subclassResponsibility ! !
+
 !SummarizingAccount methodsFor: 'testing' stamp: 'HAW 10/11/2018 16:53:54'!
 hasRegistered: aTransaction
 
@@ -145,6 +150,11 @@ doesManage: anAccount
 
 	^ accounts anySatisfy: [:account | (account doesManage: anAccount)  or: anAccount=self]
 ! !
+
+!Portfolio methodsFor: 'testing' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 13:09:13'!
+doesManageAny: anAccount
+
+	^ accounts anySatisfy: [:account | account doesManageAny: anAccount]! !
 
 !Portfolio methodsFor: 'testing' stamp: 'Uriel Jonathan Rozenberg 10/16/2018 19:35:36'!
 hasRegistered: aTransaction
@@ -188,10 +198,19 @@ with: leftAccount with: rightAccount
 
 	^self withAll: (OrderedCollection with: leftAccount with: rightAccount)! !
 
-!Portfolio class methodsFor: 'instance creation' stamp: 'Uriel Jonathan Rozenberg 10/16/2018 15:05:09'!
+!Portfolio class methodsFor: 'instance creation' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 15:19:11'!
 withAll: aCollectionOfAccounts
 
-	^self new initializeAccounts: aCollectionOfAccounts ! !
+		
+	aCollectionOfAccounts do: [ :account | | collectionOfAccounts |
+	collectionOfAccounts := aCollectionOfAccounts copy  asOrderedCollection.
+	collectionOfAccounts remove: account .
+	 collectionOfAccounts do:[ :account2| (account2 doesManageAny: account) ifTrue: [self error: self accountAlreadyManagedErrorMessage]].
+	].
+
+	^self new initializeAccounts: aCollectionOfAccounts
+
+! !
 
 
 !Portfolio class methodsFor: 'error messages' stamp: 'HAW 5/8/2018 16:08:43'!
@@ -241,6 +260,12 @@ balance
 doesManage: anAccount
 
 	^ self = anAccount 
+! !
+
+!ReceptiveAccount methodsFor: 'testing' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 13:16:33'!
+doesManageAny: anAccount
+
+	^  anAccount doesManage:  self
 ! !
 
 !ReceptiveAccount methodsFor: 'testing' stamp: 'HAW 10/11/2018 16:53:54'!
