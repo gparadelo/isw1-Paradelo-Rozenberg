@@ -1,0 +1,18 @@
+Nuevamente deben hacer pasar los tests y deducir el patron de diseño a partir
+ver el comportamiento que se repite.
+
+Es importante para ver ese patron que:
+1) Las consultas que se implementen no deben usar if
+2) La solucion final debe permitir agregar nuevas consultas sobre transacciones
+y sobre portfolios sin tener que modificar sus clases, o sea debe ser extensible
+sin tener que modificar lo que existe
+
+Temas a tener en cuenta del ejercicio:
+1) Aparecen nuevas transacciones como CertificateOfDeposit (Plazo fijo), Transferencia,
+etc. En particular, van a tener que modelar las transferencias que es un ejercicio
+de modelado en si mismo
+2) Van a ver que cuando desde el test se quiere realizar una consulta, por ej.
+el account summary, el test se envia un mensaje a si mismo. La implementacion
+de dicho mensaje no debe contener logica de negocio, o sea, no hay que resolver
+el account summary en el test, solo puede haber en ese metodo la interaccion con
+objetos del negocio
