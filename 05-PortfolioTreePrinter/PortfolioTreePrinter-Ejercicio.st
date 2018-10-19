@@ -5,6 +5,16 @@ Object subclass: #AccountTransaction
 	poolDictionaries: ''
 	category: 'PortfolioTreePrinter-Ejercicio'!
 
+!AccountTransaction methodsFor: 'evaluating' stamp: 'HAW 10/18/2018 18:48:48'!
+affectBalance: currentBalance
+
+	self subclassResponsibility ! !
+
+!AccountTransaction methodsFor: 'evaluating' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 21:08:07'!
+summaryLine
+
+	self subclassResponsibility ! !
+
 !AccountTransaction methodsFor: 'evaluating' stamp: 'HernanWilkinson 7/14/2011 06:48'!
 value
 
@@ -40,6 +50,16 @@ initializeFor: aValue
 	value := aValue ! !
 
 
+!Deposit methodsFor: 'value' stamp: 'HAW 10/18/2018 18:49:00'!
+affectBalance: currentBalance
+
+	^currentBalance + value! !
+
+!Deposit methodsFor: 'value' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 21:13:43'!
+summaryLine
+
+	^ 'Deposito por ' , value asString.! !
+
 !Deposit methodsFor: 'value' stamp: 'HernanWilkinson 7/13/2011 18:38'!
 value
 
@@ -67,6 +87,104 @@ register: aValue on: account
 	^ withdraw! !
 
 
+!classDefinition: #TransferLeg category: #'PortfolioTreePrinter-Ejercicio'!
+AccountTransaction subclass: #TransferLeg
+	instanceVariableNames: 'transfer'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'PortfolioTreePrinter-Ejercicio'!
+
+!TransferLeg methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 20:47:23'!
+transfer
+
+	^transfer! !
+
+!TransferLeg methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 20:48:36'!
+value
+
+	^ transfer value! !
+
+
+!classDefinition: #TransferedDeposit category: #'PortfolioTreePrinter-Ejercicio'!
+TransferLeg subclass: #TransferedDeposit
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'PortfolioTreePrinter-Ejercicio'!
+
+!TransferedDeposit methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 20:48:54'!
+affectBalance: currentBalance
+
+	^currentBalance + self value! !
+
+!TransferedDeposit methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 20:02:48'!
+initializeFor: aValue withTransfer: aTransfer
+
+	value := aValue .
+	transfer := aTransfer.! !
+
+!TransferedDeposit methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 21:13:24'!
+summaryLine
+
+	^ 'Transferencia por ' , self value asString.! !
+
+!TransferedDeposit methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 20:13:28'!
+transfer
+
+	^transfer! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'TransferedDeposit class' category: #'PortfolioTreePrinter-Ejercicio'!
+TransferedDeposit class
+	instanceVariableNames: ''!
+
+!TransferedDeposit class methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 20:02:12'!
+for: aValue withTransfer: aTransfer
+
+	^ self new initializeFor: aValue withTransfer: aTransfer.! !
+
+
+!classDefinition: #TransferedWithdraw category: #'PortfolioTreePrinter-Ejercicio'!
+TransferLeg subclass: #TransferedWithdraw
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'PortfolioTreePrinter-Ejercicio'!
+
+!TransferedWithdraw methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 20:49:25'!
+affectBalance: currentBalance
+
+	^currentBalance - self value! !
+
+!TransferedWithdraw methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 20:03:47'!
+initializeFor: aValue withTransfer: aTransfer
+
+	value := aValue .
+	transfer := aTransfer.! !
+
+!TransferedWithdraw methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 21:13:15'!
+summaryLine
+
+	^ 'Extraccion por ' , (self value * -1) asString .! !
+
+!TransferedWithdraw methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 20:13:38'!
+transfer
+
+	^transfer! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'TransferedWithdraw class' category: #'PortfolioTreePrinter-Ejercicio'!
+TransferedWithdraw class
+	instanceVariableNames: ''!
+
+!TransferedWithdraw class methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 20:03:29'!
+for: aValue withTransfer: aTransfer
+
+	^ self new initializeFor: aValue withTransfer: aTransfer.! !
+
+
 !classDefinition: #Withdraw category: #'PortfolioTreePrinter-Ejercicio'!
 AccountTransaction subclass: #Withdraw
 	instanceVariableNames: 'value'
@@ -79,6 +197,16 @@ initializeFor: aValue
 
 	value := aValue ! !
 
+
+!Withdraw methodsFor: 'value' stamp: 'HAW 10/18/2018 18:49:08'!
+affectBalance: currentBalance
+
+	^currentBalance - value! !
+
+!Withdraw methodsFor: 'value' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 21:13:33'!
+summaryLine
+
+	^ 'Extraccion por ' , value asString.! !
 
 !Withdraw methodsFor: 'value' stamp: 'HernanWilkinson 7/14/2011 05:54'!
 value
@@ -256,10 +384,10 @@ initialize
 	transactions := OrderedCollection new.! !
 
 
-!ReceptiveAccount methodsFor: 'transactions' stamp: 'HAW 9/25/2017 17:06:14'!
+!ReceptiveAccount methodsFor: 'transactions' stamp: 'HAW 10/18/2018 18:49:23'!
 balance
 
-	^ transactions inject: 0 into: [ :balance :transaction | balance + transaction value ]! !
+	^ transactions inject: 0 into: [ :balance :transaction | transaction affectBalance: balance ]! !
 
 !ReceptiveAccount methodsFor: 'transactions' stamp: 'HernanWilkinson 7/13/2011 18:37'!
 register: aTransaction
@@ -284,3 +412,64 @@ hasRegistered: aTtransaction
 
 	^ transactions includes: aTtransaction 
 ! !
+
+
+!ReceptiveAccount methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 21:07:54'!
+summaryLines
+	^ transactions inject: OrderedCollection new into: [ :balance :transaction | transaction summaryLine]! !
+
+
+!classDefinition: #Transfer category: #'PortfolioTreePrinter-Ejercicio'!
+Object subclass: #Transfer
+	instanceVariableNames: 'value depositLeg withdrawLeg fromAccount toAccount'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'PortfolioTreePrinter-Ejercicio'!
+
+!Transfer methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 21:00:46'!
+accountSummaryLinesOf: anAccount! !
+
+!Transfer methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 20:04:17'!
+depositLeg
+
+	^depositLeg ! !
+
+!Transfer methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 20:03:06'!
+initialize:  anAmount  from: aFromAccount to: aToAccount
+	value:=anAmount.
+	fromAccount := aFromAccount.
+	toAccount:=aToAccount .
+	
+	depositLeg := TransferedDeposit for: anAmount withTransfer: self.
+	aToAccount register: depositLeg.
+	
+	withdrawLeg := TransferedWithdraw for: anAmount withTransfer: self.
+	aFromAccount register: withdrawLeg.
+	
+	! !
+
+!Transfer methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 20:11:34'!
+value
+
+	^ value.! !
+
+!Transfer methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 20:05:08'!
+withdrawLeg
+
+	^withdrawLeg! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'Transfer class' category: #'PortfolioTreePrinter-Ejercicio'!
+Transfer class
+	instanceVariableNames: ''!
+
+!Transfer class methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 19:57:45'!
+register: anAmount from: aFromAccount to: aToAccount
+
+
+	^ self with: anAmount from: aFromAccount to: aToAccount.! !
+
+!Transfer class methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 19:28:56'!
+with: aValue  from: fromAccount to: toAccount
+^self new initialize:  aValue  from: fromAccount to: toAccount! !
