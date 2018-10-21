@@ -5,7 +5,6 @@ Object subclass: #AccountTransaction
 	poolDictionaries: ''
 	category: 'PortfolioTreePrinter-Ejercicio'!
 
-
 !AccountTransaction methodsFor: 'evaluating' stamp: 'HAW 10/18/2018 18:48:48'!
 affectBalance: currentBalance
 
@@ -38,6 +37,77 @@ register: aValue on: account
 	^ withdraw! !
 
 
+!classDefinition: #CertificateOfDeposit category: #'PortfolioTreePrinter-Ejercicio'!
+AccountTransaction subclass: #CertificateOfDeposit
+	instanceVariableNames: 'value duration interest'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'PortfolioTreePrinter-Ejercicio'!
+
+!CertificateOfDeposit methodsFor: 'as yet unclassified' stamp: 'GP 10/21/2018 20:15:37'!
+affectBalance: aBalance
+
+	^ aBalance - value! !
+
+!CertificateOfDeposit methodsFor: 'as yet unclassified' stamp: 'GP 10/21/2018 20:33:41'!
+affectInvestmentNet: aNet
+
+	^ aNet + value.! !
+
+!CertificateOfDeposit methodsFor: 'as yet unclassified' stamp: 'GP 10/21/2018 20:16:28'!
+affectTransferNet: aNet
+
+	^ aNet! !
+
+!CertificateOfDeposit methodsFor: 'as yet unclassified' stamp: 'GP 10/21/2018 20:24:18'!
+duration
+
+	^ duration! !
+
+!CertificateOfDeposit methodsFor: 'as yet unclassified' stamp: 'GP 10/21/2018 20:39:54'!
+initializeFor: anAmount during: aNumberOfDays at: anInterestRate
+
+	value := anAmount.
+	duration := aNumberOfDays.
+	interest := anInterestRate. ! !
+
+!CertificateOfDeposit methodsFor: 'as yet unclassified' stamp: 'GP 10/21/2018 20:24:40'!
+interest
+
+	^ interest! !
+
+!CertificateOfDeposit methodsFor: 'as yet unclassified' stamp: 'GP 10/21/2018 20:17:29'!
+summaryLine
+
+	^ 'Plazo fijp por ' , value asString.! !
+
+!CertificateOfDeposit methodsFor: 'as yet unclassified' stamp: 'GP 10/21/2018 20:18:04'!
+value
+
+	^ value! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'CertificateOfDeposit class' category: #'PortfolioTreePrinter-Ejercicio'!
+CertificateOfDeposit class
+	instanceVariableNames: ''!
+
+!CertificateOfDeposit class methodsFor: 'as yet unclassified' stamp: 'GP 10/21/2018 20:38:12'!
+for: anAmount during: aNumberOfDays at: anInterestRate.
+
+	^ self new initializeFor: anAmount during: aNumberOfDays at: anInterestRate ! !
+
+!CertificateOfDeposit class methodsFor: 'as yet unclassified' stamp: 'GP 10/21/2018 20:40:46'!
+register: anAmount during: aNumberOfDays at: anInterestRate on: anAccount
+
+	| certificate |
+	
+	certificate := self for: anAmount during: aNumberOfDays at: anInterestRate.
+	anAccount register: certificate.
+		
+	^ certificate! !
+
+
 !classDefinition: #Deposit category: #'PortfolioTreePrinter-Ejercicio'!
 AccountTransaction subclass: #Deposit
 	instanceVariableNames: 'value'
@@ -51,15 +121,15 @@ initializeFor: aValue
 	value := aValue ! !
 
 
-!Deposit methodsFor: 'value' stamp: 'GP 10/17/2018 10:57:09'!
-addTo: aBalance
-
-	^ self value + aBalance! !
-
 !Deposit methodsFor: 'value' stamp: 'HAW 10/18/2018 18:49:00'!
 affectBalance: currentBalance
 
 	^currentBalance + value! !
+
+!Deposit methodsFor: 'value' stamp: 'GP 10/21/2018 20:34:01'!
+affectInvestmentNet: aNet
+
+	^ aNet! !
 
 !Deposit methodsFor: 'value' stamp: 'GP 10/21/2018 17:41:39'!
 affectTransferNet: aValue
@@ -104,6 +174,11 @@ AccountTransaction subclass: #TransferLeg
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PortfolioTreePrinter-Ejercicio'!
+
+!TransferLeg methodsFor: 'as yet unclassified' stamp: 'GP 10/21/2018 20:34:21'!
+affectInvestmentNet: aNet
+
+	^ aNet! !
 
 !TransferLeg methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 20:47:23'!
 transfer
@@ -219,15 +294,15 @@ initializeFor: aValue
 	value := aValue ! !
 
 
-!Withdraw methodsFor: 'value' stamp: 'GP 10/17/2018 10:57:25'!
-addTo: aBalance
-
-	^ aBalance - self value! !
-
 !Withdraw methodsFor: 'value' stamp: 'HAW 10/18/2018 18:49:08'!
 affectBalance: currentBalance
 
 	^currentBalance - value! !
+
+!Withdraw methodsFor: 'value' stamp: 'GP 10/21/2018 20:34:43'!
+affectInvestmentNet: aNet
+
+	^ aNet! !
 
 !Withdraw methodsFor: 'value' stamp: 'GP 10/21/2018 17:41:30'!
 affectTransferNet: aValue 
@@ -295,6 +370,11 @@ balance
 
 	self subclassResponsibility ! !
 
+!SummarizingAccount methodsFor: 'transactions' stamp: 'GP 10/21/2018 20:31:40'!
+investmentNet
+
+	self subclassResponsibility ! !
+
 !SummarizingAccount methodsFor: 'transactions' stamp: 'HernanWilkinson 7/13/2011 18:35'!
 transactions
 
@@ -305,7 +385,6 @@ transferNet
 
 	self subclassResponsibility ! !
 
-
 
 !classDefinition: #Portfolio category: #'PortfolioTreePrinter-Ejercicio'!
 SummarizingAccount subclass: #Portfolio
@@ -313,7 +392,6 @@ SummarizingAccount subclass: #Portfolio
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PortfolioTreePrinter-Ejercicio'!
-
 
 !Portfolio methodsFor: 'testing' stamp: 'HAW 10/18/2018 16:31:24'!
 anyManagedAccountManages: anAccount 
@@ -340,6 +418,12 @@ hasRegistered: aTransaction
 balance
 
 	^ accounts sum: [ :account | account balance ]
+! !
+
+!Portfolio methodsFor: 'transactions' stamp: 'GP 10/21/2018 20:31:29'!
+investmentNet
+
+	^ accounts sum: [ :account | account investmentNet ]
 ! !
 
 !Portfolio methodsFor: 'transactions' stamp: 'HAW 9/25/2017 19:40:20'!
@@ -400,17 +484,6 @@ withAll: aCollectionOfAccounts
 	^self new initializeWithAll: aCollectionOfAccounts ! !
 
 
-!Portfolio class methodsFor: 'error messages' stamp: 'HernanWilkinson 7/13/2011 19:28'!
-accountAlreadyManagedErrorMessage
-
-	^ 'Account already managed'! !
-
-!Portfolio class methodsFor: 'error messages' stamp: 'HernanWilkinson 7/13/2011 19:27'!
-accountNotManagedMessageDescription
-	
-	^ 'Account not managed'! !
-
-
 !Portfolio class methodsFor: 'assertions' stamp: 'HAW 10/18/2018 16:31:24'!
 check: sourceAccount doesNotManagaAnyOf: aCollectionOfAccounts
 
@@ -435,6 +508,17 @@ checkNoCircularReferencesIn: aCollectionOfAccounts
 
 	aCollectionOfAccounts do: [ :sourceAccount | self check: sourceAccount doesNotManagaAnyOf: aCollectionOfAccounts ]! !
 
+
+!Portfolio class methodsFor: 'error messages' stamp: 'HernanWilkinson 7/13/2011 19:28'!
+accountAlreadyManagedErrorMessage
+
+	^ 'Account already managed'! !
+
+!Portfolio class methodsFor: 'error messages' stamp: 'HernanWilkinson 7/13/2011 19:27'!
+accountNotManagedMessageDescription
+	
+	^ 'Account not managed'! !
+
 
 !classDefinition: #ReceptiveAccount category: #'PortfolioTreePrinter-Ejercicio'!
 SummarizingAccount subclass: #ReceptiveAccount
@@ -455,6 +539,11 @@ balance
 
 	^ transactions inject: 0 into: [ :balance :transaction | transaction affectBalance: balance ]! !
 
+!ReceptiveAccount methodsFor: 'transactions' stamp: 'GP 10/21/2018 20:32:02'!
+investmentNet
+
+	^ transactions inject: 0 into: [ :net :transaction | transaction affectInvestmentNet: net ]! !
+
 !ReceptiveAccount methodsFor: 'transactions' stamp: 'HernanWilkinson 7/13/2011 18:37'!
 register: aTransaction
 
@@ -470,7 +559,6 @@ transactions
 transferNet
 
 	^ transactions inject: 0 into: [ :net :transaction | transaction affectTransferNet: net ]! !
-
 
 
 !ReceptiveAccount methodsFor: 'testing' stamp: 'HAW 10/18/2018 16:31:24'!
