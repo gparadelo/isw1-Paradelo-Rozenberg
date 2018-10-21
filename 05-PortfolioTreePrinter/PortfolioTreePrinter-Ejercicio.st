@@ -5,6 +5,7 @@ Object subclass: #AccountTransaction
 	poolDictionaries: ''
 	category: 'PortfolioTreePrinter-Ejercicio'!
 
+
 !AccountTransaction methodsFor: 'evaluating' stamp: 'HAW 10/18/2018 18:48:48'!
 affectBalance: currentBalance
 
@@ -50,10 +51,20 @@ initializeFor: aValue
 	value := aValue ! !
 
 
+!Deposit methodsFor: 'value' stamp: 'GP 10/17/2018 10:57:09'!
+addTo: aBalance
+
+	^ self value + aBalance! !
+
 !Deposit methodsFor: 'value' stamp: 'HAW 10/18/2018 18:49:00'!
 affectBalance: currentBalance
 
 	^currentBalance + value! !
+
+!Deposit methodsFor: 'value' stamp: 'GP 10/21/2018 17:41:39'!
+affectTransferNet: aValue
+
+	^ aValue! !
 
 !Deposit methodsFor: 'value' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 21:13:43'!
 summaryLine
@@ -117,6 +128,11 @@ affectBalance: currentBalance
 
 	^currentBalance + self value! !
 
+!TransferedDeposit methodsFor: 'as yet unclassified' stamp: 'GP 10/21/2018 17:33:41'!
+affectTransferNet: aValue
+
+	^ aValue + self value! !
+
 !TransferedDeposit methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 20:02:48'!
 initializeFor: aValue withTransfer: aTransfer
 
@@ -156,6 +172,11 @@ TransferLeg subclass: #TransferedWithdraw
 affectBalance: currentBalance
 
 	^currentBalance - self value! !
+
+!TransferedWithdraw methodsFor: 'as yet unclassified' stamp: 'GP 10/21/2018 17:36:17'!
+affectTransferNet: aValue
+
+	^ aValue - self value! !
 
 !TransferedWithdraw methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 20:03:47'!
 initializeFor: aValue withTransfer: aTransfer
@@ -198,10 +219,21 @@ initializeFor: aValue
 	value := aValue ! !
 
 
+!Withdraw methodsFor: 'value' stamp: 'GP 10/17/2018 10:57:25'!
+addTo: aBalance
+
+	^ aBalance - self value! !
+
 !Withdraw methodsFor: 'value' stamp: 'HAW 10/18/2018 18:49:08'!
 affectBalance: currentBalance
 
 	^currentBalance - value! !
+
+!Withdraw methodsFor: 'value' stamp: 'GP 10/21/2018 17:41:30'!
+affectTransferNet: aValue 
+
+	^ aValue
+! !
 
 !Withdraw methodsFor: 'value' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 21:13:33'!
 summaryLine
@@ -247,6 +279,11 @@ doesManage: anAccount
 
 	self subclassResponsibility ! !
 
+!SummarizingAccount methodsFor: 'testing' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 13:03:51'!
+doesManageAny: anAccount
+
+	self subclassResponsibility ! !
+
 !SummarizingAccount methodsFor: 'testing' stamp: 'HAW 10/18/2018 16:32:05'!
 hasRegistered: aTransaction
 
@@ -263,6 +300,12 @@ transactions
 
 	self subclassResponsibility ! !
 
+!SummarizingAccount methodsFor: 'transactions' stamp: 'GP 10/21/2018 17:31:02'!
+transferNet
+
+	self subclassResponsibility ! !
+
+
 
 !classDefinition: #Portfolio category: #'PortfolioTreePrinter-Ejercicio'!
 SummarizingAccount subclass: #Portfolio
@@ -270,6 +313,7 @@ SummarizingAccount subclass: #Portfolio
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PortfolioTreePrinter-Ejercicio'!
+
 
 !Portfolio methodsFor: 'testing' stamp: 'HAW 10/18/2018 16:31:24'!
 anyManagedAccountManages: anAccount 
@@ -280,6 +324,11 @@ anyManagedAccountManages: anAccount
 doesManage: anAccount
 
 	^ self = anAccount  or: [ self anyManagedAccountManages: anAccount ]! !
+
+!Portfolio methodsFor: 'testing' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 13:09:13'!
+doesManageAny: anAccount
+
+	^ accounts anySatisfy: [:account | account doesManageAny: anAccount]! !
 
 !Portfolio methodsFor: 'testing' stamp: 'HAW 10/18/2018 16:32:05'!
 hasRegistered: aTransaction
@@ -309,6 +358,23 @@ transactionsOf: anAccount
 		ifFalse: [ self error: self class accountNotManagedMessageDescription]
 	! !
 
+!Portfolio methodsFor: 'transactions' stamp: 'GP 10/21/2018 17:31:12'!
+transferNet
+
+	^ accounts sum: [ :account | account transferNet ]
+! !
+
+
+!Portfolio methodsFor: 'initialization' stamp: 'Uriel Jonathan Rozenberg 10/16/2018 14:56:21'!
+initialize
+	accounts := OrderedCollection new.! !
+
+!Portfolio methodsFor: 'initialization' stamp: 'GP 10/17/2018 11:40:49'!
+initializeAccounts: aCollectionOfAccounts
+
+	self initialize.
+	aCollectionOfAccounts do: [ :each | ( self doesManage: each ) ifTrue: [ self error: self class accountAlreadyManagedErrorMessage ] ifFalse: [ accounts add: each ] ]
+	! !
 
 !Portfolio methodsFor: 'initialization' stamp: 'HernanWilkinson 7/13/2011 19:19'!
 initializeWithAll: aCollectionOfAccounts
@@ -334,6 +400,17 @@ withAll: aCollectionOfAccounts
 	^self new initializeWithAll: aCollectionOfAccounts ! !
 
 
+!Portfolio class methodsFor: 'error messages' stamp: 'HernanWilkinson 7/13/2011 19:28'!
+accountAlreadyManagedErrorMessage
+
+	^ 'Account already managed'! !
+
+!Portfolio class methodsFor: 'error messages' stamp: 'HernanWilkinson 7/13/2011 19:27'!
+accountNotManagedMessageDescription
+	
+	^ 'Account not managed'! !
+
+
 !Portfolio class methodsFor: 'assertions' stamp: 'HAW 10/18/2018 16:31:24'!
 check: sourceAccount doesNotManagaAnyOf: aCollectionOfAccounts
 
@@ -357,17 +434,6 @@ checkCreationPreconditions: aCollectionOfAccounts
 checkNoCircularReferencesIn: aCollectionOfAccounts
 
 	aCollectionOfAccounts do: [ :sourceAccount | self check: sourceAccount doesNotManagaAnyOf: aCollectionOfAccounts ]! !
-
-
-!Portfolio class methodsFor: 'error messages' stamp: 'HernanWilkinson 7/13/2011 19:28'!
-accountAlreadyManagedErrorMessage
-
-	^ 'Account already managed'! !
-
-!Portfolio class methodsFor: 'error messages' stamp: 'HernanWilkinson 7/13/2011 19:27'!
-accountNotManagedMessageDescription
-	
-	^ 'Account not managed'! !
 
 
 !classDefinition: #ReceptiveAccount category: #'PortfolioTreePrinter-Ejercicio'!
@@ -400,11 +466,23 @@ transactions
 
 	^ transactions copy! !
 
+!ReceptiveAccount methodsFor: 'transactions' stamp: 'GP 10/21/2018 17:35:47'!
+transferNet
+
+	^ transactions inject: 0 into: [ :net :transaction | transaction affectTransferNet: net ]! !
+
+
 
 !ReceptiveAccount methodsFor: 'testing' stamp: 'HAW 10/18/2018 16:31:24'!
 doesManage: anAccount
 
 	^ self = anAccount 
+! !
+
+!ReceptiveAccount methodsFor: 'testing' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 13:16:33'!
+doesManageAny: anAccount
+
+	^  anAccount doesManage:  self
 ! !
 
 !ReceptiveAccount methodsFor: 'testing' stamp: 'HAW 10/18/2018 16:32:05'!
