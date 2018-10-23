@@ -347,6 +347,30 @@ register: aValue on: account
 	^ withdraw! !
 
 
+!classDefinition: #AccountTransactionVisitor category: #'PortfolioTreePrinter-Ejercicio'!
+Object subclass: #AccountTransactionVisitor
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'PortfolioTreePrinter-Ejercicio'!
+
+
+!classDefinition: #AccountSummaryLines category: #'PortfolioTreePrinter-Ejercicio'!
+AccountTransactionVisitor subclass: #AccountSummaryLines
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'PortfolioTreePrinter-Ejercicio'!
+
+
+!classDefinition: #AccountTransferNet category: #'PortfolioTreePrinter-Ejercicio'!
+AccountTransactionVisitor subclass: #AccountTransferNet
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'PortfolioTreePrinter-Ejercicio'!
+
+
 !classDefinition: #SummarizingAccount category: #'PortfolioTreePrinter-Ejercicio'!
 Object subclass: #SummarizingAccount
 	instanceVariableNames: ''
@@ -419,6 +443,10 @@ hasRegistered: aTransaction
 	^ accounts anySatisfy: [ :anAccount | anAccount hasRegistered: aTransaction ]  ! !
 
 
+!Portfolio methodsFor: 'transactions' stamp: 'Uriel Jonathan Rozenberg 10/22/2018 19:09:05'!
+accept: aVisitor
+	aVisitor visitPortfolio: self! !
+
 !Portfolio methodsFor: 'transactions' stamp: 'HAW 8/13/2017 17:47:44'!
 balance
 
@@ -469,6 +497,11 @@ initializeAccounts: aCollectionOfAccounts
 initializeWithAll: aCollectionOfAccounts
 
 	accounts := aCollectionOfAccounts   ! !
+
+!Portfolio methodsFor: 'initialization' stamp: 'Uriel Jonathan Rozenberg 10/22/2018 20:09:49'!
+visitAccountsDepthFirstOrder: aVisitor
+
+	accounts do: [ :acc |  acc  accept:  aVisitor]! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -540,6 +573,10 @@ initialize
 	certificates := OrderedCollection new.! !
 
 
+!ReceptiveAccount methodsFor: 'transactions' stamp: 'Uriel Jonathan Rozenberg 10/22/2018 19:09:47'!
+accept: aVisitor
+	aVisitor visitReceptiveAccount: self! !
+
 !ReceptiveAccount methodsFor: 'transactions' stamp: 'HAW 10/18/2018 18:49:23'!
 balance
 
@@ -597,9 +634,61 @@ hasRegistered: aTtransaction
 ! !
 
 
-!ReceptiveAccount methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 21:07:54'!
+!ReceptiveAccount methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/22/2018 17:21:09'!
 summaryLines
-	^ transactions inject: OrderedCollection new into: [ :balance :transaction | transaction summaryLine]! !
+	^ transactions inject: OrderedCollection new into: [ :lines :transaction | transaction summaryLine]! !
+
+
+!classDefinition: #SummarizingAccountPrinter category: #'PortfolioTreePrinter-Ejercicio'!
+Object subclass: #SummarizingAccountPrinter
+	instanceVariableNames: 'lines names depth'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'PortfolioTreePrinter-Ejercicio'!
+
+!SummarizingAccountPrinter methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/22/2018 19:56:47'!
+initializeWith: aListOfNames
+
+	lines := OrderedCollection new.
+	names := aListOfNames.
+	depth := 0.! !
+
+!SummarizingAccountPrinter methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/22/2018 19:41:32'!
+visit: aSummarizingAccount
+
+	aSummarizingAccount accept: self.
+	^ lines! !
+
+!SummarizingAccountPrinter methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/22/2018 20:35:26'!
+visitPortfolio: aPortfolio
+	|whiteSpaces|
+	whiteSpaces:= (String new: depth) atAllPut: $ .
+	lines add: (whiteSpaces , (names at: aPortfolio )).
+
+	depth := depth + 1.
+	aPortfolio visitAccountsDepthFirstOrder: self.
+	depth := depth - 1! !
+
+!SummarizingAccountPrinter methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/22/2018 20:26:55'!
+visitReceptiveAccount: aReceptiveAccount
+	|whiteSpaces|
+	whiteSpaces:= (String new: depth) atAllPut: $ .
+
+	lines add: (whiteSpaces , (names at: aReceptiveAccount )).! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'SummarizingAccountPrinter class' category: #'PortfolioTreePrinter-Ejercicio'!
+SummarizingAccountPrinter class
+	instanceVariableNames: ''!
+
+!SummarizingAccountPrinter class methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/22/2018 19:40:56'!
+print: aPortfolio with: aDictionary
+	
+	| printer |
+	
+	printer := self new initializeWith: aDictionary.
+	^ printer visit: aPortfolio.! !
 
 
 !classDefinition: #Transfer category: #'PortfolioTreePrinter-Ejercicio'!
