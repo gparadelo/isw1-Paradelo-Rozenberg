@@ -64,6 +64,11 @@ duration
 
 	^ duration! !
 
+!CertificateOfDeposit methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/22/2018 13:52:04'!
+earning
+
+^value*(interest/360)*duration! !
+
 !CertificateOfDeposit methodsFor: 'as yet unclassified' stamp: 'GP 10/21/2018 20:39:54'!
 initializeFor: anAmount during: aNumberOfDays at: anInterestRate
 
@@ -97,13 +102,13 @@ for: anAmount during: aNumberOfDays at: anInterestRate.
 
 	^ self new initializeFor: anAmount during: aNumberOfDays at: anInterestRate ! !
 
-!CertificateOfDeposit class methodsFor: 'as yet unclassified' stamp: 'GP 10/21/2018 20:40:46'!
+!CertificateOfDeposit class methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/22/2018 13:54:43'!
 register: anAmount during: aNumberOfDays at: anInterestRate on: anAccount
 
 	| certificate |
 	
 	certificate := self for: anAmount during: aNumberOfDays at: anInterestRate.
-	anAccount register: certificate.
+	anAccount registerCertificateOfDeposit: certificate.
 		
 	^ certificate! !
 
@@ -522,22 +527,28 @@ accountNotManagedMessageDescription
 
 !classDefinition: #ReceptiveAccount category: #'PortfolioTreePrinter-Ejercicio'!
 SummarizingAccount subclass: #ReceptiveAccount
-	instanceVariableNames: 'transactions'
+	instanceVariableNames: 'transactions certificates'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PortfolioTreePrinter-Ejercicio'!
 
-!ReceptiveAccount methodsFor: 'initialization' stamp: 'HernanWilkinson 7/13/2011 18:35'!
+!ReceptiveAccount methodsFor: 'initialization' stamp: 'Uriel Jonathan Rozenberg 10/22/2018 13:55:40'!
 initialize
 
 	super initialize.
-	transactions := OrderedCollection new.! !
+	transactions := OrderedCollection new.
+	certificates := OrderedCollection new.! !
 
 
 !ReceptiveAccount methodsFor: 'transactions' stamp: 'HAW 10/18/2018 18:49:23'!
 balance
 
 	^ transactions inject: 0 into: [ :balance :transaction | transaction affectBalance: balance ]! !
+
+!ReceptiveAccount methodsFor: 'transactions' stamp: 'Uriel Jonathan Rozenberg 10/22/2018 13:53:46'!
+investmentEarnings
+
+	^ certificates inject: 0 into: [ :net :certificate | net + certificate earning]! !
 
 !ReceptiveAccount methodsFor: 'transactions' stamp: 'GP 10/21/2018 20:32:02'!
 investmentNet
@@ -548,6 +559,12 @@ investmentNet
 register: aTransaction
 
 	transactions add: aTransaction 
+! !
+
+!ReceptiveAccount methodsFor: 'transactions' stamp: 'Uriel Jonathan Rozenberg 10/22/2018 13:49:44'!
+registerCertificateOfDeposit: aCertificate
+	certificates add: aCertificate .
+	self register: aCertificate .
 ! !
 
 !ReceptiveAccount methodsFor: 'transactions' stamp: 'HernanWilkinson 7/13/2011 18:37'!

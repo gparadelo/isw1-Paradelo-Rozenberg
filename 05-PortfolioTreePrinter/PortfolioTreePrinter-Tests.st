@@ -538,10 +538,10 @@ accountTransferNetOf: aReceptiveAccount
 	
 	^ aReceptiveAccount transferNet ! !
 
-!PortfolioTest methodsFor: 'test support' stamp: 'HernanWilkinson 9/6/2016 19:43'!
+!PortfolioTest methodsFor: 'test support' stamp: 'Uriel Jonathan Rozenberg 10/22/2018 13:57:40'!
 investmentEarningsOf: aReceptiveAccount 
 	
-	self shouldBeImplemented ! !
+	^aReceptiveAccount investmentEarnings! !
 
 !PortfolioTest methodsFor: 'test support' stamp: 'GP 10/21/2018 20:42:15'!
 investmentNetOf: aReceptiveAccount 
