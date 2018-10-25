@@ -809,10 +809,18 @@ hasRegistered: aTtransaction
 
 !classDefinition: #SummarizingAccountPrinter category: #'PortfolioTreePrinter-Ejercicio'!
 Object subclass: #SummarizingAccountPrinter
-	instanceVariableNames: 'lines names depth'
+	instanceVariableNames: 'lines names depth account'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PortfolioTreePrinter-Ejercicio'!
+
+!SummarizingAccountPrinter methodsFor: 'as yet unclassified' stamp: 'GP 10/25/2018 20:52:47'!
+initializeOf: aReceptiveAccount with: aListOfNames
+
+	lines := OrderedCollection new.
+	names := aListOfNames.
+	account := aReceptiveAccount.
+	depth := 0.! !
 
 !SummarizingAccountPrinter methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/22/2018 19:56:47'!
 initializeWith: aListOfNames
@@ -821,11 +829,11 @@ initializeWith: aListOfNames
 	names := aListOfNames.
 	depth := 0.! !
 
-!SummarizingAccountPrinter methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/22/2018 19:41:32'!
-visit: aSummarizingAccount
+!SummarizingAccountPrinter methodsFor: 'as yet unclassified' stamp: 'GP 10/25/2018 20:54:01'!
+value
 
-	aSummarizingAccount accept: self.
-	^ lines! !
+	account accept: self.
+	^lines! !
 
 !SummarizingAccountPrinter methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/22/2018 20:35:26'!
 visitPortfolio: aPortfolio
@@ -850,13 +858,10 @@ visitReceptiveAccount: aReceptiveAccount
 SummarizingAccountPrinter class
 	instanceVariableNames: ''!
 
-!SummarizingAccountPrinter class methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 15:56:38'!
-of: aPortfolio with: aDictionary
-	
-	| printer |
-	
-	printer := self new initializeWith: aDictionary.
-	^ printer visit: aPortfolio.! !
+!SummarizingAccountPrinter class methodsFor: 'as yet unclassified' stamp: 'GP 10/25/2018 20:51:19'!
+of: aReceptiveAccount with: aDictionary
+
+	^self new initializeOf: aReceptiveAccount with: aDictionary.! !
 
 
 !classDefinition: #Transfer category: #'PortfolioTreePrinter-Ejercicio'!
