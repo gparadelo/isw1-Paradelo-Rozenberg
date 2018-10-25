@@ -822,13 +822,6 @@ initializeOf: aReceptiveAccount with: aListOfNames
 	account := aReceptiveAccount.
 	depth := 0.! !
 
-!SummarizingAccountPrinter methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/22/2018 19:56:47'!
-initializeWith: aListOfNames
-
-	lines := OrderedCollection new.
-	names := aListOfNames.
-	depth := 0.! !
-
 !SummarizingAccountPrinter methodsFor: 'as yet unclassified' stamp: 'GP 10/25/2018 20:54:01'!
 value
 
