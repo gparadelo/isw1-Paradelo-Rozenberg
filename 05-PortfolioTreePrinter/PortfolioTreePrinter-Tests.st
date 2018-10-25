@@ -547,9 +547,9 @@ investmentNetOf: aReceptiveAccount
 	
 	^(AccountCertificatesOfDepositNet  Of: aReceptiveAccount ) value! !
 
-!PortfolioTest methodsFor: 'test support' stamp: 'Uriel Jonathan Rozenberg 10/22/2018 20:45:20'!
+!PortfolioTest methodsFor: 'test support' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 15:56:38'!
 portofolioTreeOf: aPortfolio namingAccountWith: aDictionary 
-	^SummarizingAccountPrinter print: aPortfolio with: aDictionary! !
+	^SummarizingAccountPrinter of: aPortfolio with: aDictionary! !
 
 !PortfolioTest methodsFor: 'test support' stamp: 'GP 10/21/2018 20:20:43'!
 registerCertificateOfDepositOf: anAmount during: aNumberOfDays at: anInterestRate on: anAccount
@@ -561,6 +561,6 @@ registerTransferOf: anAmount from: fromAccount to: toAccount
 
 	^Transfer register: anAmount from: fromAccount to: toAccount.! !
 
-!PortfolioTest methodsFor: 'test support' stamp: 'Uriel Jonathan Rozenberg 10/22/2018 20:45:10'!
+!PortfolioTest methodsFor: 'test support' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 15:56:38'!
 reversePortofolioTreeOf: aPortfolio namingAccountWith: aDictionary 
-	^(SummarizingAccountPrinter print: aPortfolio with: aDictionary) reverse! !
+	^(SummarizingAccountPrinter of: aPortfolio with: aDictionary) reverse! !
