@@ -528,25 +528,24 @@ test29ReversePortfolioTreePrinterPrintsTheCompositeStartingFromTheLeaves
 	! !
 
 
-!PortfolioTest methodsFor: 'test support' stamp: 'GP 10/25/2018 09:17:38'!
+!PortfolioTest methodsFor: 'test support' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 15:12:46'!
 accountSummaryLinesOf: aReceptiveAccount 
 	
-	^ AccountSummaryLines printLinesOf: aReceptiveAccount ! !
+	^( AccountSummaryLines Of: aReceptiveAccount ) value! !
 
-!PortfolioTest methodsFor: 'test support' stamp: 'GP 10/21/2018 20:05:57'!
+!PortfolioTest methodsFor: 'test support' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 15:16:31'!
 accountTransferNetOf: aReceptiveAccount 
 	
-	^ aReceptiveAccount transferNet ! !
+	^(AccountTransferNet  Of: aReceptiveAccount ) value! !
 
-!PortfolioTest methodsFor: 'test support' stamp: 'Uriel Jonathan Rozenberg 10/22/2018 13:57:40'!
+!PortfolioTest methodsFor: 'test support' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 15:28:15'!
 investmentEarningsOf: aReceptiveAccount 
-	
-	^aReceptiveAccount investmentEarnings! !
+	^(AccountCertificatesOfDepositEarnings  Of: aReceptiveAccount ) value! !
 
-!PortfolioTest methodsFor: 'test support' stamp: 'GP 10/21/2018 20:42:15'!
+!PortfolioTest methodsFor: 'test support' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 15:23:09'!
 investmentNetOf: aReceptiveAccount 
 	
-	^ aReceptiveAccount investmentNet ! !
+	^(AccountCertificatesOfDepositNet  Of: aReceptiveAccount ) value! !
 
 !PortfolioTest methodsFor: 'test support' stamp: 'Uriel Jonathan Rozenberg 10/22/2018 20:45:20'!
 portofolioTreeOf: aPortfolio namingAccountWith: aDictionary 

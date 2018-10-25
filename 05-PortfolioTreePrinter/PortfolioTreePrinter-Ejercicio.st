@@ -20,6 +20,7 @@ value
 
 	self subclassResponsibility ! !
 
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'AccountTransaction class' category: #'PortfolioTreePrinter-Ejercicio'!
@@ -44,20 +45,14 @@ AccountTransaction subclass: #CertificateOfDeposit
 	poolDictionaries: ''
 	category: 'PortfolioTreePrinter-Ejercicio'!
 
+!CertificateOfDeposit methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/24/2018 21:03:16'!
+accept: aVisitor
+	aVisitor visitCertificateOfDeposit: self! !
+
 !CertificateOfDeposit methodsFor: 'as yet unclassified' stamp: 'GP 10/21/2018 20:15:37'!
 affectBalance: aBalance
 
 	^ aBalance - value! !
-
-!CertificateOfDeposit methodsFor: 'as yet unclassified' stamp: 'GP 10/21/2018 20:33:41'!
-affectInvestmentNet: aNet
-
-	^ aNet + value.! !
-
-!CertificateOfDeposit methodsFor: 'as yet unclassified' stamp: 'GP 10/21/2018 20:16:28'!
-affectTransferNet: aNet
-
-	^ aNet! !
 
 !CertificateOfDeposit methodsFor: 'as yet unclassified' stamp: 'GP 10/21/2018 20:24:18'!
 duration
@@ -81,11 +76,6 @@ interest
 
 	^ interest! !
 
-!CertificateOfDeposit methodsFor: 'as yet unclassified' stamp: 'GP 10/21/2018 20:17:29'!
-summaryLine
-
-	^ 'Plazo fijp por ' , value asString.! !
-
 !CertificateOfDeposit methodsFor: 'as yet unclassified' stamp: 'GP 10/21/2018 20:18:04'!
 value
 
@@ -102,13 +92,13 @@ for: anAmount during: aNumberOfDays at: anInterestRate.
 
 	^ self new initializeFor: anAmount during: aNumberOfDays at: anInterestRate ! !
 
-!CertificateOfDeposit class methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/22/2018 13:54:43'!
+!CertificateOfDeposit class methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 15:32:06'!
 register: anAmount during: aNumberOfDays at: anInterestRate on: anAccount
 
 	| certificate |
 	
 	certificate := self for: anAmount during: aNumberOfDays at: anInterestRate.
-	anAccount registerCertificateOfDeposit: certificate.
+	anAccount register: certificate.
 		
 	^ certificate! !
 
@@ -126,25 +116,14 @@ initializeFor: aValue
 	value := aValue ! !
 
 
+!Deposit methodsFor: 'value' stamp: 'Uriel Jonathan Rozenberg 10/24/2018 21:03:00'!
+accept: aVisitor
+	aVisitor visitDeposit: self! !
+
 !Deposit methodsFor: 'value' stamp: 'HAW 10/18/2018 18:49:00'!
 affectBalance: currentBalance
 
 	^currentBalance + value! !
-
-!Deposit methodsFor: 'value' stamp: 'GP 10/21/2018 20:34:01'!
-affectInvestmentNet: aNet
-
-	^ aNet! !
-
-!Deposit methodsFor: 'value' stamp: 'GP 10/21/2018 17:41:39'!
-affectTransferNet: aValue
-
-	^ aValue! !
-
-!Deposit methodsFor: 'value' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 21:13:43'!
-summaryLine
-
-	^ 'Deposito por ' , value asString.! !
 
 !Deposit methodsFor: 'value' stamp: 'HernanWilkinson 7/13/2011 18:38'!
 value
@@ -203,26 +182,20 @@ TransferLeg subclass: #TransferedDeposit
 	poolDictionaries: ''
 	category: 'PortfolioTreePrinter-Ejercicio'!
 
+!TransferedDeposit methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/24/2018 21:04:12'!
+accept: aVisitor
+	aVisitor visitTransferedDeposit: self! !
+
 !TransferedDeposit methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 20:48:54'!
 affectBalance: currentBalance
 
 	^currentBalance + self value! !
-
-!TransferedDeposit methodsFor: 'as yet unclassified' stamp: 'GP 10/21/2018 17:33:41'!
-affectTransferNet: aValue
-
-	^ aValue + self value! !
 
 !TransferedDeposit methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 20:02:48'!
 initializeFor: aValue withTransfer: aTransfer
 
 	value := aValue .
 	transfer := aTransfer.! !
-
-!TransferedDeposit methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 21:13:24'!
-summaryLine
-
-	^ 'Transferencia por ' , self value asString.! !
 
 !TransferedDeposit methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 20:13:28'!
 transfer
@@ -248,26 +221,20 @@ TransferLeg subclass: #TransferedWithdraw
 	poolDictionaries: ''
 	category: 'PortfolioTreePrinter-Ejercicio'!
 
+!TransferedWithdraw methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/24/2018 21:04:21'!
+accept: aVisitor
+	aVisitor visitTransferedWithdraw: self! !
+
 !TransferedWithdraw methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 20:49:25'!
 affectBalance: currentBalance
 
 	^currentBalance - self value! !
-
-!TransferedWithdraw methodsFor: 'as yet unclassified' stamp: 'GP 10/21/2018 17:36:17'!
-affectTransferNet: aValue
-
-	^ aValue - self value! !
 
 !TransferedWithdraw methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 20:03:47'!
 initializeFor: aValue withTransfer: aTransfer
 
 	value := aValue .
 	transfer := aTransfer.! !
-
-!TransferedWithdraw methodsFor: 'as yet unclassified' stamp: 'GP 10/25/2018 09:38:21'!
-summaryLine
-
-	^ 'Transferencia por ' , (self value * -1) asString .! !
 
 !TransferedWithdraw methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 20:13:38'!
 transfer
@@ -304,26 +271,15 @@ affectBalance: currentBalance
 
 	^currentBalance - value! !
 
-!Withdraw methodsFor: 'value' stamp: 'GP 10/21/2018 20:34:43'!
-affectInvestmentNet: aNet
-
-	^ aNet! !
-
-!Withdraw methodsFor: 'value' stamp: 'GP 10/21/2018 17:41:30'!
-affectTransferNet: aValue 
-
-	^ aValue
-! !
-
-!Withdraw methodsFor: 'value' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 21:13:33'!
-summaryLine
-
-	^ 'Extraccion por ' , value asString.! !
-
 !Withdraw methodsFor: 'value' stamp: 'HernanWilkinson 7/14/2011 05:54'!
 value
 
 	^ value ! !
+
+
+!Withdraw methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/24/2018 19:32:12'!
+accept: aVisitor
+	aVisitor visitWithdraw: self! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -354,34 +310,188 @@ Object subclass: #AccountTransactionVisitor
 	poolDictionaries: ''
 	category: 'PortfolioTreePrinter-Ejercicio'!
 
+!AccountTransactionVisitor methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/24/2018 18:49:21'!
+visit
+self subclassResponsibility ! !
+
+!AccountTransactionVisitor methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/24/2018 21:04:49'!
+visitCertificateOfDeposit: aTransaction
+self subclassResponsibility 
+! !
+
+!AccountTransactionVisitor methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/24/2018 19:54:36'!
+visitDeposit: aTransaction
+self subclassResponsibility ! !
+
+!AccountTransactionVisitor methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/24/2018 19:54:26'!
+visitTransferedDeposit: aTransaction
+self subclassResponsibility ! !
+
+!AccountTransactionVisitor methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/24/2018 19:54:23'!
+visitTransferedWithdraw: aTransaction
+self subclassResponsibility ! !
+
+!AccountTransactionVisitor methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/24/2018 19:54:20'!
+visitWithdraw: aTransaction
+self subclassResponsibility ! !
+
 
-!classDefinition: #AccountSummaryLines category: #'PortfolioTreePrinter-Ejercicio'!
-AccountTransactionVisitor subclass: #AccountSummaryLines
-	instanceVariableNames: 'lines'
+!classDefinition: #AccountCertificatesOfDepositEarnings category: #'PortfolioTreePrinter-Ejercicio'!
+AccountTransactionVisitor subclass: #AccountCertificatesOfDepositEarnings
+	instanceVariableNames: 'account earning'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PortfolioTreePrinter-Ejercicio'!
 
-!AccountSummaryLines methodsFor: 'as yet unclassified' stamp: 'GP 10/25/2018 09:26:12'!
-initialize
+!AccountCertificatesOfDepositEarnings methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 15:04:00'!
+initializeOf: aReceptiveAccount
 
-	lines := OrderedCollection new! !
+account := aReceptiveAccount 
+! !
 
-!AccountSummaryLines methodsFor: 'as yet unclassified' stamp: 'GP 10/25/2018 09:27:08'!
-visit: anAccount
-	
-	anAccount  accept: self.
-	^ lines! !
+!AccountCertificatesOfDepositEarnings methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 15:31:01'!
+value
+	earning :=0.
+	account visitTransactionsWith: self.
+	^earning.
+! !
 
-!AccountSummaryLines methodsFor: 'as yet unclassified' stamp: 'GP 10/25/2018 09:31:29'!
-visitPortfolio: aPortfolio
-	
-	aPortfolio visitAccountsDepthFirstOrder: self! !
+!AccountCertificatesOfDepositEarnings methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/24/2018 19:21:39'!
+visit: aTransaction
 
-!AccountSummaryLines methodsFor: 'as yet unclassified' stamp: 'GP 10/25/2018 09:37:22'!
-visitReceptiveAccount: anAccount
+	aTransaction accept: self.
+ ! !
 
-	anAccount transactions do: [ :tr | lines add: tr summaryLine]! !
+!AccountCertificatesOfDepositEarnings methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 15:29:10'!
+visitCertificateOfDeposit: aCertificateOfDeposit
+earning := earning +aCertificateOfDeposit earning ! !
+
+!AccountCertificatesOfDepositEarnings methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 15:25:53'!
+visitDeposit: aTransaction
+! !
+
+!AccountCertificatesOfDepositEarnings methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 15:26:00'!
+visitTransferedDeposit: aTransaction
+! !
+
+!AccountCertificatesOfDepositEarnings methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 15:26:07'!
+visitTransferedWithdraw: aTransaction
+! !
+
+!AccountCertificatesOfDepositEarnings methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 15:26:12'!
+visitWithdraw: aWithdraw
+! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'AccountCertificatesOfDepositEarnings class' category: #'PortfolioTreePrinter-Ejercicio'!
+AccountCertificatesOfDepositEarnings class
+	instanceVariableNames: ''!
+
+!AccountCertificatesOfDepositEarnings class methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 15:01:26'!
+Of: aReceptiveAccount
+^self new initializeOf: aReceptiveAccount .! !
+
+
+!classDefinition: #AccountCertificatesOfDepositNet category: #'PortfolioTreePrinter-Ejercicio'!
+AccountTransactionVisitor subclass: #AccountCertificatesOfDepositNet
+	instanceVariableNames: 'account net'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'PortfolioTreePrinter-Ejercicio'!
+
+!AccountCertificatesOfDepositNet methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 15:04:03'!
+initializeOf: aReceptiveAccount
+
+account := aReceptiveAccount 
+! !
+
+!AccountCertificatesOfDepositNet methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 15:23:51'!
+value
+	net:=0.
+	account visitTransactionsWith: self.
+	^net.
+! !
+
+!AccountCertificatesOfDepositNet methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 15:20:54'!
+visitCertificateOfDeposit: aCertificateOfDeposit
+net :=net + aCertificateOfDeposit value! !
+
+!AccountCertificatesOfDepositNet methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 15:20:28'!
+visitDeposit: aTransaction
+! !
+
+!AccountCertificatesOfDepositNet methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 15:20:20'!
+visitTransferedDeposit: aTransaction
+! !
+
+!AccountCertificatesOfDepositNet methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 15:20:12'!
+visitTransferedWithdraw: aTransaction
+! !
+
+!AccountCertificatesOfDepositNet methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 15:19:31'!
+visitWithdraw: aWithdraw
+! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'AccountCertificatesOfDepositNet class' category: #'PortfolioTreePrinter-Ejercicio'!
+AccountCertificatesOfDepositNet class
+	instanceVariableNames: ''!
+
+!AccountCertificatesOfDepositNet class methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 15:03:47'!
+Of: aReceptiveAccount
+^self new initializeOf: aReceptiveAccount .! !
+
+
+!classDefinition: #AccountSummaryLines category: #'PortfolioTreePrinter-Ejercicio'!
+AccountTransactionVisitor subclass: #AccountSummaryLines
+	instanceVariableNames: 'summaryLines account'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'PortfolioTreePrinter-Ejercicio'!
+
+!AccountSummaryLines methodsFor: 'visiting' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 10:52:43'!
+initializeOf: aReceptiveAccount
+
+account := aReceptiveAccount 
+! !
+
+!AccountSummaryLines methodsFor: 'visiting' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 15:13:14'!
+value
+
+	summaryLines := OrderedCollection new.
+	account visitTransactionsWith: self.
+	^summaryLines .
+! !
+
+!AccountSummaryLines methodsFor: 'visiting' stamp: 'Uriel Jonathan Rozenberg 10/24/2018 18:50:32'!
+visit: aTransaction
+
+	aTransaction accept: self.
+! !
+
+!AccountSummaryLines methodsFor: 'visiting' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 15:00:19'!
+visitCertificateOfDeposit: aCertificateOfDeposit
+summaryLines add: 'Plazo fijo por ' , aCertificateOfDeposit value  asString,' durante ',aCertificateOfDeposit duration asString ,' dias a una tna de ', (aCertificateOfDeposit interest * 100) asString ,'%'
+! !
+
+!AccountSummaryLines methodsFor: 'visiting' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 11:09:31'!
+visitDeposit: aTransaction
+ summaryLines add: 'Deposito por ' ,aTransaction value asString.! !
+
+!AccountSummaryLines methodsFor: 'visiting' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 11:09:36'!
+visitTransferedDeposit: aTransaction
+ summaryLines add: 'Transferencia por ' , aTransaction value asString.! !
+
+!AccountSummaryLines methodsFor: 'visiting' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 14:58:01'!
+visitTransferedWithdraw: aTransaction
+	 summaryLines add:  'Transferencia por ' , (aTransaction value * -1) asString .! !
+
+!AccountSummaryLines methodsFor: 'visiting' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 11:09:52'!
+visitWithdraw: aWithdraw
+	 summaryLines add: 'Extraccion por ' , aWithdraw value asString.
+! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -389,21 +499,67 @@ visitReceptiveAccount: anAccount
 AccountSummaryLines class
 	instanceVariableNames: ''!
 
-!AccountSummaryLines class methodsFor: 'as yet unclassified' stamp: 'GP 10/25/2018 09:24:30'!
-printLinesOf: anAccount
-	
-	| printer |
-	
-	printer := self new initialize.
-	^ printer visit: anAccount ! !
+!AccountSummaryLines class methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 15:01:29'!
+Of: aReceptiveAccount
+^self new initializeOf: aReceptiveAccount .! !
 
 
 !classDefinition: #AccountTransferNet category: #'PortfolioTreePrinter-Ejercicio'!
 AccountTransactionVisitor subclass: #AccountTransferNet
-	instanceVariableNames: ''
+	instanceVariableNames: 'account net'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PortfolioTreePrinter-Ejercicio'!
+
+!AccountTransferNet methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 15:04:12'!
+initializeOf: aReceptiveAccount
+
+account := aReceptiveAccount 
+! !
+
+!AccountTransferNet methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 15:17:50'!
+value
+	net:=0.
+	account visitTransactionsWith: self.
+	^net.
+! !
+
+!AccountTransferNet methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/24/2018 18:50:40'!
+visit: aTransaction
+
+	aTransaction accept: self.
+ ! !
+
+!AccountTransferNet methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 15:14:03'!
+visitCertificateOfDeposit: aCertificateOfDeposit
+! !
+
+!AccountTransferNet methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 15:14:08'!
+visitDeposit: aTransaction
+! !
+
+!AccountTransferNet methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 15:14:32'!
+visitTransferedDeposit: aTransaction
+net:=net+ aTransaction value! !
+
+!AccountTransferNet methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 15:15:33'!
+visitTransferedWithdraw: aTransaction
+net:=net- aTransaction value! !
+
+!AccountTransferNet methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 15:15:42'!
+visitWithdraw: aWithdraw
+! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'AccountTransferNet class' category: #'PortfolioTreePrinter-Ejercicio'!
+AccountTransferNet class
+	instanceVariableNames: ''!
+
+!AccountTransferNet class methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 15:01:20'!
+Of: aReceptiveAccount
+^self new initializeOf: aReceptiveAccount .
+! !
 
 
 !classDefinition: #SummarizingAccount category: #'PortfolioTreePrinter-Ejercicio'!
@@ -488,12 +644,6 @@ balance
 	^ accounts sum: [ :account | account balance ]
 ! !
 
-!Portfolio methodsFor: 'transactions' stamp: 'GP 10/21/2018 20:31:29'!
-investmentNet
-
-	^ accounts sum: [ :account | account investmentNet ]
-! !
-
 !Portfolio methodsFor: 'transactions' stamp: 'HAW 9/25/2017 19:40:20'!
 transactions 
 
@@ -509,12 +659,6 @@ transactionsOf: anAccount
 		ifTrue: [ anAccount transactions ] 
 		ifFalse: [ self error: self class accountNotManagedMessageDescription]
 	! !
-
-!Portfolio methodsFor: 'transactions' stamp: 'GP 10/21/2018 17:31:12'!
-transferNet
-
-	^ accounts sum: [ :account | account transferNet ]
-! !
 
 
 !Portfolio methodsFor: 'initialization' stamp: 'Uriel Jonathan Rozenberg 10/16/2018 14:56:21'!
@@ -595,7 +739,7 @@ accountNotManagedMessageDescription
 
 !classDefinition: #ReceptiveAccount category: #'PortfolioTreePrinter-Ejercicio'!
 SummarizingAccount subclass: #ReceptiveAccount
-	instanceVariableNames: 'transactions certificates'
+	instanceVariableNames: 'transactions'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PortfolioTreePrinter-Ejercicio'!
@@ -617,37 +761,16 @@ balance
 
 	^ transactions inject: 0 into: [ :balance :transaction | transaction affectBalance: balance ]! !
 
-!ReceptiveAccount methodsFor: 'transactions' stamp: 'Uriel Jonathan Rozenberg 10/22/2018 13:53:46'!
-investmentEarnings
-
-	^ certificates inject: 0 into: [ :net :certificate | net + certificate earning]! !
-
-!ReceptiveAccount methodsFor: 'transactions' stamp: 'GP 10/21/2018 20:32:02'!
-investmentNet
-
-	^ transactions inject: 0 into: [ :net :transaction | transaction affectInvestmentNet: net ]! !
-
 !ReceptiveAccount methodsFor: 'transactions' stamp: 'HernanWilkinson 7/13/2011 18:37'!
 register: aTransaction
 
 	transactions add: aTransaction 
 ! !
 
-!ReceptiveAccount methodsFor: 'transactions' stamp: 'Uriel Jonathan Rozenberg 10/22/2018 13:49:44'!
-registerCertificateOfDeposit: aCertificate
-	certificates add: aCertificate .
-	self register: aCertificate .
-! !
-
 !ReceptiveAccount methodsFor: 'transactions' stamp: 'HernanWilkinson 7/13/2011 18:37'!
 transactions 
 
 	^ transactions copy! !
-
-!ReceptiveAccount methodsFor: 'transactions' stamp: 'GP 10/21/2018 17:35:47'!
-transferNet
-
-	^ transactions inject: 0 into: [ :net :transaction | transaction affectTransferNet: net ]! !
 
 
 !ReceptiveAccount methodsFor: 'testing' stamp: 'HAW 10/18/2018 16:31:24'!
@@ -669,9 +792,11 @@ hasRegistered: aTtransaction
 ! !
 
 
-!ReceptiveAccount methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/22/2018 17:21:09'!
-summaryLines
-	^ transactions inject: OrderedCollection new into: [ :lines :transaction | transaction summaryLine]! !
+!ReceptiveAccount methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 11:06:40'!
+visitTransactionsWith: aVisitor
+
+	transactions do: [:aTransaction | aTransaction accept: aVisitor ]
+! !
 
 
 !classDefinition: #SummarizingAccountPrinter category: #'PortfolioTreePrinter-Ejercicio'!
