@@ -528,10 +528,10 @@ test29ReversePortfolioTreePrinterPrintsTheCompositeStartingFromTheLeaves
 	! !
 
 
-!PortfolioTest methodsFor: 'test support' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 21:06:04'!
+!PortfolioTest methodsFor: 'test support' stamp: 'GP 10/25/2018 09:17:38'!
 accountSummaryLinesOf: aReceptiveAccount 
 	
-	^aReceptiveAccount summaryLines! !
+	^ AccountSummaryLines printLinesOf: aReceptiveAccount ! !
 
 !PortfolioTest methodsFor: 'test support' stamp: 'GP 10/21/2018 20:05:57'!
 accountTransferNetOf: aReceptiveAccount 

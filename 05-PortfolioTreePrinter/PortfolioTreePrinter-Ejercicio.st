@@ -264,10 +264,10 @@ initializeFor: aValue withTransfer: aTransfer
 	value := aValue .
 	transfer := aTransfer.! !
 
-!TransferedWithdraw methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 21:13:15'!
+!TransferedWithdraw methodsFor: 'as yet unclassified' stamp: 'GP 10/25/2018 09:38:21'!
 summaryLine
 
-	^ 'Extraccion por ' , (self value * -1) asString .! !
+	^ 'Transferencia por ' , (self value * -1) asString .! !
 
 !TransferedWithdraw methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/18/2018 20:13:38'!
 transfer
@@ -357,10 +357,45 @@ Object subclass: #AccountTransactionVisitor
 
 !classDefinition: #AccountSummaryLines category: #'PortfolioTreePrinter-Ejercicio'!
 AccountTransactionVisitor subclass: #AccountSummaryLines
-	instanceVariableNames: ''
+	instanceVariableNames: 'lines'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PortfolioTreePrinter-Ejercicio'!
+
+!AccountSummaryLines methodsFor: 'as yet unclassified' stamp: 'GP 10/25/2018 09:26:12'!
+initialize
+
+	lines := OrderedCollection new! !
+
+!AccountSummaryLines methodsFor: 'as yet unclassified' stamp: 'GP 10/25/2018 09:27:08'!
+visit: anAccount
+	
+	anAccount  accept: self.
+	^ lines! !
+
+!AccountSummaryLines methodsFor: 'as yet unclassified' stamp: 'GP 10/25/2018 09:31:29'!
+visitPortfolio: aPortfolio
+	
+	aPortfolio visitAccountsDepthFirstOrder: self! !
+
+!AccountSummaryLines methodsFor: 'as yet unclassified' stamp: 'GP 10/25/2018 09:37:22'!
+visitReceptiveAccount: anAccount
+
+	anAccount transactions do: [ :tr | lines add: tr summaryLine]! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'AccountSummaryLines class' category: #'PortfolioTreePrinter-Ejercicio'!
+AccountSummaryLines class
+	instanceVariableNames: ''!
+
+!AccountSummaryLines class methodsFor: 'as yet unclassified' stamp: 'GP 10/25/2018 09:24:30'!
+printLinesOf: anAccount
+	
+	| printer |
+	
+	printer := self new initialize.
+	^ printer visit: anAccount ! !
 
 
 !classDefinition: #AccountTransferNet category: #'PortfolioTreePrinter-Ejercicio'!
