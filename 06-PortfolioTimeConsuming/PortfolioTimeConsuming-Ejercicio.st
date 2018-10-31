@@ -65,14 +65,14 @@ initializeFor: aReceptiveAccount
 	account := aReceptiveAccount ! !
 
 
-!AccountSummaryWithInvestmentEarnings methodsFor: 'evaluating' stamp: 'Uriel Jonathan Rozenberg 10/26/2018 01:19:35'!
+!AccountSummaryWithInvestmentEarnings methodsFor: 'evaluating' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 21:57:04'!
 lines 
 
 	| lines investmentEarnings   earnings  paralelClosure |
 	paralelClosure:= ParalelClosureValuer with:[investmentEarnings := InvestmentEarningVisitor for: account. earnings:=investmentEarnings value.].
 	lines := (AccountSummary for: account) lines.
-	paralelClosure join.
-	lines add: 'Ganancias por ',earnings  printString.
+	paralelClosure join
+	lines add: 'Ganancias por ',earnings value printString.
 	 ^ lines! !
 
 
