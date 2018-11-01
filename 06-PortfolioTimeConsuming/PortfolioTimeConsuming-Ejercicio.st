@@ -11,34 +11,20 @@ initializeFor: aReceptiveAccount
 	account := aReceptiveAccount ! !
 
 
-!AccountSummaryWithAllInvestmentInformation methodsFor: 'evaluating' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 21:35:00'!
+!AccountSummaryWithAllInvestmentInformation methodsFor: 'evaluating' stamp: 'Uriel Jonathan Rozenberg 11/1/2018 10:48:28'!
 lines 
 
-	| lines investmentEarnings  semaphore earnings|
-	semaphore := Semaphore new.
-	[	investmentEarnings := InvestmentNetVisitor for: account.
-		earnings:=investmentEarnings value.
-		semaphore signal.
-	] fork.
+	| lines  earnings|
 
+	earnings:= ParalelClosureValuer with:[ (InvestmentNetVisitor for: account )value.].
 	lines := (AccountSummaryWithInvestmentEarnings for: account) lines.
-	semaphore wait.
-	lines add: 'Inversiones por ', earnings printString.
+	lines add: 'Inversiones por ', earnings value printString.
 	
 	 ^ lines
 	
 	
 ! !
 
-
-!AccountSummaryWithAllInvestmentInformation methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 21:11:02'!
-forkAndSendSemaphore: aClosureToFork
-	|semaphore|
-	semaphore := Semaphore new.
-	[	aClosureToFork value.
-		semaphore signal.
-	] fork.
-   ^semaphore! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -65,27 +51,16 @@ initializeFor: aReceptiveAccount
 	account := aReceptiveAccount ! !
 
 
-!AccountSummaryWithInvestmentEarnings methodsFor: 'evaluating' stamp: 'GP 11/1/2018 10:26:09'!
+!AccountSummaryWithInvestmentEarnings methodsFor: 'evaluating' stamp: 'Uriel Jonathan Rozenberg 11/1/2018 10:32:46'!
 lines 
 
-	| lines futureEarnings |
-	
-	futureEarnings := FutureInvestmentEarning of: account.
+	| lines earnings |
+	earnings:= ParalelClosureValuer with:[ (InvestmentEarningVisitor for: account )value.].
 	
 	lines := (AccountSummary for: account) lines.
-	
-	lines add: 'Ganancias por ', futureEarnings value printString.
+	lines add: 'Ganancias por ', earnings value printString.
 	 ^ lines! !
 
-
-!AccountSummaryWithInvestmentEarnings methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 21:11:19'!
-forkAndSendSemaphore: aClosureToFork
-	|semaphore|
-	semaphore := Semaphore new.
-	[	aClosureToFork value.
-		semaphore signal.
-	] fork.
-   ^semaphore! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -171,7 +146,6 @@ earning
 interest
 
 	^ interest! !
-
 
 
 !CertificateOfDeposit methodsFor: 'initialization:' stamp: 'GP 10/21/2018 20:39:54'!
@@ -275,7 +249,6 @@ value
 	^ value! !
 
 
-
 !Deposit methodsFor: 'visiting' stamp: 'HernanWilkinson 7/14/2011 06:52'!
 accept: aTransactionVisitor
 
@@ -309,7 +282,6 @@ AccountTransaction subclass: #TransferLeg
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PortfolioTimeConsuming-Ejercicio'!
-
 
 !TransferLeg methodsFor: 'as yet unclassified' stamp: 'GP 10/21/2018 20:34:21'!
 affectInvestmentNet: aNet
@@ -406,7 +378,6 @@ affectBalance: currentBalance
 value
 
 	^ value ! !
-
 
 
 !Withdraw methodsFor: 'visiting' stamp: 'HAW 10/24/2018 12:40:17'!
@@ -779,69 +750,30 @@ for: aReceptiveAccount
 	^ self new initializeFor: aReceptiveAccount ! !
 
 
-!classDefinition: #FutureInvestmentEarning category: #'PortfolioTimeConsuming-Ejercicio'!
-Object subclass: #FutureInvestmentEarning
-	instanceVariableNames: 'account result'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'PortfolioTimeConsuming-Ejercicio'!
-
-!FutureInvestmentEarning methodsFor: 'as yet unclassified' stamp: 'GP 11/1/2018 10:25:27'!
-evaluate
-
-	| paralelClosure investmentEarnings earnings |
-	
-	paralelClosure:= ParalelClosureValuer with:[investmentEarnings := InvestmentEarningVisitor for: account. earnings:=investmentEarnings value.].
-	paralelClosure join.
-	
-	result := earnings! !
-
-!FutureInvestmentEarning methodsFor: 'as yet unclassified' stamp: 'GP 11/1/2018 10:11:50'!
-initializeOf: anAccount
-	
-	account := anAccount ! !
-
-!FutureInvestmentEarning methodsFor: 'as yet unclassified' stamp: 'GP 11/1/2018 10:24:56'!
-value
-
-	^ result! !
-
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
-
-!classDefinition: 'FutureInvestmentEarning class' category: #'PortfolioTimeConsuming-Ejercicio'!
-FutureInvestmentEarning class
-	instanceVariableNames: ''!
-
-!FutureInvestmentEarning class methodsFor: 'as yet unclassified' stamp: 'GP 11/1/2018 10:24:35'!
-of: anAccount
-	
-	| future |
-	
-	future := self new initializeOf: anAccount.
-	
-	future evaluate.
-	
-	^ future! !
-
-
 !classDefinition: #ParalelClosureValuer category: #'PortfolioTimeConsuming-Ejercicio'!
 Object subclass: #ParalelClosureValuer
-	instanceVariableNames: 'semaphore'
+	instanceVariableNames: 'semaphore result'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PortfolioTimeConsuming-Ejercicio'!
 
-!ParalelClosureValuer methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 21:56:34'!
+!ParalelClosureValuer methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/1/2018 10:07:07'!
 initializeWith: aClosureToRun
 	semaphore:= Semaphore new.
 	[
-		aClosureToRun value.
+		result:=aClosureToRun value.
 		semaphore signal	
 	] fork.! !
 
-!ParalelClosureValuer methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 22:00:04'!
+!ParalelClosureValuer methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/1/2018 10:07:53'!
 join
-semaphore wait! !
+semaphore wait.
+^result! !
+
+!ParalelClosureValuer methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/1/2018 10:07:57'!
+value
+semaphore wait.
+^result! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
