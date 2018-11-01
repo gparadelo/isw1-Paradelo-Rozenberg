@@ -65,14 +65,16 @@ initializeFor: aReceptiveAccount
 	account := aReceptiveAccount ! !
 
 
-!AccountSummaryWithInvestmentEarnings methodsFor: 'evaluating' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 21:57:04'!
+!AccountSummaryWithInvestmentEarnings methodsFor: 'evaluating' stamp: 'GP 11/1/2018 10:26:09'!
 lines 
 
-	| lines investmentEarnings   earnings  paralelClosure |
-	paralelClosure:= ParalelClosureValuer with:[investmentEarnings := InvestmentEarningVisitor for: account. earnings:=investmentEarnings value.].
+	| lines futureEarnings |
+	
+	futureEarnings := FutureInvestmentEarning of: account.
+	
 	lines := (AccountSummary for: account) lines.
-	paralelClosure join
-	lines add: 'Ganancias por ',earnings value printString.
+	
+	lines add: 'Ganancias por ', futureEarnings value printString.
 	 ^ lines! !
 
 
@@ -120,7 +122,6 @@ value
 	self subclassResponsibility ! !
 
 
-
 !AccountTransaction methodsFor: 'visiting' stamp: 'HAW 5/15/2018 07:23:29'!
 accept: anAccountTransactionVisitor
 
@@ -156,28 +157,29 @@ AccountTransaction subclass: #CertificateOfDeposit
 	poolDictionaries: ''
 	category: 'PortfolioTimeConsuming-Ejercicio'!
 
-!CertificateOfDeposit methodsFor: 'as yet unclassified' stamp: 'GP 10/21/2018 20:24:18'!
+!CertificateOfDeposit methodsFor: 'value' stamp: 'GP 10/21/2018 20:24:18'!
 duration
 
 	^ duration! !
 
-!CertificateOfDeposit methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/22/2018 13:52:04'!
+!CertificateOfDeposit methodsFor: 'value' stamp: 'Uriel Jonathan Rozenberg 10/22/2018 13:52:04'!
 earning
 
 ^value*(interest/360)*duration! !
 
-!CertificateOfDeposit methodsFor: 'as yet unclassified' stamp: 'GP 10/21/2018 20:39:54'!
+!CertificateOfDeposit methodsFor: 'value' stamp: 'GP 10/21/2018 20:24:40'!
+interest
+
+	^ interest! !
+
+
+
+!CertificateOfDeposit methodsFor: 'initialization:' stamp: 'GP 10/21/2018 20:39:54'!
 initializeFor: anAmount during: aNumberOfDays at: anInterestRate
 
 	value := anAmount.
 	duration := aNumberOfDays.
 	interest := anInterestRate. ! !
-
-!CertificateOfDeposit methodsFor: 'as yet unclassified' stamp: 'GP 10/21/2018 20:24:40'!
-interest
-
-	^ interest! !
-
 
 
 !CertificateOfDeposit methodsFor: 'accessing' stamp: 'HernanWilkinson 7/14/2011 06:23'!
@@ -307,6 +309,7 @@ AccountTransaction subclass: #TransferLeg
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PortfolioTimeConsuming-Ejercicio'!
+
 
 !TransferLeg methodsFor: 'as yet unclassified' stamp: 'GP 10/21/2018 20:34:21'!
 affectInvestmentNet: aNet
@@ -440,19 +443,6 @@ Object subclass: #AccountTransactionVisitor
 	poolDictionaries: ''
 	category: 'PortfolioTimeConsuming-Ejercicio'!
 
-!AccountTransactionVisitor methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/24/2018 18:49:21'!
-visit
-self subclassResponsibility ! !
-
-!AccountTransactionVisitor methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/24/2018 19:54:26'!
-visitTransferedDeposit: aTransaction
-self subclassResponsibility ! !
-
-!AccountTransactionVisitor methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/24/2018 19:54:23'!
-visitTransferedWithdraw: aTransaction
-self subclassResponsibility ! !
-
-
 !AccountTransactionVisitor methodsFor: 'visiting' stamp: 'HernanWilkinson 7/14/2011 06:54'!
 visitCertificateOfDeposit: aCertificateOfDeposit 
 	
@@ -473,10 +463,23 @@ visitTransferWithdraw: aTransferWithdraw
 	
 	self subclassResponsibility ! !
 
+!AccountTransactionVisitor methodsFor: 'visiting' stamp: 'Uriel Jonathan Rozenberg 10/24/2018 19:54:26'!
+visitTransferedDeposit: aTransaction
+self subclassResponsibility ! !
+
+!AccountTransactionVisitor methodsFor: 'visiting' stamp: 'Uriel Jonathan Rozenberg 10/24/2018 19:54:23'!
+visitTransferedWithdraw: aTransaction
+self subclassResponsibility ! !
+
 !AccountTransactionVisitor methodsFor: 'visiting' stamp: 'HernanWilkinson 7/14/2011 06:55'!
 visitWithdraw: aWithdraw 
 	
 	self subclassResponsibility ! !
+
+
+!AccountTransactionVisitor methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/24/2018 18:49:21'!
+visit
+self subclassResponsibility ! !
 
 
 !classDefinition: #AccountSummary category: #'PortfolioTimeConsuming-Ejercicio'!
@@ -776,6 +779,51 @@ for: aReceptiveAccount
 	^ self new initializeFor: aReceptiveAccount ! !
 
 
+!classDefinition: #FutureInvestmentEarning category: #'PortfolioTimeConsuming-Ejercicio'!
+Object subclass: #FutureInvestmentEarning
+	instanceVariableNames: 'account result'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'PortfolioTimeConsuming-Ejercicio'!
+
+!FutureInvestmentEarning methodsFor: 'as yet unclassified' stamp: 'GP 11/1/2018 10:25:27'!
+evaluate
+
+	| paralelClosure investmentEarnings earnings |
+	
+	paralelClosure:= ParalelClosureValuer with:[investmentEarnings := InvestmentEarningVisitor for: account. earnings:=investmentEarnings value.].
+	paralelClosure join.
+	
+	result := earnings! !
+
+!FutureInvestmentEarning methodsFor: 'as yet unclassified' stamp: 'GP 11/1/2018 10:11:50'!
+initializeOf: anAccount
+	
+	account := anAccount ! !
+
+!FutureInvestmentEarning methodsFor: 'as yet unclassified' stamp: 'GP 11/1/2018 10:24:56'!
+value
+
+	^ result! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'FutureInvestmentEarning class' category: #'PortfolioTimeConsuming-Ejercicio'!
+FutureInvestmentEarning class
+	instanceVariableNames: ''!
+
+!FutureInvestmentEarning class methodsFor: 'as yet unclassified' stamp: 'GP 11/1/2018 10:24:35'!
+of: anAccount
+	
+	| future |
+	
+	future := self new initializeOf: anAccount.
+	
+	future evaluate.
+	
+	^ future! !
+
+
 !classDefinition: #ParalelClosureValuer category: #'PortfolioTimeConsuming-Ejercicio'!
 Object subclass: #ParalelClosureValuer
 	instanceVariableNames: 'semaphore'
@@ -1049,6 +1097,12 @@ balance
 register: aTransaction
 
 	transactions add: aTransaction 
+! !
+
+!ReceptiveAccount methodsFor: 'transactions' stamp: 'Uriel Jonathan Rozenberg 10/22/2018 13:49:44'!
+registerCertificateOfDeposit: aCertificate
+	certificates add: aCertificate .
+	self register: aCertificate .
 ! !
 
 !ReceptiveAccount methodsFor: 'transactions' stamp: 'HernanWilkinson 7/13/2011 18:37'!
