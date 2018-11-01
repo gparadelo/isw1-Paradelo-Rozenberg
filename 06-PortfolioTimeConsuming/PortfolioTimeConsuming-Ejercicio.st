@@ -11,12 +11,12 @@ initializeFor: aReceptiveAccount
 	account := aReceptiveAccount ! !
 
 
-!AccountSummaryWithAllInvestmentInformation methodsFor: 'evaluating' stamp: 'Uriel Jonathan Rozenberg 11/1/2018 10:48:28'!
+!AccountSummaryWithAllInvestmentInformation methodsFor: 'evaluating' stamp: 'Uriel Jonathan Rozenberg 11/1/2018 12:05:57'!
 lines 
 
 	| lines  earnings|
 
-	earnings:= ParalelClosureValuer with:[ (InvestmentNetVisitor for: account )value.].
+	earnings:= ParallelEvaluation with:[ (InvestmentNetVisitor for: account )value.].
 	lines := (AccountSummaryWithInvestmentEarnings for: account) lines.
 	lines add: 'Inversiones por ', earnings value printString.
 	
@@ -51,11 +51,11 @@ initializeFor: aReceptiveAccount
 	account := aReceptiveAccount ! !
 
 
-!AccountSummaryWithInvestmentEarnings methodsFor: 'evaluating' stamp: 'Uriel Jonathan Rozenberg 11/1/2018 10:32:46'!
+!AccountSummaryWithInvestmentEarnings methodsFor: 'evaluating' stamp: 'Uriel Jonathan Rozenberg 11/1/2018 12:05:57'!
 lines 
 
 	| lines earnings |
-	earnings:= ParalelClosureValuer with:[ (InvestmentEarningVisitor for: account )value.].
+	earnings:= ParallelEvaluation with:[ (InvestmentEarningVisitor for: account )value.].
 	
 	lines := (AccountSummary for: account) lines.
 	lines add: 'Ganancias por ', earnings value printString.
@@ -750,14 +750,14 @@ for: aReceptiveAccount
 	^ self new initializeFor: aReceptiveAccount ! !
 
 
-!classDefinition: #ParalelClosureValuer category: #'PortfolioTimeConsuming-Ejercicio'!
-Object subclass: #ParalelClosureValuer
+!classDefinition: #ParallelEvaluation category: #'PortfolioTimeConsuming-Ejercicio'!
+Object subclass: #ParallelEvaluation
 	instanceVariableNames: 'semaphore result'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PortfolioTimeConsuming-Ejercicio'!
 
-!ParalelClosureValuer methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/1/2018 10:07:07'!
+!ParallelEvaluation methodsFor: 'initialization' stamp: 'Uriel Jonathan Rozenberg 11/1/2018 10:07:07'!
 initializeWith: aClosureToRun
 	semaphore:= Semaphore new.
 	[
@@ -765,23 +765,19 @@ initializeWith: aClosureToRun
 		semaphore signal	
 	] fork.! !
 
-!ParalelClosureValuer methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/1/2018 10:07:53'!
-join
-semaphore wait.
-^result! !
 
-!ParalelClosureValuer methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/1/2018 10:07:57'!
+!ParallelEvaluation methodsFor: 'evaluating' stamp: 'Uriel Jonathan Rozenberg 11/1/2018 10:07:57'!
 value
 semaphore wait.
 ^result! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'ParalelClosureValuer class' category: #'PortfolioTimeConsuming-Ejercicio'!
-ParalelClosureValuer class
+!classDefinition: 'ParallelEvaluation class' category: #'PortfolioTimeConsuming-Ejercicio'!
+ParallelEvaluation class
 	instanceVariableNames: ''!
 
-!ParalelClosureValuer class methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 21:54:11'!
+!ParallelEvaluation class methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 10/25/2018 21:54:11'!
 with: aClosureToRun
 ^self new initializeWith: aClosureToRun ! !
 
