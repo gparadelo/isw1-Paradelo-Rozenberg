@@ -1,0 +1,19 @@
+mensaje: Xs y Os colecciones (de puntos?)
+put:
+validar: el juego termino?
+validar:  es mi turno?
+crear error: eachplayerhasonlythreepieces
+colaborador: winner
+mensaje: hasWon
+hasCompleteRow:
+(1 to 3) anySatisfy: [:x| (positions count: [:position| position x=x]=3)]
+hasUpDiagonal
+(1 to 3) anySatisfy: [:x| (positions count: [:position| position x=(n-x)]=3)] (falta algo con Y)
+hasDownDiagonal
+(1 to 3) anySatisfy: [:x| (positions count: [:position| position x=x)]=3)](falta algo con Y)
+
+
+mensaje: slideX slideY pos to: pos
+-validar TODO lo anterior
+movelegalfrom to
+movemypieces
