@@ -301,7 +301,7 @@ put: aPoint
 
 !classDefinition: #TerniLapilli category: #TerniLapilli!
 Object subclass: #TerniLapilli
-	instanceVariableNames: 'availableX availableO board turn X O state'
+	instanceVariableNames: 'availableX availableO board turn X O'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'TerniLapilli'!
@@ -413,15 +413,29 @@ hasWonX
 increaseTurn
 	turn := turn +1. ! !
 
-!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/5/2018 17:57:44'!
+!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 10:03:12'!
 initialize
 	availableX:=3.
 	availableO:=3.
 	board:=Array with:( Array with: '' with: '' with: '') with: (Array with: '' with: '' with: '') with: (Array with: '' with: '' with: '').
 	turn:=0.
 	X:= Set new.
-	O:= Set new.
-	state := 'ongoing'! !
+	O:= Set new.! !
+
+!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 10:09:56'!
+isFull
+
+	^ self turn < 6! !
+
+!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 10:21:27'!
+isNotFull
+
+	^ self isFull not! !
+
+!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 10:11:42'!
+isTurnOf: aPlayer
+
+	^ self turn // 2 = aPlayer! !
 
 !TerniLapilli methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/5/2018 20:28:09'!
 putO: aPoint
@@ -459,6 +473,11 @@ slideX: fromPosition to: toPosition
 	
 	self increaseTurn! !
 
+!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 10:05:32'!
+state
+	
+	^ TerniLapilliState for: self! !
+
 !TerniLapilli methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/1/2018 20:03:14'!
 turn
 	^turn! !
@@ -489,45 +508,72 @@ Object subclass: #TerniLapilliState
 	poolDictionaries: ''
 	category: 'TerniLapilli'!
 
+!TerniLapilliState methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 10:23:48'!
+initializeFor: aTerniLapilli
+
+	game := aTerniLapilli ! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'TerniLapilliState class' category: #TerniLapilli!
+TerniLapilliState class
+	instanceVariableNames: ''!
+
+!TerniLapilliState class methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 10:07:00'!
+for: aTerniLapilli 
+	
+	^ self subclasses 
+		detect: [:aStateClass | aStateClass isFor: aTerniLapilli ]
+		ifFound: [:aStateClass | aStateClass newFor: aTerniLapilli ]
+		ifNone: [ self error: 'No state for terni lapilli' ]! !
+
+!TerniLapilliState class methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 10:22:50'!
+isFor: aTerniLapilli
+
+	^ self subclassResponsibility ! !
+
+!TerniLapilliState class methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 10:23:15'!
+newFor: aTerniLapilli
+
+	^ self new initializeFor: aTerniLapilli! !
+
 
-!classDefinition: #GameOver category: #TerniLapilli!
-TerniLapilliState subclass: #GameOver
+!classDefinition: #PuttingO category: #TerniLapilli!
+TerniLapilliState subclass: #PuttingO
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'TerniLapilli'!
 
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'PuttingO class' category: #TerniLapilli!
+PuttingO class
+	instanceVariableNames: ''!
+
+!PuttingO class methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 10:21:05'!
+isFor: aTerniLapilli
+	
+	^ aTerniLapilli isNotFull and: ( aTerniLapilli isTurnOf: 0 )! !
+
 
-!classDefinition: #WinerO category: #TerniLapilli!
-GameOver subclass: #WinerO
+!classDefinition: #PuttingX category: #TerniLapilli!
+TerniLapilliState subclass: #PuttingX
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'TerniLapilli'!
 
-
-!classDefinition: #WinerX category: #TerniLapilli!
-GameOver subclass: #WinerX
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'TerniLapilli'!
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-
-!classDefinition: #PlayingO category: #TerniLapilli!
-TerniLapilliState subclass: #PlayingO
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'TerniLapilli'!
+!classDefinition: 'PuttingX class' category: #TerniLapilli!
+PuttingX class
+	instanceVariableNames: ''!
 
-
-!classDefinition: #PlayingX category: #TerniLapilli!
-TerniLapilliState subclass: #PlayingX
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'TerniLapilli'!
+!PuttingX class methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 10:21:00'!
+isFor: aTerniLapilli
+	
+	^ aTerniLapilli isNotFull and: ( aTerniLapilli isTurnOf: 1 )! !
 
 
 !classDefinition: #SlidingO category: #TerniLapilli!
@@ -537,6 +583,17 @@ TerniLapilliState subclass: #SlidingO
 	poolDictionaries: ''
 	category: 'TerniLapilli'!
 
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'SlidingO class' category: #TerniLapilli!
+SlidingO class
+	instanceVariableNames: ''!
+
+!SlidingO class methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 10:21:43'!
+isFor: aTerniLapilli
+	
+	^ aTerniLapilli isFull and: ( aTerniLapilli isTurnOf: 0 )! !
+
 
 !classDefinition: #SlidingX category: #TerniLapilli!
 TerniLapilliState subclass: #SlidingX
@@ -544,3 +601,52 @@ TerniLapilliState subclass: #SlidingX
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'TerniLapilli'!
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'SlidingX class' category: #TerniLapilli!
+SlidingX class
+	instanceVariableNames: ''!
+
+!SlidingX class methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 10:21:52'!
+isFor: aTerniLapilli
+	
+	^ aTerniLapilli isFull and: ( aTerniLapilli isTurnOf: 1 )! !
+
+
+!classDefinition: #WinerO category: #TerniLapilli!
+TerniLapilliState subclass: #WinerO
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'TerniLapilli'!
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'WinerO class' category: #TerniLapilli!
+WinerO class
+	instanceVariableNames: ''!
+
+!WinerO class methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 10:30:06'!
+isFor: aTerniLapilli
+	
+	^ aTerniLapilli hasWonO! !
+
+
+!classDefinition: #WinerX category: #TerniLapilli!
+TerniLapilliState subclass: #WinerX
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'TerniLapilli'!
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'WinerX class' category: #TerniLapilli!
+WinerX class
+	instanceVariableNames: ''!
+
+!WinerX class methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 10:30:15'!
+isFor: aTerniLapilli
+	
+	^ aTerniLapilli hasWonX! !
