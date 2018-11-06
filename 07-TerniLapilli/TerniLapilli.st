@@ -17,7 +17,7 @@ test01
 	game:= TerniLapilli new.
 	self assert: 3 equals: game availableO.! !
 
-!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/1/2018 19:48:27'!
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 13:23:41'!
 test02
 	| game position |
 	game:= TerniLapilli new.
@@ -326,15 +326,19 @@ checkForValidPointPut: aPoint
 checkForValidPutBeforeMove
 	turn>5 ifTrue: [self  error: self signalInvalidMove ].! !
 
-!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/5/2018 18:53:34'!
+!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 12:21:40'!
 checkForValidTurnWithPlayer: aPlayerNumber
-	turn\\2 =aPlayerNumber ifTrue: [self  error: self signalInvalidTurn ].! !
+	turn \\ 2 =aPlayerNumber ifTrue: [self  error: self signalInvalidTurn ].! !
 
 !TerniLapilli methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/5/2018 20:29:14'!
 checkGameOver
 
 	self  hasWonX ifTrue: [self  error: self signalGameOver ].
 	self  hasWonO ifTrue: [self  error: self signalGameOver ].! !
+
+!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 12:14:28'!
+checkPositionIsEmpty: aPosition
+	((board at: aPosition x) at: aPosition y) = '' ifFalse: [self  error: self signalInvalidMove ].! !
 
 !TerniLapilli methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/5/2018 19:34:11'!
 checkValidPiece: aPiece OnPosition:aPosition
@@ -422,38 +426,42 @@ initialize
 	X:= Set new.
 	O:= Set new.! !
 
-!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 10:09:56'!
+!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 12:16:21'!
 isFull
 
-	^ self turn < 6! !
+	^ self turn > 5! !
 
 !TerniLapilli methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 10:21:27'!
 isNotFull
 
 	^ self isFull not! !
 
-!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 10:11:42'!
+!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 13:42:58'!
 isTurnOf: aPlayer
 
-	^ self turn // 2 = aPlayer! !
+	^ (self turn \\ 2) = aPlayer! !
 
-!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/5/2018 20:28:09'!
+!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 12:30:26'!
 putO: aPoint
-	self checkValidPutOf: 0 on: aPoint.
-	self putPiece:'O' onPosition: aPoint.
-	self increaseTurn
+	
+	self state putO: aPoint! !
+
+!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 12:22:14'!
+putPiece: aPiece onPosition: aPosition
+	
+	(board at: aPosition x) at: aPosition y put: aPiece.
 	! !
 
-!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/5/2018 20:24:21'!
-putPiece:aPiece onPosition: aPoint
-	(board at: aPoint x) at: aPoint y put: aPiece.
-	! !
-
-!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/5/2018 20:27:46'!
+!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 12:22:05'!
 putX: aPoint
-	self checkValidPutOf: 1 on: aPoint.
-	self putPiece:'X' onPosition: aPoint.
-	self increaseTurn
+	
+	self state putX: aPoint
+! !
+
+!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 12:22:17'!
+safePutPiece: aPiece onPosition: aPosition
+	
+	(board at: aPosition x) at: aPosition y put: aPiece.
 	! !
 
 !TerniLapilli methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/5/2018 20:27:32'!
@@ -513,6 +521,11 @@ initializeFor: aTerniLapilli
 
 	game := aTerniLapilli ! !
 
+!TerniLapilliState methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 12:05:23'!
+putX: aPoint
+
+	self subclassResponsibility ! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'TerniLapilliState class' category: #TerniLapilli!
@@ -538,42 +551,66 @@ newFor: aTerniLapilli
 	^ self new initializeFor: aTerniLapilli! !
 
 
-!classDefinition: #PuttingO category: #TerniLapilli!
-TerniLapilliState subclass: #PuttingO
+!classDefinition: #PlayingO category: #TerniLapilli!
+TerniLapilliState subclass: #PlayingO
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'TerniLapilli'!
 
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
-
-!classDefinition: 'PuttingO class' category: #TerniLapilli!
-PuttingO class
-	instanceVariableNames: ''!
-
-!PuttingO class methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 10:21:05'!
-isFor: aTerniLapilli
+!PlayingO methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 12:23:45'!
+putO: aPosition
 	
-	^ aTerniLapilli isNotFull and: ( aTerniLapilli isTurnOf: 0 )! !
+	game checkPositionIsEmpty: aPosition.
+	game putPiece: 'O' onPosition: aPosition.
+	game increaseTurn.! !
 
-
-!classDefinition: #PuttingX category: #TerniLapilli!
-TerniLapilliState subclass: #PuttingX
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'TerniLapilli'!
+!PlayingO methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 12:11:31'!
+putX: aPosition
+
+	game error: TerniLapilli signalInvalidTurn ! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'PuttingX class' category: #TerniLapilli!
-PuttingX class
+!classDefinition: 'PlayingO class' category: #TerniLapilli!
+PlayingO class
 	instanceVariableNames: ''!
 
-!PuttingX class methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 10:21:00'!
+!PlayingO class methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 13:27:21'!
 isFor: aTerniLapilli
 	
 	^ aTerniLapilli isNotFull and: ( aTerniLapilli isTurnOf: 1 )! !
+
+
+!classDefinition: #PlayingX category: #TerniLapilli!
+TerniLapilliState subclass: #PlayingX
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'TerniLapilli'!
+
+!PlayingX methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 12:25:43'!
+putO: aPosition
+
+	game error: TerniLapilli signalInvalidTurn ! !
+
+!PlayingX methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 12:22:49'!
+putX: aPosition
+	
+	game checkPositionIsEmpty: aPosition.
+	game putPiece: 'X' onPosition: aPosition.
+	game increaseTurn.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'PlayingX class' category: #TerniLapilli!
+PlayingX class
+	instanceVariableNames: ''!
+
+!PlayingX class methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 13:27:24'!
+isFor: aTerniLapilli
+	
+	^ aTerniLapilli isNotFull and: ( aTerniLapilli isTurnOf: 0 )! !
 
 
 !classDefinition: #SlidingO category: #TerniLapilli!
@@ -583,16 +620,26 @@ TerniLapilliState subclass: #SlidingO
 	poolDictionaries: ''
 	category: 'TerniLapilli'!
 
+!SlidingO methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 12:25:50'!
+putO: aPosition
+
+	game error: TerniLapilli signalInvalidTurn ! !
+
+!SlidingO methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 12:11:37'!
+putX: aPosition
+
+	game error: TerniLapilli signalInvalidTurn ! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'SlidingO class' category: #TerniLapilli!
 SlidingO class
 	instanceVariableNames: ''!
 
-!SlidingO class methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 10:21:43'!
+!SlidingO class methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 13:27:28'!
 isFor: aTerniLapilli
 	
-	^ aTerniLapilli isFull and: ( aTerniLapilli isTurnOf: 0 )! !
+	^ aTerniLapilli isFull and: ( aTerniLapilli isTurnOf: 1 )! !
 
 
 !classDefinition: #SlidingX category: #TerniLapilli!
@@ -602,16 +649,26 @@ TerniLapilliState subclass: #SlidingX
 	poolDictionaries: ''
 	category: 'TerniLapilli'!
 
+!SlidingX methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 12:25:55'!
+putO: aPosition
+
+	game error: TerniLapilli signalInvalidTurn ! !
+
+!SlidingX methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 12:11:44'!
+putX: aPosition
+
+	game error: TerniLapilli signalInvalidTurn ! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'SlidingX class' category: #TerniLapilli!
 SlidingX class
 	instanceVariableNames: ''!
 
-!SlidingX class methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 10:21:52'!
+!SlidingX class methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 13:27:32'!
 isFor: aTerniLapilli
 	
-	^ aTerniLapilli isFull and: ( aTerniLapilli isTurnOf: 1 )! !
+	^ aTerniLapilli isFull and: ( aTerniLapilli isTurnOf: 0 )! !
 
 
 !classDefinition: #WinerO category: #TerniLapilli!
@@ -620,6 +677,16 @@ TerniLapilliState subclass: #WinerO
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'TerniLapilli'!
+
+!WinerO methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 12:25:59'!
+putO: aPosition
+
+	game error: TerniLapilli signalGameOver ! !
+
+!WinerO methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 12:11:48'!
+putX: aPosition
+
+	game error: TerniLapilli signalGameOver ! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -639,6 +706,16 @@ TerniLapilliState subclass: #WinerX
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'TerniLapilli'!
+
+!WinerX methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 12:26:03'!
+putO: aPosition
+
+	game error: TerniLapilli signalGameOver ! !
+
+!WinerX methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 12:11:51'!
+putX: aPosition
+
+	game error: TerniLapilli signalGameOver ! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
