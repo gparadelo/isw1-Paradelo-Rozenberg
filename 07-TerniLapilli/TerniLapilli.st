@@ -5,49 +5,66 @@ TestCase subclass: #TerniLapilliTest
 	poolDictionaries: ''
 	category: 'TerniLapilli'!
 
-!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/1/2018 19:24:21'!
-test00
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 13:58:28'!
+test01TurnIsZeroWhenGameIsStarted
+
 	| game |
+	
 	game:= TerniLapilli new.
-	self assert: 3 equals: game availableX.! !
+	
+	self assert: 0 equals: game turn! !
 
-!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/1/2018 19:27:03'!
-test01
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 14:16:02'!
+test02BoardIsEmptyWhenGameIsStarted
+
 	| game |
-	game:= TerniLapilli new.
-	self assert: 3 equals: game availableO.! !
+	
+	game := TerniLapilli new.
+	
+	self assert: ( game board allSatisfy: [ :row | row allSatisfy: [ :slot | slot = '' ] ] )! !
 
-!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 13:23:41'!
-test02
-	| game position |
-	game:= TerniLapilli new.
-	position:=1@2.
-	game putX: position.
-	self assert: 'X' equals: (game getAtPosition: position).! !
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 14:19:56'!
+test03PutXPlacesXAtTheCorrectPosition
 
-!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/1/2018 20:05:45'!
-test03
-	| game position |
-	game:= TerniLapilli new.
-	position:=1@2.
-	self assert: 0 equals: (game turn).
-	game putX: position.
-	self assert: 1 equals: (game turn).! !
-
-!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/1/2018 20:31:34'!
-test04
 	| game |
-	game:= TerniLapilli new.
+	
+	game := TerniLapilli new.
+	
 	game putX: 1@2.
 	
-	self should:[	game putO: 1@2.]  raise:  Error.
+	self assert: 'X' equals: (game getAtPosition: 1@2).! !
 
-! !
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 14:19:54'!
+test03_01PutOPlacesOAtTheCorrectPosition
 
-!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/1/2018 20:32:27'!
-test05
 	| game |
-	game:= TerniLapilli new.
+	
+	game := TerniLapilli new.
+	
+	game putX: 1@2.
+	game putO: 2@2.
+	
+	self assert: 'O' equals: (game getAtPosition: 2@2).! !
+
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 14:19:49'!
+test04TurnIsIncreasedWhenPieceIsPlaced
+
+	| game |
+	
+	game := TerniLapilli new.
+
+	self assert: 0 equals: (game turn).
+	game putX: 1@2.
+	
+	self assert: 1 equals: (game turn).! !
+
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 14:19:46'!
+test04_01TurnIsIncreasedProperlyAfterSeveralPlays
+
+	| game |
+	
+	game := TerniLapilli new.
+	
 	game putX: 1@2.
 	self assert: 1 equals: (game turn).
 	game putO: 2@2.
@@ -59,70 +76,98 @@ test05
 
 	! !
 
-!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/1/2018 20:26:38'!
-test06
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 14:19:42'!
+test05CanNotPlaceToPiecesOnTheSamePosition
+
 	| game |
-	game:= TerniLapilli new.
+	
+	game := TerniLapilli new.
 	game putX: 1@2.
 	
-	self should:[	game putO: 1@2.]  raise:  Error.
-
+	self 
+		should: [ game putO: 1@2 ]
+		raise: Error
+		withExceptionDo: [ :invalidMove |
+			self assert: TerniLapilli signalPositionIsOccupied = invalidMove messageText ]
 ! !
 
-!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/1/2018 20:31:05'!
-test07
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 14:51:11'!
+test06PlayerXCanOnlyPutOnTheirTurn
+
 	| game |
-	game:= TerniLapilli new.
+	
+	game := TerniLapilli new.
 	game putX: 1@2.
 
-	self should:[	game putX: 2@2.]  raise:  Error.
+	self 
+		should: [ game putX: 2@2 ]
+		raise: Error
+		withExceptionDo: [ :invalidMove |
+			self assert: TerniLapilli signalInvalidTurn = invalidMove messageText ]
+
 
 ! !
 
-!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/5/2018 18:56:05'!
-test08
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 14:51:45'!
+test06_01PlayerOCanNotStartFirst
+
 	| game |
-	game:= TerniLapilli new.
+	
+	game := TerniLapilli new.
+
+	self 
+		should: [ game putO: 1@2 ]
+		raise: Error
+		withExceptionDo: [ :invalidMove |
+			self assert: TerniLapilli signalInvalidTurn = invalidMove messageText ]
+
+
+! !
+
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 14:34:11'!
+test07CanNotPlaceMoreThan6Pieces
+
+	| game |
+	
+	game := TerniLapilli new.
+	
 	game putX: 1@1.
 	game putO: 2@1.
 	game putX: 1@2.
 	game putO: 2@2.
 	game putX: 2@3.
 	game putO: 3@2.	
-	self should:[	game putX: 3@3.]  raise:  Error.
+	
+	self 
+		should: [ game putX: 3@3]
+		raise: Error
+		withExceptionDo: [ :invalidMove |
+			self assert: TerniLapilli signalBoardIsFull = invalidMove messageText ]
 
 ! !
 
-!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/5/2018 18:07:39'!
-test09
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 14:34:18'!
+test08HorizontalLineOfThreeWinsTheGame
+
 	| game |
-	game:= TerniLapilli new.
+	
+	game := TerniLapilli new.
 	game putX: 1@1.
 	game putO: 2@1.
 	game putX: 1@2.
 	game putO: 2@2.
 	game putX: 1@3.
 		
-	self assert: game hasWonX
+	self assert: game hasWonX.
+	self deny: game hasWonO
 ! !
 
-!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/5/2018 18:44:18'!
-test10
-	| game |
-	game:= TerniLapilli new.
-	game putX: 1@1.
-	game putO: 2@1.
-	game putX: 1@2.
-	game putO: 2@2.
-	game putX: 1@3.
-		
-	self deny: (game hasWonO)
-! !
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 14:34:22'!
+test08_01VerticalLineOfThreeWinsTheGame
 
-!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/5/2018 18:27:14'!
-test11
 	| game |
-	game:= TerniLapilli new.
+	
+	game := TerniLapilli new.
 	game putX: 1@1.
 	game putO: 2@2.
 	game putX: 2@1.
@@ -132,63 +177,66 @@ test11
 	self assert: game hasWonX
 ! !
 
-!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/5/2018 18:42:53'!
-test12
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 14:34:27'!
+test08_02DiagonalLineOfThreeWinsTheGame
+
 	| game |
+	
 	game:= TerniLapilli new.
+	
+	game putX: 2@1.
+	game putO: 1@1.
+	game putX: 1@2.
+	game putO: 2@2.
+	game putX: 1@3.
+	game putO: 3@3.
+			
+	self assert: game hasWonO
+! !
+
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 15:16:53'!
+test09GameIsNotWonIfConditionsAreNotMet
+
+	| game |
+	
+	game := TerniLapilli new.
 	game putX: 1@1.
-	game putO: 1@2.
-	game putX: 2@2.
-	game putO: 3@2.
-	game putX: 3@3.
-		
-	self assert: game hasWonX
-! !
-
-!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/5/2018 18:40:43'!
-test13
-	| game |
-	game:= TerniLapilli new.
-	game putX: 3@1.
-	game putO: 1@2.
-	game putX: 2@2.
-	game putO: 3@2.
-	game putX: 1@3.
-		
-	self assert: game hasWonX
-! !
-
-!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/5/2018 18:49:14'!
-test14
-	| game |
-	game:= TerniLapilli new.
-	game putX: 3@1.
-	game putO: 1@2.
-	game putX: 2@2.
-	game putO: 3@2.
-	game putX: 1@3.
-	self should:[	game putO: 3@3.]  raise:  Error.
-
-! !
-
-!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/5/2018 19:08:17'!
-test15
-	| game |
-	game:= TerniLapilli new.
-	game putX: 3@1.
-	game putO: 1@2.
-	game putX: 2@2.
-	game putO: 3@2.
+	game putO: 2@1.
+	game putX: 1@2.
+	game putO: 2@2.
 	game putX: 2@3.
 	game putO: 3@3.
-	
-	game slideX:  2@2 to:1@3.
-	self assert: 'X' equals: (game getAtPosition: 1@3).! !
+		
+	self deny: game hasWonO.
+	self deny: game hasWonX
+! !
 
-!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/5/2018 19:29:54'!
-test16
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 14:48:14'!
+test10CanNotPutPieceAfterGameIsWon
+
 	| game |
-	game:= TerniLapilli new.
+	
+	game := TerniLapilli new.
+	game putX: 3@1.
+	game putO: 1@2.
+	game putX: 2@2.
+	game putO: 3@2.
+	game putX: 1@3.
+	
+	self 
+		should: [ game putO: 3@3 ]
+		raise: Error
+		withExceptionDo: [ :invalidMove |
+			self assert: TerniLapilli signalGameOver = invalidMove messageText ]
+
+! !
+
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 15:09:39'!
+test11SlideMovesPieceVertically
+
+	| game |
+	
+	game := TerniLapilli new.
 	game putX: 3@1.
 	game putO: 1@2.
 	game putX: 2@2.
@@ -197,11 +245,93 @@ test16
 	game putO: 3@3.
 	
 	game slideX:  2@3 to:1@3.
-	self assert: 'X' equals: (game getAtPosition: 1@3).! !
+	self assert: 'X' equals: (game getAtPosition: 1@3).
+	self assert: '' equals: ( game getAtPosition: 2@3 ).! !
 
-!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/5/2018 19:24:39'!
-test17
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 15:09:32'!
+test11_01SlideMovesPieceHorizontally
+
 	| game |
+	
+	game := TerniLapilli new.
+	game putX: 3@1.
+	game putO: 1@2.
+	game putX: 2@2.
+	game putO: 3@2.
+	game putX: 2@3.
+	game putO: 3@3.
+	
+	game slideX:  2@2 to:2@1.
+	self assert: 'X' equals: ( game getAtPosition: 2@1 ).
+	self assert: '' equals: ( game getAtPosition: 2@2 ).! !
+
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 15:09:47'!
+test11_02SlideMovesPieceDiagonallyFromCenter
+
+	| game |
+	
+	game := TerniLapilli new.
+	game putX: 3@1.
+	game putO: 1@2.
+	game putX: 2@2.
+	game putO: 3@2.
+	game putX: 2@3.
+	game putO: 3@3.
+	
+	game slideX:  2@2 to:1@3.
+	self assert: 'X' equals: ( game getAtPosition: 1@3 ).
+	self assert: '' equals: ( game getAtPosition: 2@2 ).! !
+
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 14:48:09'!
+test12CanOnlySlideToAdyacentPosition
+
+	| game |
+	
+	game := TerniLapilli new.
+	game putX: 3@1.
+	game putO: 1@2.
+	game putX: 2@2.
+	game putO: 3@2.
+	game putX: 2@3.
+	game putO: 3@3.	
+
+	self 
+		should: [ game slideX:  3@1 to:1@1 ]
+		raise: Error
+		withExceptionDo: [ :invalidMove |
+			self assert: TerniLapilli signalInvalidMove = invalidMove messageText ]
+
+
+! !
+
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 14:48:06'!
+test13CanNotSlideToOccupiedPosition
+
+	| game |
+	
+	game := TerniLapilli new.
+	game putX: 3@1.
+	game putO: 1@2.
+	game putX: 2@2.
+	game putO: 3@2.
+	game putX: 2@3.
+	game putO: 3@3.
+	
+	self 
+		should: [ game slideX:  2@2 to:3@3 ]
+		raise: Error
+		withExceptionDo: [ :invalidMove |
+			self assert: TerniLapilli signalPositionIsOccupied = invalidMove messageText ]
+
+
+
+! !
+
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 14:53:05'!
+test13PlayerCanOnlySlideInTheirOwnTurn
+
+	| game |
+	
 	game:= TerniLapilli new.
 	game putX: 3@1.
 	game putO: 1@2.
@@ -210,55 +340,62 @@ test17
 	game putX: 2@3.
 	game putO: 3@3.
 	
+	self 
+		should: [ game slideO:  1@2 to:1@3 ]
+		raise: Error
+		withExceptionDo: [ :invalidMove |
+			self assert: TerniLapilli signalInvalidTurn = invalidMove messageText ]
 
-	self should:[game slideX:  2@2 to:3@3.]  raise:  Error.! !
 
-!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/5/2018 19:30:51'!
-test18
+! !
+
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 15:10:31'!
+test14PlayerCanNotSlideOpponentPiece
+
 	| game |
-	game:= TerniLapilli new.
+	 
+	game := TerniLapilli new.
 	game putX: 3@1.
 	game putO: 1@2.
 	game putX: 2@2.
 	game putO: 3@2.
 	game putX: 2@3.
-	game putO: 3@3.
-	
+	game putO: 3@3.	
 
-	self should:[game slideO:  1@2 to:1@3.]  raise:  Error.! !
+	self 
+		should: [ game slideX: 1@2 to: 1@3 ]
+		raise: Error
+		withExceptionDo: [ :invalidMove |
+			self assert: TerniLapilli signalInvalidMove = invalidMove messageText ]
+! !
 
-!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/5/2018 19:32:35'!
-test19
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 15:10:59'!
+test15PlayerCanNotSlideFromEmptySlot
+
 	| game |
-	game:= TerniLapilli new.
+	 
+	game := TerniLapilli new.
 	game putX: 3@1.
 	game putO: 1@2.
 	game putX: 2@2.
 	game putO: 3@2.
 	game putX: 2@3.
-	game putO: 3@3.
-	
+	game putO: 3@3.	
 
-	self should:[game slideX:  1@2 to:1@3.]  raise:  Error.! !
+	self 
+		should: [ game slideX: 1@1 to: 2@1 ]
+		raise: Error
+		withExceptionDo: [ :invalidMove |
+			self assert: TerniLapilli signalInvalidMove = invalidMove messageText ]
+! !
 
-!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/5/2018 19:36:56'!
-test20
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 15:14:07'!
+test16CanNotSlideAfterGameIsWon
+
 	| game |
-	game:= TerniLapilli new.
-	game putX: 3@1.
-	game putO: 1@2.
-	game putX: 2@2.
-	game putO: 3@2.
-	game putX: 2@3.
-	game putO: 3@3.
 	
-
-	self should:[game slideX:  3@1 to:1@1.]  raise:  Error.! !
-
-!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/5/2018 19:47:25'!
-test21
-	| game |
-	game:= TerniLapilli new.
+	game := TerniLapilli new.
+	
 	game putX: 3@1.
 	game putO: 1@2.
 	game putX: 2@2.
@@ -268,12 +405,18 @@ test21
 	
 	game slideX: 2@3 to: 1@3.	
 
-	self should:[game slideO:  1@2 to:1@1.]  raise:  Error.! !
+	self 
+		should: [ game slideO: 1@2 to: 1@1 ]
+		raise: Error
+		withExceptionDo: [ :invalidMove |
+			self assert: TerniLapilli signalGameOver = invalidMove messageText ]
+! !
 
-!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/5/2018 19:54:11'!
-test22
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 15:16:15'!
+test17CanOnlySlideDiagonallyFromOrToTheCenter
+
 	| game |
-	game:= TerniLapilli new.
+	game := TerniLapilli new.
 	game putX: 3@1.
 	game putO: 2@1.
 	game putX: 2@2.
@@ -281,7 +424,12 @@ test22
 	game putX: 2@3.
 	game putO: 3@3.
 	
-	self should:[game slideX:  2@3 to:1@2.]  raise:  Error.! !
+	self 
+		should: [ game slideX:  2@3 to:1@2 ]
+		raise: Error
+		withExceptionDo: [ :invalidMove |
+			self assert: TerniLapilli signalInvalidMove = invalidMove messageText ]
+! !
 
 
 !classDefinition: #Player category: #TerniLapilli!
@@ -318,32 +466,34 @@ availableX
 board
 	^board! !
 
-!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/5/2018 18:55:10'!
+!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 14:49:10'!
 checkForValidPointPut: aPoint
-	((board at: aPoint x) at: aPoint y) = '' ifFalse: [self  error: self signalInvalidMove ].! !
+	((board at: aPoint x) at: aPoint y) = '' ifFalse: [self  error: self class signalPositionIsOccupied ].! !
 
-!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/5/2018 18:55:03'!
+!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 14:23:56'!
 checkForValidPutBeforeMove
-	turn>5 ifTrue: [self  error: self signalInvalidMove ].! !
 
-!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 12:21:40'!
+	turn > 5 ifTrue: [self  error: self signalBoardIsFull ].! !
+
+!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 14:52:12'!
 checkForValidTurnWithPlayer: aPlayerNumber
-	turn \\ 2 =aPlayerNumber ifTrue: [self  error: self signalInvalidTurn ].! !
+	turn \\ 2 =aPlayerNumber ifTrue: [self  error: self class signalInvalidTurn ].! !
 
-!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/5/2018 20:29:14'!
+!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 14:22:38'!
 checkGameOver
 
-	self  hasWonX ifTrue: [self  error: self signalGameOver ].
-	self  hasWonO ifTrue: [self  error: self signalGameOver ].! !
+	self isOver ifTrue: [self  error: self class signalGameOver ].
+! !
 
-!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 12:14:28'!
+!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 14:09:14'!
 checkPositionIsEmpty: aPosition
-	((board at: aPosition x) at: aPosition y) = '' ifFalse: [self  error: self signalInvalidMove ].! !
 
-!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/5/2018 19:34:11'!
+	((board at: aPosition x) at: aPosition y) = '' ifFalse: [self  error: self class signalPositionIsOccupied ].! !
+
+!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 15:15:48'!
 checkValidPiece: aPiece OnPosition:aPosition
 
-		((board at: aPosition x) at: aPosition y) = aPiece ifFalse: [self  error: self signalInvalidMove ].! !
+		((board at: aPosition x) at: aPosition y) = aPiece ifFalse: [self error: self class signalInvalidMove ].! !
 
 !TerniLapilli methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/5/2018 20:13:31'!
 checkValidPutOf: aPlayer on: aPoint
@@ -436,6 +586,16 @@ isNotFull
 
 	^ self isFull not! !
 
+!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 13:56:18'!
+isNotOver
+
+	^ self isOver not! !
+
+!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 13:56:04'!
+isOver
+
+	^ self hasWonX or: self hasWonO! !
+
 !TerniLapilli methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 13:42:58'!
 isTurnOf: aPlayer
 
@@ -496,9 +656,14 @@ turn
 TerniLapilli class
 	instanceVariableNames: 'availableX availableO'!
 
-!TerniLapilli class methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/5/2018 18:54:12'!
+!TerniLapilli class methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 14:23:24'!
+signalBoardIsFull
+
+	^ 'The board is full'! !
+
+!TerniLapilli class methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 14:22:31'!
 signalGameOver
-^'The game is over'! !
+	^ 'The game is over'! !
 
 !TerniLapilli class methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/1/2018 20:29:57'!
 signalInvalidMove
@@ -507,6 +672,11 @@ signalInvalidMove
 !TerniLapilli class methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/1/2018 20:21:01'!
 signalInvalidTurn
 ^'This is not a valid turn'! !
+
+!TerniLapilli class methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 14:06:33'!
+signalPositionIsOccupied
+
+	^ 'This position is already occupied'! !
 
 
 !classDefinition: #TerniLapilliState category: #TerniLapilli!
@@ -576,10 +746,10 @@ putX: aPosition
 PlayingO class
 	instanceVariableNames: ''!
 
-!PlayingO class methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 13:27:21'!
+!PlayingO class methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 13:56:39'!
 isFor: aTerniLapilli
 	
-	^ aTerniLapilli isNotFull and: ( aTerniLapilli isTurnOf: 1 )! !
+	^ aTerniLapilli isNotFull and: ( aTerniLapilli isTurnOf: 1 ) and: aTerniLapilli isNotOver! !
 
 
 !classDefinition: #PlayingX category: #TerniLapilli!
@@ -607,10 +777,10 @@ putX: aPosition
 PlayingX class
 	instanceVariableNames: ''!
 
-!PlayingX class methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 13:27:24'!
+!PlayingX class methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 13:56:49'!
 isFor: aTerniLapilli
 	
-	^ aTerniLapilli isNotFull and: ( aTerniLapilli isTurnOf: 0 )! !
+	^ aTerniLapilli isNotFull and: ( aTerniLapilli isTurnOf: 0 ) and: aTerniLapilli isNotOver! !
 
 
 !classDefinition: #SlidingO category: #TerniLapilli!
@@ -636,10 +806,10 @@ putX: aPosition
 SlidingO class
 	instanceVariableNames: ''!
 
-!SlidingO class methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 13:27:28'!
+!SlidingO class methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 13:56:52'!
 isFor: aTerniLapilli
 	
-	^ aTerniLapilli isFull and: ( aTerniLapilli isTurnOf: 1 )! !
+	^ aTerniLapilli isFull and: ( aTerniLapilli isTurnOf: 1 ) and: aTerniLapilli isNotOver! !
 
 
 !classDefinition: #SlidingX category: #TerniLapilli!
@@ -649,15 +819,15 @@ TerniLapilliState subclass: #SlidingX
 	poolDictionaries: ''
 	category: 'TerniLapilli'!
 
-!SlidingX methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 12:25:55'!
+!SlidingX methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 14:24:42'!
 putO: aPosition
 
-	game error: TerniLapilli signalInvalidTurn ! !
+	game error: TerniLapilli signalBoardIsFull ! !
 
-!SlidingX methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 12:11:44'!
+!SlidingX methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 14:24:36'!
 putX: aPosition
 
-	game error: TerniLapilli signalInvalidTurn ! !
+	game error: TerniLapilli signalBoardIsFull! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -665,10 +835,10 @@ putX: aPosition
 SlidingX class
 	instanceVariableNames: ''!
 
-!SlidingX class methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 13:27:32'!
+!SlidingX class methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 13:56:55'!
 isFor: aTerniLapilli
 	
-	^ aTerniLapilli isFull and: ( aTerniLapilli isTurnOf: 0 )! !
+	^ aTerniLapilli isFull and: ( aTerniLapilli isTurnOf: 0 ) and: aTerniLapilli isNotOver! !
 
 
 !classDefinition: #WinerO category: #TerniLapilli!
