@@ -17,3 +17,13 @@ mensaje: slideX slideY pos to: pos
 -validar TODO lo anterior
 movelegalfrom to
 movemypieces
+----------------------------------------------------------------
+Xs Os state
+State: (conoce el juego como parametro)
+-PlayingX
+-PlayingO
+-SlidingX
+-SlidingO
+-Game Over
+--WinerX
+--WinerO
