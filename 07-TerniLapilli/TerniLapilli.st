@@ -431,6 +431,22 @@ test17CanOnlySlideDiagonallyFromOrToTheCenter
 			self assert: TerniLapilli signalInvalidMove = invalidMove messageText ]
 ! !
 
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'GP 11/7/2018 14:44:01'!
+test18CanOnlySlideAfterBoardIsFull
+
+	| game |
+	game := TerniLapilli new.
+	game putX: 3@1.
+	game putO: 2@1.
+
+	
+	self 
+		should: [ game slideX:  3@1 to:3@2 ]
+		raise: Error
+		withExceptionDo: [ :invalidMove |
+			self assert: TerniLapilli signalInvalidTurn = invalidMove messageText ]
+! !
+
 
 !classDefinition: #Player category: #TerniLapilli!
 Object subclass: #Player
@@ -465,6 +481,12 @@ availableX
 !TerniLapilli methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/5/2018 18:11:25'!
 board
 	^board! !
+
+!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'GP 11/7/2018 14:45:31'!
+checkBoardIsFull
+
+	self isFull ifFalse: [self  error: self class signalInvalidTurn ].
+! !
 
 !TerniLapilli methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 14:49:10'!
 checkForValidPointPut: aPoint
@@ -512,7 +534,7 @@ checkValidSlideFrom: fromPosition to: toPosition
 	
 	self error: self class signalInvalidMove ! !
 
-!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/5/2018 20:17:00'!
+!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'GP 11/7/2018 14:43:37'!
 checkValidSlideOf: aPlayer From: fromPosition to: toPosition
 
 	| piece |
@@ -524,7 +546,7 @@ checkValidSlideOf: aPlayer From: fromPosition to: toPosition
 	self checkForValidTurnWithPlayer: aPlayer.
 	self checkValidPiece: piece OnPosition:fromPosition.
 	self checkValidSlideFrom: fromPosition to: toPosition .
-! !
+	self checkBoardIsFull.! !
 
 !TerniLapilli methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/5/2018 20:25:42'!
 clearPosition: aPoint
@@ -624,22 +646,15 @@ safePutPiece: aPiece onPosition: aPosition
 	(board at: aPosition x) at: aPosition y put: aPiece.
 	! !
 
-!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/5/2018 20:27:32'!
+!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'GP 11/7/2018 14:46:23'!
 slideO: fromPosition to: toPosition
-	self checkValidSlideOf: 0 From: fromPosition to: toPosition.
-	self clearPosition: fromPosition .
-	self putPiece:'O' onPosition: toPosition.
 
-	self increaseTurn ! !
+	self state slideO: fromPosition to:toPosition! !
 
-!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/5/2018 20:27:25'!
+!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'GP 11/7/2018 14:48:50'!
 slideX: fromPosition to: toPosition
 	
-	self checkValidSlideOf: 1 From: fromPosition to: toPosition.
-	self clearPosition: fromPosition .
-	self putPiece:'X' onPosition: toPosition .
-	
-	self increaseTurn! !
+	self state slideX: fromPosition to: toPosition ! !
 
 !TerniLapilli methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 10:05:32'!
 state
@@ -740,6 +755,16 @@ putX: aPosition
 
 	game error: TerniLapilli signalInvalidTurn ! !
 
+!PlayingO methodsFor: 'as yet unclassified' stamp: 'GP 11/7/2018 14:46:50'!
+slideO: fromPosition to: toPosition
+
+	game error: TerniLapilli signalInvalidTurn ! !
+
+!PlayingO methodsFor: 'as yet unclassified' stamp: 'GP 11/7/2018 14:49:19'!
+slideX: fromPosition to: toPosition
+
+	game error: TerniLapilli signalInvalidTurn ! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'PlayingO class' category: #TerniLapilli!
@@ -771,6 +796,16 @@ putX: aPosition
 	game putPiece: 'X' onPosition: aPosition.
 	game increaseTurn.! !
 
+!PlayingX methodsFor: 'as yet unclassified' stamp: 'GP 11/7/2018 14:46:55'!
+slideO: fromPosition to: toPosition
+
+	game error: TerniLapilli signalInvalidTurn ! !
+
+!PlayingX methodsFor: 'as yet unclassified' stamp: 'GP 11/7/2018 14:49:25'!
+slideX: fromPosition to: toPosition
+
+	game error: TerniLapilli signalInvalidTurn ! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'PlayingX class' category: #TerniLapilli!
@@ -799,6 +834,24 @@ putO: aPosition
 putX: aPosition
 
 	game error: TerniLapilli signalInvalidTurn ! !
+
+!SlidingO methodsFor: 'as yet unclassified' stamp: 'GP 11/7/2018 14:48:07'!
+slideO: fromPosition to: toPosition
+
+	game checkValidSlideOf: 0 From: fromPosition to: toPosition.
+	
+	game clearPosition: fromPosition .
+	game putPiece:'O' onPosition: toPosition.
+	game increaseTurn ! !
+
+!SlidingO methodsFor: 'as yet unclassified' stamp: 'GP 11/7/2018 14:49:33'!
+slideX: fromPosition to: toPosition
+
+	game checkValidSlideOf: 0 From: fromPosition to: toPosition.
+	
+	game clearPosition: fromPosition .
+	game putPiece:'O' onPosition: toPosition.
+	game increaseTurn ! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -829,6 +882,20 @@ putX: aPosition
 
 	game error: TerniLapilli signalBoardIsFull! !
 
+!SlidingX methodsFor: 'as yet unclassified' stamp: 'GP 11/7/2018 14:46:59'!
+slideO: fromPosition to: toPosition
+
+	game error: TerniLapilli signalInvalidTurn ! !
+
+!SlidingX methodsFor: 'as yet unclassified' stamp: 'GP 11/7/2018 14:50:20'!
+slideX: fromPosition to: toPosition
+
+	game checkValidSlideOf: 1 From: fromPosition to: toPosition.
+	
+	game clearPosition: fromPosition .
+	game putPiece: 'X' onPosition: toPosition .	
+	game increaseTurn! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'SlidingX class' category: #TerniLapilli!
@@ -858,6 +925,16 @@ putX: aPosition
 
 	game error: TerniLapilli signalGameOver ! !
 
+!WinerO methodsFor: 'as yet unclassified' stamp: 'GP 11/7/2018 14:47:08'!
+slideO: fromPosition to: toPosition
+
+	game error: TerniLapilli signalGameOver ! !
+
+!WinerO methodsFor: 'as yet unclassified' stamp: 'GP 11/7/2018 14:49:37'!
+slideX: fromPosition to: toPosition
+
+	game error: TerniLapilli signalGameOver ! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'WinerO class' category: #TerniLapilli!
@@ -884,6 +961,16 @@ putO: aPosition
 
 !WinerX methodsFor: 'as yet unclassified' stamp: 'GP 11/6/2018 12:11:51'!
 putX: aPosition
+
+	game error: TerniLapilli signalGameOver ! !
+
+!WinerX methodsFor: 'as yet unclassified' stamp: 'GP 11/7/2018 14:47:14'!
+slideO: fromPosition to: toPosition
+
+	game error: TerniLapilli signalGameOver ! !
+
+!WinerX methodsFor: 'as yet unclassified' stamp: 'GP 11/7/2018 14:49:42'!
+slideX: fromPosition to: toPosition
 
 	game error: TerniLapilli signalGameOver ! !
 
