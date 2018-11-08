@@ -5,12 +5,12 @@ TestCase subclass: #TerniLapilliTest
 	poolDictionaries: ''
 	category: 'TerniLapilli'!
 
-!TerniLapilliTest methodsFor: 'test' stamp: 'GP 11/6/2018 13:58:28'!
+!TerniLapilliTest methodsFor: 'test' stamp: 'GP 11/8/2018 16:17:40'!
 test01TurnIsZeroWhenGameIsStarted
 
 	| game |
 	
-	game:= TerniLapilli new.
+	game := TerniLapilli new.
 	
 	self assert: 0 equals: game turn! !
 
@@ -327,12 +327,12 @@ test13CanNotSlideToOccupiedPosition
 
 ! !
 
-!TerniLapilliTest methodsFor: 'test' stamp: 'GP 11/8/2018 10:03:11'!
+!TerniLapilliTest methodsFor: 'test' stamp: 'GP 11/8/2018 16:17:27'!
 test13PlayerCanOnlySlideInTheirOwnTurn
 
 	| game |
 	
-	game:= TerniLapilli new.
+	game := TerniLapilli new.
 	game putX: 3@1.
 	game putO: 1@2.
 	game putX: 2@2.
@@ -389,13 +389,12 @@ test15PlayerCanNotSlideFromEmptySlot
 			self assert: TerniLapilli signalInvalidSlide = invalidMove messageText ]
 ! !
 
-!TerniLapilliTest methodsFor: 'test' stamp: 'GP 11/6/2018 15:14:07'!
+!TerniLapilliTest methodsFor: 'test' stamp: 'GP 11/8/2018 16:17:22'!
 test16CanNotSlideAfterGameIsWon
 
 	| game |
 	
-	game := TerniLapilli new.
-	
+	game := TerniLapilli new.	
 	game putX: 3@1.
 	game putO: 1@2.
 	game putX: 2@2.
@@ -412,10 +411,11 @@ test16CanNotSlideAfterGameIsWon
 			self assert: TerniLapilli signalGameOver = invalidMove messageText ]
 ! !
 
-!TerniLapilliTest methodsFor: 'test' stamp: 'GP 11/8/2018 10:05:04'!
+!TerniLapilliTest methodsFor: 'test' stamp: 'GP 11/8/2018 16:17:08'!
 test17CanOnlySlideDiagonallyFromOrToTheCenter
 
 	| game |
+	
 	game := TerniLapilli new.
 	game putX: 3@1.
 	game putO: 2@1.
@@ -431,14 +431,14 @@ test17CanOnlySlideDiagonallyFromOrToTheCenter
 			self assert: TerniLapilli signalInvalidSlide = invalidMove messageText ]
 ! !
 
-!TerniLapilliTest methodsFor: 'test' stamp: 'GP 11/8/2018 10:03:21'!
+!TerniLapilliTest methodsFor: 'test' stamp: 'GP 11/8/2018 16:17:14'!
 test18CanOnlySlideAfterBoardIsFull
 
 	| game |
+	
 	game := TerniLapilli new.
 	game putX: 3@1.
 	game putO: 2@1.
-
 	
 	self 
 		should: [ game slideX:  3@1 to:3@2 ]
@@ -447,10 +447,11 @@ test18CanOnlySlideAfterBoardIsFull
 			self assert: TerniLapilli signalBoardIsNotFull = invalidMove messageText ]
 ! !
 
-!TerniLapilliTest methodsFor: 'test' stamp: 'GP 11/8/2018 10:05:12'!
+!TerniLapilliTest methodsFor: 'test' stamp: 'GP 11/8/2018 16:17:02'!
 test19CanNotSlideToTheSameLocation
 
 	| game |
+	
 	game := TerniLapilli new.
 	game putX: 3@1.
 	game putO: 2@1.
@@ -473,6 +474,34 @@ Object subclass: #TerniLapilli
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'TerniLapilli'!
+
+!TerniLapilli methodsFor: 'asserting' stamp: 'GP 11/8/2018 10:52:35'!
+checkPiece: aPiece isOn: aPosition
+
+	(self hasPiece: aPiece at: aPosition) ifFalse: [self error: self class signalInvalidSlide ].! !
+
+!TerniLapilli methodsFor: 'asserting' stamp: 'GP 11/8/2018 11:11:22'!
+checkPositionIsEmptyForPut: aPosition
+
+	(self isEmptyAt: aPosition) ifFalse: [self error: self class signalInvalidPut ].! !
+
+!TerniLapilli methodsFor: 'asserting' stamp: 'GP 11/8/2018 10:23:02'!
+checkValidSlideFrom: fromPosition to: toPosition
+	
+	( self isEmptyAt: toPosition ) ifFalse: [ self error: self class signalInvalidSlide ].
+		
+	((fromPosition x - toPosition x) abs = 1 and: (fromPosition y - toPosition y) = 0) ifTrue: [^true].
+	((fromPosition x - toPosition x) = 0 and: (fromPosition y - toPosition y) abs = 1) ifTrue: [^true].
+	(fromPosition = (2@2) xor: toPosition = (2@2)) ifTrue: [^true].
+	
+	self error: self class signalInvalidSlide ! !
+
+!TerniLapilli methodsFor: 'asserting' stamp: 'GP 11/8/2018 16:15:59'!
+checkValidSlideOf: aPiece from: fromPosition to: toPosition
+	
+	self checkPiece: aPiece isOn: fromPosition.
+	self checkValidSlideFrom: fromPosition to: toPosition .! !
+
 
 !TerniLapilli methodsFor: 'testing' stamp: 'GP 11/8/2018 10:52:18'!
 hasPiece: aPiece at: aPosition
@@ -534,38 +563,6 @@ isOver
 isTurnOf: aPlayer
 
 	^ (self turn \\ 2) = aPlayer! !
-
-
-!TerniLapilli methodsFor: 'asserting' stamp: 'GP 11/8/2018 10:52:35'!
-checkPiece: aPiece isOn: aPosition
-
-	(self hasPiece: aPiece at: aPosition) ifFalse: [self error: self class signalInvalidSlide ].! !
-
-!TerniLapilli methodsFor: 'asserting' stamp: 'GP 11/8/2018 11:11:22'!
-checkPositionIsEmptyForPut: aPosition
-
-	(self isEmptyAt: aPosition) ifFalse: [self error: self class signalInvalidPut ].! !
-
-!TerniLapilli methodsFor: 'asserting' stamp: 'GP 11/8/2018 10:23:02'!
-checkValidSlideFrom: fromPosition to: toPosition
-	
-	( self isEmptyAt: toPosition ) ifFalse: [ self error: self class signalInvalidSlide ].
-		
-	((fromPosition x - toPosition x) abs = 1 and: (fromPosition y - toPosition y) = 0) ifTrue: [^true].
-	((fromPosition x - toPosition x) = 0 and: (fromPosition y - toPosition y) abs = 1) ifTrue: [^true].
-	(fromPosition = (2@2) xor: toPosition = (2@2)) ifTrue: [^true].
-	
-	self error: self class signalInvalidSlide ! !
-
-!TerniLapilli methodsFor: 'asserting' stamp: 'GP 11/8/2018 10:51:55'!
-checkValidSlideOf: aPlayer from: fromPosition to: toPosition
-
-	| piece |
-	
-	aPlayer = 0 ifTrue: [ piece := 'O'] ifFalse: [ piece := 'X' ].
-	
-	self checkPiece: piece isOn: fromPosition.
-	self checkValidSlideFrom: fromPosition to: toPosition .! !
 
 
 !TerniLapilli methodsFor: 'operations - private' stamp: 'Uriel Jonathan Rozenberg 11/5/2018 20:25:42'!
@@ -826,10 +823,10 @@ putX: aPosition
 
 	game error: TerniLapilli signalOtherPlayersTurn ! !
 
-!SlidingO methodsFor: 'operations' stamp: 'GP 11/8/2018 10:52:04'!
+!SlidingO methodsFor: 'operations' stamp: 'GP 11/8/2018 16:15:37'!
 slideO: fromPosition to: toPosition
 
-	game checkValidSlideOf: 0 from: fromPosition to: toPosition.
+	game checkValidSlideOf: 'O' from: fromPosition to: toPosition.
 	
 	game clearPosition: fromPosition .
 	game putPiece: 'O' onPosition: toPosition.
@@ -874,10 +871,10 @@ slideO: fromPosition to: toPosition
 
 	game error: TerniLapilli signalOtherPlayersTurn ! !
 
-!SlidingX methodsFor: 'operations' stamp: 'GP 11/8/2018 10:52:08'!
+!SlidingX methodsFor: 'operations' stamp: 'GP 11/8/2018 16:15:46'!
 slideX: fromPosition to: toPosition
 
-	game checkValidSlideOf: 1 from: fromPosition to: toPosition.
+	game checkValidSlideOf: 'X' from: fromPosition to: toPosition.
 	
 	game clearPosition: fromPosition .
 	game putPiece: 'X' onPosition: toPosition .	
