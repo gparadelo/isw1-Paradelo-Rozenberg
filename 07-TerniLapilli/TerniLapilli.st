@@ -625,14 +625,11 @@ turn
 	^turn! !
 
 
-!TerniLapilli methodsFor: 'initialization' stamp: 'GP 11/6/2018 10:03:12'!
+!TerniLapilli methodsFor: 'initialization' stamp: 'Uriel Jonathan Rozenberg 11/8/2018 16:06:32'!
 initialize
-	availableX:=3.
-	availableO:=3.
 	board:=Array with:( Array with: '' with: '' with: '') with: (Array with: '' with: '' with: '') with: (Array with: '' with: '' with: '').
 	turn:=0.
-	X:= Set new.
-	O:= Set new.! !
+! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
