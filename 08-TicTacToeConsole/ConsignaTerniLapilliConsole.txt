@@ -1,0 +1,137 @@
+﻿Implementar por medio de TDD lo necesario para que se pueda tener una consola (log) y una vista sobre el TerniLapilli sin que este lo sepa.
+O sea, el TerniLapilli no debe saber que una consola o una vista están atentos a los cambios que se producen en él.
+También es necesario que el TerniLapilli sepa responder cual fue la última jugada por medio del mensaje #lastPlay.
+La solución FINAL debe permitir sin ser modificada, agregar nuevos objetos atentos a los cambios del TerniLapilli (por ejemplo uno que genere un post de http por cada cambio).
+Durante el camino a la solución final se pueden hacer "chanchadas", tener código repetido, no cumplir con la consigna anterior, etc.
+Traten de descubrir el patrón por medio de un desarrollo iterativo-incremental, siguiendo TDD. 
+
+Ejemplo de qué se debe observar en la consola cuando se juega con un juego recién iniciado:
+Acciones: 
+TerniLapilli markWithXAt: 2@2
+Consola:
+X marcó en 2@2
+Estado: Jugando O
+
+Acciones: 
+TerniLapilli markWithXAt: 2@2
+TerniLapilli markWithOAt: 1@1
+Consola:
+X marcó en 2@2
+Estado: Jugando O
+O marcó en 1@1
+Estado: Jugando X
+
+Acciones: 
+TerniLapilli markWithXAt: 2@2
+TerniLapilli markWithOAt: 1@1
+TerniLapilli markWithXAt: 1@3
+Consola:
+X marcó en 2@2
+Estado: Jugando O
+O marcó en 1@1
+Estado: Jugando X
+X marcó en 1@3
+Estado: Jugando O
+
+Acciones: (juego completo)
+TerniLapilli markWithXAt: 2@2
+TerniLapilli markWithOAt: 1@1
+TerniLapilli markWithXAt: 1@3
+TerniLapilli markWithOAt: 1@2
+TerniLapilli markWithXAt: 3@1
+Consola:
+X marcó en 2@2
+Estado: Jugando O
+O marcó en 1@1
+Estado: Jugando X
+X marcó en 1@3
+Estado: Jugando O
+O marcó en 1@2
+Estado: Jugando X
+X marcó en 3@1
+Estado: Juego terminado - ¡Ganó X!
+
+(Por supuesto, también debe soportar que gane O.)
+
+Acciones: (juego inconcluso con desplazamientos)
+TerniLapilli markWithXAt: 2@2
+TerniLapilli markWithOAt: 1@1
+TerniLapilli markWithXAt: 1@3
+TerniLapilli markWithOAt: 3@1
+TerniLapilli markWithXAt: 2@1
+TerniLapilli markWithOAt: 2@3
+TerniLapilli slideXfrom: 1@3  to: 1@2.
+
+TerniLapilli slideOfrom: 3@1  to: 3@2.
+
+TerniLapilli slideXfrom: 2@2  to: 3@3.
+
+Consola:
+X marcó en 2@2
+Estado: Jugando O
+O marcó en 1@1
+Estado: Jugando X
+X marcó en 1@3
+Estado: Jugando O
+O marcó en 3@1
+Estado: Jugando X
+X marcó en 2@1
+Estado: Jugando O
+O marcó en 2@3
+Estado: Jugando X
+X deslizó hasta 1@2 desde 1@3
+Estado: Jugando O
+O deslizó hasta 3@2 desde 3@1
+Estado: Jugando X
+X deslizó hasta 3@3 desde 2@2
+Estado: Jugando O
+
+En la vista debería verse el estado del tablero:
+Acciones: 
+TerniLapilli markWithXAt: 2@2
+Vista:
+ | | 
+-----
+ |X| 
+-----
+ | | 
+Playing O
+ 
+Acciones: 
+TerniLapilli markWithXAt: 2@2
+TerniLapilli markWithOAt: 3@1
+Vista:
+ | | 
+-----
+ |X| 
+-----
+O| | 
+Playing X
+
+Acciones: 
+TerniLapilli markWithXAt: 2@2
+TerniLapilli markWithOAt: 3@1
+TerniLapilli markWithXAt: 1@1
+Vista:
+X| | 
+-----
+ |X| 
+-----
+O| | 
+Playing O
+
+Acciones: (juego completo)
+TerniLapilli markWithXAt: 2@2
+TerniLapilli markWithOAt: 3@1
+TerniLapilli markWithXAt: 1@1
+TerniLapilli markWithOAt: 2@1
+TerniLapilli markWithXAt: 3@3
+Vista:
+X| | 
+-----
+O|X| 
+-----
+O| |X
+X Won!
+
+Recordar que se puede usar una consola y vista del juego al mismo tiempo.
