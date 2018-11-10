@@ -935,6 +935,27 @@ test40CanNotSlideOWhenPlayingX
 	! !
 
 
+!classDefinition: #ActiveVariable category: #TerniLapilli!
+Object subclass: #ActiveVariable
+	instanceVariableNames: 'value'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'TerniLapilli'!
+
+!ActiveVariable methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/10/2018 13:42:27'!
+changeTo: aValue
+	value:=aValue! !
+
+!ActiveVariable methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/10/2018 14:18:42'!
+doesNotUnderstand: aMessage
+	^aMessage sendTo: value.
+! !
+
+!ActiveVariable methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/10/2018 14:00:34'!
+value
+	^value! !
+
+
 !classDefinition: #TerniLapilli category: #TerniLapilli!
 Object subclass: #TerniLapilli
 	instanceVariableNames: 'state playerOPositions playerXPositions observers'
@@ -1017,12 +1038,13 @@ hasWin: positions
 		or: [ self hasDownDiagonal: positions ]]].! !
 
 
-!TerniLapilli methodsFor: 'initialization' stamp: 'Uriel Jonathan Rozenberg 11/8/2018 20:25:54'!
+!TerniLapilli methodsFor: 'initialization' stamp: 'Uriel Jonathan Rozenberg 11/10/2018 13:57:08'!
 initialize
 
 	playerXPositions := OrderedCollection new.
 	playerOPositions := OrderedCollection new.
-	state := PlacingX new initializeFor: self.
+	state := ActiveVariable new.
+	state changeTo:(PlacingX new initializeFor: self).
 	observers:= OrderedCollection new.! !
 
 
@@ -1217,10 +1239,10 @@ hasPlayerXWon
 	
 	^self hasWin: playerXPositions ! !
 
-!TerniLapilli methodsFor: 'testing game result' stamp: 'HAW 10/25/2017 13:32:14'!
+!TerniLapilli methodsFor: 'testing game result' stamp: 'Uriel Jonathan Rozenberg 11/10/2018 14:06:11'!
 isOver
 	
-	^state isOver! !
+	^state value isOver! !
 
 
 !TerniLapilli methodsFor: 'testing playing turn' stamp: 'HAW 11/8/2018 12:19:47'!
@@ -1228,12 +1250,12 @@ isPlacingX
 	
 	^state isPlacingX ! !
 
-!TerniLapilli methodsFor: 'testing playing turn' stamp: 'HAW 10/25/2017 16:17:38'!
+!TerniLapilli methodsFor: 'testing playing turn' stamp: 'Uriel Jonathan Rozenberg 11/10/2018 14:19:17'!
 isPlayingO
 	
 	^state isPlayingO! !
 
-!TerniLapilli methodsFor: 'testing playing turn' stamp: 'HAW 10/25/2017 16:17:14'!
+!TerniLapilli methodsFor: 'testing playing turn' stamp: 'Uriel Jonathan Rozenberg 11/10/2018 14:19:08'!
 isPlayingX
 	
 	^state isPlayingX ! !
