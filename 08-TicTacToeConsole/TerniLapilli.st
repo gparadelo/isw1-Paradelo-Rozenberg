@@ -126,6 +126,38 @@ test05
 	self assert: 'Estado: jugando X' equals: lines nextLine.
 	self assert: lines atEnd.! !
 
+!TerniLapilliConsoleTest methodsFor: 'as yet unclassified' stamp: 'GP 11/10/2018 16:41:46'!
+test06
+	|console lines game |
+	game:= TerniLapilli new.
+	console :=TerniLapilliConsole on: game.
+	game putXAt: 2@2.
+	game putOAt: 1@1.
+	game putXAt: 1@2.
+	game putOAt: 3@1.
+	game putXAt: 3@3.
+	game putOAt: 2@3.
+	game slideXFrom: 3@3 to: 3@2. 	
+
+	
+	lines := console lines.
+	self assert: 'X marcó en 2@2' equals: lines nextLine.
+	self assert: 'Estado: jugando O' equals: lines nextLine.
+	self assert: 'O marcó en 1@1' equals: lines nextLine.
+	self assert: 'Estado: jugando X' equals: lines nextLine.
+	self assert: 'X marcó en 1@2' equals: lines nextLine.
+	self assert: 'Estado: jugando O' equals: lines nextLine.
+	self assert: 'O marcó en 3@1' equals: lines nextLine.
+	self assert: 'Estado: jugando X' equals: lines nextLine.
+	self assert: 'X marcó en 3@3' equals: lines nextLine.
+	self assert: 'Estado: jugando O' equals: lines nextLine.
+	self assert: 'O marcó en 2@3' equals: lines nextLine.
+	self assert: 'Estado: jugando X' equals: lines nextLine.
+	self assert: 'X deslizó hasta 3@2 desde 3@3' equals: lines nextLine.
+	self assert: 'Estado: Juego terminado - ¡Ganó X!!' equals: lines nextLine.
+
+	self assert: lines atEnd.! !
+
 
 !classDefinition: #TerniLapilliTest category: #TerniLapilli!
 TestCase subclass: #TerniLapilliTest
@@ -1468,16 +1500,24 @@ value: aState
 	
 	aState accept: self.! !
 
-!TerniLapilliConsole methodsFor: 'as yet unclassified' stamp: 'GP 11/10/2018 15:54:31'!
+!TerniLapilliConsole methodsFor: 'as yet unclassified' stamp: 'GP 11/10/2018 16:51:54'!
 visitGameOverState: aGameOverState
+	
+	| move |
+	
+	move := game lastPlay.
 	
 	game hasPlayerOWon 
 		ifTrue: [ 
-			self addNewLine: 'O marcó en ', game lastPlay value asString;
-			addNewLine: 'Estado: Juego terminado - ¡Ganó O!!' ]
-		ifFalse: [ 			
-			self addNewLine: 'X marcó en ', game lastPlay value asString;
-			addNewLine: 'Estado: Juego terminado - ¡Ganó X!!' ]
+			move key = 'putO'
+				ifTrue: [ self addNewLine: 'O marcó en ', move value asString ]
+				ifFalse: [ self addNewLine: 'O deslizó hasta ', move value value asString, ' desde ' , move value key asString ].
+			self addNewLine: 'Estado: Juego terminado - ¡Ganó O!!' ]
+		ifFalse: [ 	
+			move key = 'putX'
+				ifTrue: [ self addNewLine: 'X marcó en ', move value asString ]
+				ifFalse: [ self addNewLine: 'X deslizó hasta ', move value value asString, ' desde ' , move value key asString ].
+			self addNewLine: 'Estado: Juego terminado - ¡Ganó X!!' ]
 
 ! !
 
