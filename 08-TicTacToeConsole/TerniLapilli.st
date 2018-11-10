@@ -62,6 +62,70 @@ test03
 
 ! !
 
+!TerniLapilliConsoleTest methodsFor: 'as yet unclassified' stamp: 'GP 11/10/2018 16:38:32'!
+test04
+	|console lines game |
+	game:= TerniLapilli new.
+	console :=TerniLapilliConsole on: game.
+	game putXAt: 2@2.
+	game putOAt: 1@1.
+	game putXAt: 1@2.
+	game putOAt: 3@1.
+	game putXAt: 3@3.
+	game putOAt: 3@2.
+	game slideXFrom: 2@2 to: 1@3. 
+	
+	lines := console lines.
+	self assert: 'X marcó en 2@2' equals: lines nextLine.
+	self assert: 'Estado: jugando O' equals: lines nextLine.
+	self assert: 'O marcó en 1@1' equals: lines nextLine.
+	self assert: 'Estado: jugando X' equals: lines nextLine.
+	self assert: 'X marcó en 1@2' equals: lines nextLine.
+	self assert: 'Estado: jugando O' equals: lines nextLine.
+	self assert: 'O marcó en 3@1' equals: lines nextLine.
+	self assert: 'Estado: jugando X' equals: lines nextLine.
+	self assert: 'X marcó en 3@3' equals: lines nextLine.
+	self assert: 'Estado: jugando O' equals: lines nextLine.
+	self assert: 'O marcó en 3@2' equals: lines nextLine.
+	self assert: 'Estado: jugando X' equals: lines nextLine.
+	self assert: 'X deslizó hasta 1@3 desde 2@2' equals: lines nextLine.
+	self assert: 'Estado: jugando O' equals: lines nextLine.
+	self assert: lines atEnd.! !
+
+!TerniLapilliConsoleTest methodsFor: 'as yet unclassified' stamp: 'GP 11/10/2018 16:39:34'!
+test05
+	|console lines game |
+	game:= TerniLapilli new.
+	console :=TerniLapilliConsole on: game.
+	game putXAt: 2@2.
+	game putOAt: 1@1.
+	game putXAt: 1@2.
+	game putOAt: 3@1.
+	game putXAt: 3@3.
+	game putOAt: 3@2.
+	game slideXFrom: 2@2 to: 1@3. 	
+	game slideOFrom: 1@1 to: 2@1. 
+
+	
+	lines := console lines.
+	self assert: 'X marcó en 2@2' equals: lines nextLine.
+	self assert: 'Estado: jugando O' equals: lines nextLine.
+	self assert: 'O marcó en 1@1' equals: lines nextLine.
+	self assert: 'Estado: jugando X' equals: lines nextLine.
+	self assert: 'X marcó en 1@2' equals: lines nextLine.
+	self assert: 'Estado: jugando O' equals: lines nextLine.
+	self assert: 'O marcó en 3@1' equals: lines nextLine.
+	self assert: 'Estado: jugando X' equals: lines nextLine.
+	self assert: 'X marcó en 3@3' equals: lines nextLine.
+	self assert: 'Estado: jugando O' equals: lines nextLine.
+	self assert: 'O marcó en 3@2' equals: lines nextLine.
+	self assert: 'Estado: jugando X' equals: lines nextLine.
+	self assert: 'X deslizó hasta 1@3 desde 2@2' equals: lines nextLine.
+	self assert: 'Estado: jugando O' equals: lines nextLine.
+	self assert: 'O deslizó hasta 2@1 desde 1@1' equals: lines nextLine.
+	self assert: 'Estado: jugando X' equals: lines nextLine.
+	self assert: lines atEnd.! !
+
 
 !classDefinition: #TerniLapilliTest category: #TerniLapilli!
 TestCase subclass: #TerniLapilliTest
@@ -1191,13 +1255,14 @@ slideOWhenPlayingXFrom: aPosition to: anotherPosition
 
 	self error: self class notOTurnErrorMessage ! !
 
-!TerniLapilli methodsFor: 'sliding - private' stamp: 'HAW 11/8/2018 11:53:04'!
+!TerniLapilli methodsFor: 'sliding - private' stamp: 'GP 11/10/2018 16:31:54'!
 slideOWhenSlidingOFrom: aPosition to: anotherPosition
 	
 	self assertIsFree: anotherPosition .
 	self assertIsLegalMovementFrom: aPosition to: anotherPosition.
 	
-	playerOPositions remove: aPosition.
+	playerOPositions remove: aPosition.	
+	lastPlay := 'SlideO'->(aPosition->anotherPosition).
 	self changeStateAfterAdding: anotherPosition to: playerOPositions
 	 ! !
 
@@ -1211,13 +1276,14 @@ slideXWhenPlayingOFrom: aPosition to: anotherPosition
 
 	self error: self class notXTurnErrorMessage! !
 
-!TerniLapilli methodsFor: 'sliding - private' stamp: 'HAW 11/8/2018 11:53:04'!
+!TerniLapilli methodsFor: 'sliding - private' stamp: 'GP 11/10/2018 16:30:08'!
 slideXWhenSlidingXFrom: aPosition to: anotherPosition
 	
 	self assertIsFree: anotherPosition .
 	self assertIsLegalMovementFrom: aPosition to: anotherPosition.
 	
 	playerXPositions remove: aPosition.
+	lastPlay := 'SlideX'->(aPosition->anotherPosition).
 	self changeStateAfterAdding: anotherPosition to: playerXPositions! !
 
 
@@ -1427,6 +1493,32 @@ visitPlacingO: aPlacingOState
 visitPlacingX: aPlacingXState
 	
 	self addNewLine: 'O marcó en ', game lastPlay value asString.
+	self addNewLine: 'Estado: jugando X'.
+	
+! !
+
+!TerniLapilliConsole methodsFor: 'as yet unclassified' stamp: 'GP 11/10/2018 16:38:21'!
+visitSlidingO: aSlidingXState
+	
+	| move |
+	
+	move := game lastPlay.
+	
+	self addNewLine: 'X deslizó hasta ', move value value asString, ' desde ' , move value key asString.
+	self addNewLine: 'Estado: jugando O'.
+	
+! !
+
+!TerniLapilliConsole methodsFor: 'as yet unclassified' stamp: 'GP 11/10/2018 16:38:11'!
+visitSlidingX: aSlidingXState
+	
+	| move |
+	
+	move := game lastPlay.
+	
+	move key = 'putO' 
+		ifTrue: [ self addNewLine: 'O marcó en ', move value asString ]
+		ifFalse: [ self addNewLine: 'O deslizó hasta ', move value value asString, ' desde ' , move value key asString ].
 	self addNewLine: 'Estado: jugando X'.
 	
 ! !
@@ -1670,6 +1762,11 @@ putXAt: aPosition
 	game putXWhenSlidingXAt: aPosition ! !
 
 
+!SlidingO methodsFor: 'sliding' stamp: 'GP 11/10/2018 16:37:35'!
+accept: aVisitor
+
+	aVisitor visitSlidingO: self! !
+
 !SlidingO methodsFor: 'sliding' stamp: 'HAW 11/8/2018 11:48:38'!
 slideOFrom: aPosition to: anotherPostion
  
@@ -1786,6 +1883,11 @@ putXAt: aPosition
 
 	game putXWhenSlidingXAt: aPosition ! !
 
+
+!SlidingX methodsFor: 'sliding' stamp: 'GP 11/10/2018 16:26:50'!
+accept: aVisitor
+
+	aVisitor visitSlidingX: self! !
 
 !SlidingX methodsFor: 'sliding' stamp: 'HAW 11/8/2018 11:48:20'!
 slideXFrom: aPosition to: anotherPostion
