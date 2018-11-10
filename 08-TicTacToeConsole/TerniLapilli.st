@@ -937,19 +937,32 @@ test40CanNotSlideOWhenPlayingX
 
 !classDefinition: #ActiveVariable category: #TerniLapilli!
 Object subclass: #ActiveVariable
-	instanceVariableNames: 'value'
+	instanceVariableNames: 'value observers'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'TerniLapilli'!
 
-!ActiveVariable methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/10/2018 13:42:27'!
+!ActiveVariable methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/10/2018 14:22:43'!
+addObserver: anObserver
+	observers add: anObserver ! !
+
+!ActiveVariable methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/10/2018 14:30:54'!
 changeTo: aValue
-	value:=aValue! !
+	value:=aValue.
+	self notifyObservers.! !
 
 !ActiveVariable methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/10/2018 14:18:42'!
 doesNotUnderstand: aMessage
 	^aMessage sendTo: value.
 ! !
+
+!ActiveVariable methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/10/2018 14:23:56'!
+initialize
+	observers:= Set new.! !
+
+!ActiveVariable methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/10/2018 14:30:17'!
+notifyObservers
+	observers do: [ :observer | observer value: value ].! !
 
 !ActiveVariable methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/10/2018 14:00:34'!
 value
