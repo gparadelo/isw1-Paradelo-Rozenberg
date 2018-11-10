@@ -946,8 +946,9 @@ Object subclass: #ActiveVariable
 addObserver: anObserver
 	observers add: anObserver ! !
 
-!ActiveVariable methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/10/2018 14:30:54'!
+!ActiveVariable methodsFor: 'as yet unclassified' stamp: 'GP 11/10/2018 15:24:41'!
 changeTo: aValue
+
 	value:=aValue.
 	self notifyObservers.! !
 
@@ -971,7 +972,7 @@ value
 
 !classDefinition: #TerniLapilli category: #TerniLapilli!
 Object subclass: #TerniLapilli
-	instanceVariableNames: 'state playerOPositions playerXPositions observers'
+	instanceVariableNames: 'state playerOPositions playerXPositions observers lastPlay'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'TerniLapilli'!
@@ -1050,49 +1051,53 @@ hasWin: positions
 		or: [ (self hasUpDiagonal: positions) 
 		or: [ self hasDownDiagonal: positions ]]].! !
 
+!TerniLapilli methodsFor: 'game over testing - private' stamp: 'GP 11/10/2018 15:35:13'!
+lastPlay
 
-!TerniLapilli methodsFor: 'initialization' stamp: 'Uriel Jonathan Rozenberg 11/10/2018 13:57:08'!
+	^ lastPlay ! !
+
+
+!TerniLapilli methodsFor: 'initialization' stamp: 'GP 11/10/2018 15:40:09'!
 initialize
 
 	playerXPositions := OrderedCollection new.
 	playerOPositions := OrderedCollection new.
 	state := ActiveVariable new.
-	state changeTo:(PlacingX new initializeFor: self).
+	state changeTo: (PlacingX new initializeFor: self).
 	observers:= OrderedCollection new.! !
 
 
-!TerniLapilli methodsFor: 'marking board' stamp: 'Uriel Jonathan Rozenberg 11/8/2018 20:49:42'!
+!TerniLapilli methodsFor: 'marking board' stamp: 'GP 11/10/2018 15:38:04'!
 putOAt: aPosition
-	observers do:[:observer| observer observePut: 'O' to: aPosition].
+
 	self assertIsInBoardBounds: aPosition .
 	state putOAt: aPosition.
-	observers do:[:observer| observer observeState: state].
 ! !
 
-!TerniLapilli methodsFor: 'marking board' stamp: 'Uriel Jonathan Rozenberg 11/8/2018 20:36:19'!
+!TerniLapilli methodsFor: 'marking board' stamp: 'GP 11/10/2018 15:37:56'!
 putXAt: aPosition
-	observers do:[:observer| observer observePut: 'X' to: aPosition].
+
 	self assertIsInBoardBounds: aPosition .
 	state putXAt: aPosition.
-	observers do:[:observer| observer observeState: state].
 
 ! !
 
 
-!TerniLapilli methodsFor: 'marking board - private' stamp: 'HAW 11/8/2018 11:53:04'!
+!TerniLapilli methodsFor: 'marking board - private' stamp: 'GP 11/10/2018 15:34:00'!
 changeStateAfterAdding: aPosition to: positions  
 
 	positions add: aPosition.
-	state := TerniLapilliState for: self
-	! !
+	state changeTo: ( TerniLapilliState for: self )! !
 
-!TerniLapilli methodsFor: 'marking board - private' stamp: 'HAW 11/8/2018 11:53:04'!
+!TerniLapilli methodsFor: 'marking board - private' stamp: 'GP 11/10/2018 15:49:01'!
 putOWhenPlacingOAt: aPosition
 
 	self playerOHasPiecesToPlace.
 	self assertIsFree: aPosition.
 
-	self changeStateAfterAdding: aPosition to: playerOPositions
+	lastPlay := 'putO'->aPosition.
+	self changeStateAfterAdding: aPosition to: playerOPositions.
+
 		! !
 
 !TerniLapilli methodsFor: 'marking board - private' stamp: 'JG 10/28/2018 12:39:41'!
@@ -1115,14 +1120,15 @@ putXWhenPlacingOAt: aPoint
 	
 	self error: self class notXTurnErrorMessage! !
 
-!TerniLapilli methodsFor: 'marking board - private' stamp: 'HAW 11/8/2018 11:53:04'!
+!TerniLapilli methodsFor: 'marking board - private' stamp: 'GP 11/10/2018 15:46:53'!
 putXWhenPlacingXAt: aPosition
 
 	self playerXHasPiecesToPlace.
 	self assertIsFree: aPosition.
 	
-	self changeStateAfterAdding: aPosition to: playerXPositions
-	! !
+	lastPlay := 'putX'->aPosition.
+	self changeStateAfterAdding: aPosition to: playerXPositions.
+! !
 
 !TerniLapilli methodsFor: 'marking board - private' stamp: 'JG 10/28/2018 12:38:49'!
 putXWhenSlidingOAt: aPoint 
@@ -1279,9 +1285,9 @@ isSlidingX
 	^state isSlidingX! !
 
 
-!TerniLapilli methodsFor: 'observation' stamp: 'Uriel Jonathan Rozenberg 11/8/2018 20:32:52'!
-addObserver: anObserver
-	observers add: anObserver ! !
+!TerniLapilli methodsFor: 'observation' stamp: 'GP 11/10/2018 15:41:31'!
+addStateObserver: anObserver
+	state addObserver: anObserver ! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -1364,10 +1370,10 @@ addNewLine: aLine
 !TerniLapilliConsole methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/8/2018 19:56:09'!
 getMove: aMove! !
 
-!TerniLapilliConsole methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/8/2018 20:33:10'!
+!TerniLapilliConsole methodsFor: 'as yet unclassified' stamp: 'GP 11/10/2018 15:42:27'!
 initializeWith: aGame
 	game:=aGame.
-	game addObserver: self.
+	game addStateObserver: self.
 	lines := WriteStream on:''.! !
 
 !TerniLapilliConsole methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/8/2018 20:31:14'!
@@ -1390,6 +1396,40 @@ observeState: aState
 	self addNewLine: line.
 	
 	" 'Estado: Juego terminado - ¡Ganó X!!' "! !
+
+!TerniLapilliConsole methodsFor: 'as yet unclassified' stamp: 'GP 11/10/2018 15:25:49'!
+value: aState
+	
+	aState accept: self.! !
+
+!TerniLapilliConsole methodsFor: 'as yet unclassified' stamp: 'GP 11/10/2018 15:54:31'!
+visitGameOverState: aGameOverState
+	
+	game hasPlayerOWon 
+		ifTrue: [ 
+			self addNewLine: 'O marcó en ', game lastPlay value asString;
+			addNewLine: 'Estado: Juego terminado - ¡Ganó O!!' ]
+		ifFalse: [ 			
+			self addNewLine: 'X marcó en ', game lastPlay value asString;
+			addNewLine: 'Estado: Juego terminado - ¡Ganó X!!' ]
+
+! !
+
+!TerniLapilliConsole methodsFor: 'as yet unclassified' stamp: 'GP 11/10/2018 15:49:53'!
+visitPlacingO: aPlacingOState
+	
+	self addNewLine: 'X marcó en ', game lastPlay value asString.
+	self addNewLine: 'Estado: jugando O'.
+	
+! !
+
+!TerniLapilliConsole methodsFor: 'as yet unclassified' stamp: 'GP 11/10/2018 15:47:13'!
+visitPlacingX: aPlacingXState
+	
+	self addNewLine: 'O marcó en ', game lastPlay value asString.
+	self addNewLine: 'Estado: jugando X'.
+	
+! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -1515,6 +1555,11 @@ putXAt: aPosition
 	game error: game class canNotPlayWhenGameIsOverErrorMessage ! !
 
 
+!GameOverState methodsFor: 'sliding' stamp: 'GP 11/10/2018 15:49:34'!
+accept: aVisitor
+
+	aVisitor visitGameOverState: self! !
+
 !GameOverState methodsFor: 'sliding' stamp: 'HAW 11/8/2018 11:48:38'!
 slideOFrom: aPosition to: anotherPostion
 
@@ -1584,6 +1629,11 @@ putXAt: aPosition
 
 	game putXWhenPlacingOAt: aPosition ! !
 
+
+!PlacingO methodsFor: 'sliding' stamp: 'GP 11/10/2018 15:27:18'!
+accept: aVisitor
+
+	aVisitor visitPlacingO: self! !
 
 !PlacingO methodsFor: 'sliding' stamp: 'HAW 11/8/2018 11:48:38'!
 slideOFrom: aPosition to: anotherPostion
@@ -1690,6 +1740,11 @@ putXAt: aPosition
 
 	game putXWhenPlacingXAt: aPosition ! !
 
+
+!PlacingX methodsFor: 'sliding' stamp: 'GP 11/10/2018 15:27:35'!
+accept: aVisitor
+
+	aVisitor visitPlacingX: self! !
 
 !PlacingX methodsFor: 'sliding' stamp: 'HAW 11/8/2018 11:48:20'!
 slideXFrom: aPosition to: anotherPostion
