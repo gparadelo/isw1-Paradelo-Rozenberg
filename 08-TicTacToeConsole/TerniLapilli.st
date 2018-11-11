@@ -62,6 +62,35 @@ test03
 
 ! !
 
+!TerniLapilliConsoleTest methodsFor: 'as yet unclassified' stamp: 'GP 11/11/2018 10:59:23'!
+test03_01
+	|console lines game |
+	game:= TerniLapilli new.
+	console :=TerniLapilliConsole on: game.
+	game putXAt: 2@2.
+	game putOAt: 1@1.
+	game putXAt: 1@2.
+	game putOAt: 3@1.
+	game putXAt: 3@3.
+	game putOAt: 2@1.
+	
+	lines := console lines.
+	self assert: 'X marcó en 2@2' equals: lines nextLine.
+	self assert: 'Estado: jugando O' equals: lines nextLine.
+	self assert: 'O marcó en 1@1' equals: lines nextLine.
+	self assert: 'Estado: jugando X' equals: lines nextLine.
+	self assert: 'X marcó en 1@2' equals: lines nextLine.
+	self assert: 'Estado: jugando O' equals: lines nextLine.
+	self assert: 'O marcó en 3@1' equals: lines nextLine.
+	self assert: 'Estado: jugando X' equals: lines nextLine.
+	self assert: 'X marcó en 3@3' equals: lines nextLine.
+	self assert: 'Estado: jugando O' equals: lines nextLine.
+	self assert: 'O marcó en 2@1' equals: lines nextLine.
+	self assert: 'Estado: Juego terminado - ¡Ganó O!!' equals: lines nextLine.
+	self assert: lines atEnd.
+
+! !
+
 !TerniLapilliConsoleTest methodsFor: 'as yet unclassified' stamp: 'GP 11/10/2018 16:38:32'!
 test04
 	|console lines game |
@@ -155,6 +184,41 @@ test06
 	self assert: 'Estado: jugando X' equals: lines nextLine.
 	self assert: 'X deslizó hasta 3@2 desde 3@3' equals: lines nextLine.
 	self assert: 'Estado: Juego terminado - ¡Ganó X!!' equals: lines nextLine.
+
+	self assert: lines atEnd.! !
+
+!TerniLapilliConsoleTest methodsFor: 'as yet unclassified' stamp: 'GP 11/11/2018 10:57:31'!
+test06_01
+	|console lines game |
+	game:= TerniLapilli new.
+	console :=TerniLapilliConsole on: game.
+	game putXAt: 2@2.
+	game putOAt: 1@1.
+	game putXAt: 1@2.
+	game putOAt: 3@3.
+	game putXAt: 3@1.
+	game putOAt: 2@3.
+	game slideXFrom: 2@2 to: 3@2. 
+	game slideOFrom: 2@3 to: 2@2. 	
+
+	
+	lines := console lines.
+	self assert: 'X marcó en 2@2' equals: lines nextLine.
+	self assert: 'Estado: jugando O' equals: lines nextLine.
+	self assert: 'O marcó en 1@1' equals: lines nextLine.
+	self assert: 'Estado: jugando X' equals: lines nextLine.
+	self assert: 'X marcó en 1@2' equals: lines nextLine.
+	self assert: 'Estado: jugando O' equals: lines nextLine.
+	self assert: 'O marcó en 3@3' equals: lines nextLine.
+	self assert: 'Estado: jugando X' equals: lines nextLine.
+	self assert: 'X marcó en 3@1' equals: lines nextLine.
+	self assert: 'Estado: jugando O' equals: lines nextLine.
+	self assert: 'O marcó en 2@3' equals: lines nextLine.
+	self assert: 'Estado: jugando X' equals: lines nextLine.
+	self assert: 'X deslizó hasta 3@2 desde 2@2' equals: lines nextLine.
+	self assert: 'Estado: jugando O' equals: lines nextLine.
+	self assert: 'O deslizó hasta 2@2 desde 2@3' equals: lines nextLine.
+	self assert: 'Estado: Juego terminado - ¡Ganó O!!' equals: lines nextLine.
 
 	self assert: lines atEnd.! !
 
