@@ -1431,13 +1431,13 @@ changeStateAfterAdding: aPosition to: positions
 	positions add: aPosition.
 	state changeTo: ( TerniLapilliState for: self )! !
 
-!TerniLapilli methodsFor: 'marking board - private' stamp: 'GP 11/10/2018 15:49:01'!
+!TerniLapilli methodsFor: 'marking board - private' stamp: 'Uriel Jonathan Rozenberg 11/12/2018 11:57:08'!
 putOWhenPlacingOAt: aPosition
 
 	self playerOHasPiecesToPlace.
 	self assertIsFree: aPosition.
 
-	lastPlay := 'putO'->aPosition.
+	lastPlay:= PlaceOLastPlay onPosition: aPosition .
 	self changeStateAfterAdding: aPosition to: playerOPositions.
 
 		! !
@@ -1462,13 +1462,13 @@ putXWhenPlacingOAt: aPoint
 	
 	self error: self class notXTurnErrorMessage! !
 
-!TerniLapilli methodsFor: 'marking board - private' stamp: 'GP 11/10/2018 15:46:53'!
+!TerniLapilli methodsFor: 'marking board - private' stamp: 'Uriel Jonathan Rozenberg 11/12/2018 11:56:48'!
 putXWhenPlacingXAt: aPosition
 
 	self playerXHasPiecesToPlace.
 	self assertIsFree: aPosition.
 	
-	lastPlay := 'putX'->aPosition.
+	lastPlay:= PlaceXLastPlay onPosition: aPosition .
 	self changeStateAfterAdding: aPosition to: playerXPositions.
 ! !
 
@@ -1533,14 +1533,14 @@ slideOWhenPlayingXFrom: aPosition to: anotherPosition
 
 	self error: self class notOTurnErrorMessage ! !
 
-!TerniLapilli methodsFor: 'sliding - private' stamp: 'GP 11/10/2018 16:31:54'!
+!TerniLapilli methodsFor: 'sliding - private' stamp: 'Uriel Jonathan Rozenberg 11/12/2018 11:59:02'!
 slideOWhenSlidingOFrom: aPosition to: anotherPosition
 	
 	self assertIsFree: anotherPosition .
 	self assertIsLegalMovementFrom: aPosition to: anotherPosition.
 	
 	playerOPositions remove: aPosition.	
-	lastPlay := 'SlideO'->(aPosition->anotherPosition).
+	lastPlay :=  SlideOLastPlay  from: aPosition to: anotherPosition.
 	self changeStateAfterAdding: anotherPosition to: playerOPositions
 	 ! !
 
@@ -1554,14 +1554,14 @@ slideXWhenPlayingOFrom: aPosition to: anotherPosition
 
 	self error: self class notXTurnErrorMessage! !
 
-!TerniLapilli methodsFor: 'sliding - private' stamp: 'GP 11/10/2018 16:30:08'!
+!TerniLapilli methodsFor: 'sliding - private' stamp: 'Uriel Jonathan Rozenberg 11/12/2018 11:58:46'!
 slideXWhenSlidingXFrom: aPosition to: anotherPosition
 	
 	self assertIsFree: anotherPosition .
 	self assertIsLegalMovementFrom: aPosition to: anotherPosition.
 	
 	playerXPositions remove: aPosition.
-	lastPlay := 'SlideX'->(aPosition->anotherPosition).
+	lastPlay :=  SlideXLastPlay  from: aPosition to: anotherPosition.
 	self changeStateAfterAdding: anotherPosition to: playerXPositions! !
 
 
@@ -1699,9 +1699,224 @@ positionTakenErrorMessage
 	^'Position taken'! !
 
 
+!classDefinition: #TerniLapilliLastPlay category: #TerniLapilli!
+Object subclass: #TerniLapilliLastPlay
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'TerniLapilli'!
+
+!TerniLapilliLastPlay methodsFor: 'visiting' stamp: 'Uriel Jonathan Rozenberg 11/11/2018 19:50:26'!
+accept: aVisitor
+
+	self subclassResponsibility ! !
+
+
+!classDefinition: #PlaceLastPlay category: #TerniLapilli!
+TerniLapilliLastPlay subclass: #PlaceLastPlay
+	instanceVariableNames: 'position'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'TerniLapilli'!
+
+!PlaceLastPlay methodsFor: 'initialization' stamp: 'Uriel Jonathan Rozenberg 11/11/2018 19:52:26'!
+initializeAt: aPosition
+
+	position := aPosition! !
+
+
+!PlaceLastPlay methodsFor: 'accesing' stamp: 'Uriel Jonathan Rozenberg 11/11/2018 19:52:32'!
+position
+
+	^position! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'PlaceLastPlay class' category: #TerniLapilli!
+PlaceLastPlay class
+	instanceVariableNames: ''!
+
+!PlaceLastPlay class methodsFor: 'instance creation' stamp: 'Uriel Jonathan Rozenberg 11/12/2018 11:34:20'!
+onPosition: aPosition
+
+	^self new initializeAt: aPosition! !
+
+
+!classDefinition: #PlaceOLastPlay category: #TerniLapilli!
+PlaceLastPlay subclass: #PlaceOLastPlay
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'TerniLapilli'!
+
+!PlaceOLastPlay methodsFor: 'visiting' stamp: 'Uriel Jonathan Rozenberg 11/11/2018 19:58:53'!
+accept: aVisitor
+
+	aVisitor visitPlaceOLastPlay: self! !
+
+
+!classDefinition: #PlaceXLastPlay category: #TerniLapilli!
+PlaceLastPlay subclass: #PlaceXLastPlay
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'TerniLapilli'!
+
+!PlaceXLastPlay methodsFor: 'visiting' stamp: 'Uriel Jonathan Rozenberg 11/11/2018 19:58:02'!
+accept: aVisitor
+
+	aVisitor visitPlaceXLastPlay: self! !
+
+
+!classDefinition: #SlideLastPlay category: #TerniLapilli!
+TerniLapilliLastPlay subclass: #SlideLastPlay
+	instanceVariableNames: 'fromPosition toPosition'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'TerniLapilli'!
+
+!SlideLastPlay methodsFor: 'accesing' stamp: 'Uriel Jonathan Rozenberg 11/11/2018 19:54:12'!
+fromPosition
+
+	^fromPosition! !
+
+!SlideLastPlay methodsFor: 'accesing' stamp: 'Uriel Jonathan Rozenberg 11/11/2018 19:54:28'!
+toPosition
+
+	^toPosition! !
+
+
+!SlideLastPlay methodsFor: 'initialization' stamp: 'Uriel Jonathan Rozenberg 11/11/2018 19:54:03'!
+initializeFrom: aFromPosition to: aToPosition
+
+	fromPosition := aFromPosition.
+	toPosition := aToPosition! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'SlideLastPlay class' category: #TerniLapilli!
+SlideLastPlay class
+	instanceVariableNames: ''!
+
+!SlideLastPlay class methodsFor: 'instance creation' stamp: 'Uriel Jonathan Rozenberg 11/11/2018 19:53:19'!
+from: aFromPosition to: aToPosition
+
+	^self new initializeFrom: aFromPosition to: aToPosition ! !
+
+
+!classDefinition: #SlideOLastPlay category: #TerniLapilli!
+SlideLastPlay subclass: #SlideOLastPlay
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'TerniLapilli'!
+
+!SlideOLastPlay methodsFor: 'visiting' stamp: 'Uriel Jonathan Rozenberg 11/11/2018 19:59:51'!
+accept: aVisitor
+
+	aVisitor visitSlideOLastPlay: self! !
+
+
+!classDefinition: #SlideXLastPlay category: #TerniLapilli!
+SlideLastPlay subclass: #SlideXLastPlay
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'TerniLapilli'!
+
+!SlideXLastPlay methodsFor: 'visiting' stamp: 'Uriel Jonathan Rozenberg 11/11/2018 19:59:23'!
+accept: aVisitor
+
+	aVisitor visitSlideXLastPlay: self! !
+
+
+!classDefinition: #TerniLapilliObserver category: #TerniLapilli!
+Object subclass: #TerniLapilliObserver
+	instanceVariableNames: 'game'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'TerniLapilli'!
+
+!TerniLapilliObserver methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/12/2018 12:09:36'!
+value: aState
+	game lastPlay accept: self.	
+	aState accept: self.! !
+
+!TerniLapilliObserver methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/12/2018 12:11:01'!
+visitGameOverState: aGameOverState
+	self subclassResponsibility 	
+! !
+
+!TerniLapilliObserver methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/12/2018 12:11:04'!
+visitPlaceOLastPlay: aLastPlay
+	self subclassResponsibility 
+	
+! !
+
+!TerniLapilliObserver methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/12/2018 12:11:08'!
+visitPlaceXLastPlay: aLastPlay
+	self subclassResponsibility 
+	
+! !
+
+!TerniLapilliObserver methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/12/2018 12:11:12'!
+visitPlacingO: aPlacingOState
+	self subclassResponsibility ! !
+
+!TerniLapilliObserver methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/12/2018 12:11:15'!
+visitPlacingX: aPlacingXState
+	self subclassResponsibility 
+	
+! !
+
+!TerniLapilliObserver methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/12/2018 12:11:23'!
+visitSlideOLastPlay: aLastPlay
+	self subclassResponsibility 
+	
+! !
+
+!TerniLapilliObserver methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/12/2018 12:11:27'!
+visitSlideXLastPlay: aLastPlay
+	self subclassResponsibility 
+	
+! !
+
+!TerniLapilliObserver methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/12/2018 12:11:30'!
+visitSlidingO: aSlidingXState
+	self subclassResponsibility 
+	
+! !
+
+!TerniLapilliObserver methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/12/2018 12:11:33'!
+visitSlidingX: aSlidingXState
+	self subclassResponsibility ! !
+
+!TerniLapilliObserver methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/12/2018 12:11:39'!
+visitWinnerO
+	self subclassResponsibility 
+! !
+
+!TerniLapilliObserver methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/12/2018 12:11:43'!
+visitWinnerX
+	self subclassResponsibility 
+! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'TerniLapilliObserver class' category: #TerniLapilli!
+TerniLapilliObserver class
+	instanceVariableNames: ''!
+
+!TerniLapilliObserver class methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/12/2018 12:09:36'!
+on: aGame
+ ^self new initializeWith: aGame
+
+! !
+
+
 !classDefinition: #TerniLapilliConsole category: #TerniLapilli!
-Object subclass: #TerniLapilliConsole
-	instanceVariableNames: 'game lines'
+TerniLapilliObserver subclass: #TerniLapilliConsole
+	instanceVariableNames: 'lines'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'TerniLapilli'!
@@ -1721,9 +1936,9 @@ initializeWith: aGame
 lines
 ^ReadStream on: (lines contents ).! !
 
-!TerniLapilliConsole methodsFor: 'as yet unclassified' stamp: 'GP 11/10/2018 15:25:49'!
+!TerniLapilliConsole methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/12/2018 11:49:34'!
 value: aState
-	
+	game lastPlay accept: self.	
 	aState accept: self.! !
 
 !TerniLapilliConsole methodsFor: 'as yet unclassified' stamp: 'GP 11/10/2018 16:51:54'!
@@ -1747,46 +1962,64 @@ visitGameOverState: aGameOverState
 
 ! !
 
-!TerniLapilliConsole methodsFor: 'as yet unclassified' stamp: 'GP 11/10/2018 15:49:53'!
+!TerniLapilliConsole methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/12/2018 11:53:25'!
+visitPlaceOLastPlay: aLastPlay
+	self addNewLine: 'O marcó en ',  aLastPlay position asString .
+	
+! !
+
+!TerniLapilliConsole methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/12/2018 11:53:05'!
+visitPlaceXLastPlay: aLastPlay
+	self addNewLine: 'X marcó en ',  aLastPlay position asString .
+	
+! !
+
+!TerniLapilliConsole methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/12/2018 11:59:45'!
 visitPlacingO: aPlacingOState
-	
-	self addNewLine: 'X marcó en ', game lastPlay value asString.
+
 	self addNewLine: 'Estado: jugando O'.
 	
 ! !
 
-!TerniLapilliConsole methodsFor: 'as yet unclassified' stamp: 'GP 11/10/2018 15:47:13'!
+!TerniLapilliConsole methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/12/2018 12:08:24'!
 visitPlacingX: aPlacingXState
-	
-	self addNewLine: 'O marcó en ', game lastPlay value asString.
 	self addNewLine: 'Estado: jugando X'.
 	
 ! !
 
-!TerniLapilliConsole methodsFor: 'as yet unclassified' stamp: 'GP 11/10/2018 16:38:21'!
+!TerniLapilliConsole methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/12/2018 12:06:14'!
+visitSlideOLastPlay: aLastPlay
+	self addNewLine: 'O deslizó hasta ', aLastPlay toPosition asString, ' desde ' , aLastPlay fromPosition asString.
+	
+! !
+
+!TerniLapilliConsole methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/12/2018 12:05:24'!
+visitSlideXLastPlay: aLastPlay
+	self addNewLine: 'X deslizó hasta ', aLastPlay toPosition asString, ' desde ' , aLastPlay fromPosition asString.
+	
+! !
+
+!TerniLapilliConsole methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/12/2018 12:06:00'!
 visitSlidingO: aSlidingXState
-	
-	| move |
-	
-	move := game lastPlay.
-	
-	self addNewLine: 'X deslizó hasta ', move value value asString, ' desde ' , move value key asString.
 	self addNewLine: 'Estado: jugando O'.
 	
 ! !
 
-!TerniLapilliConsole methodsFor: 'as yet unclassified' stamp: 'GP 11/10/2018 16:38:11'!
+!TerniLapilliConsole methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/12/2018 12:00:23'!
 visitSlidingX: aSlidingXState
-	
-	| move |
-	
-	move := game lastPlay.
-	
-	move key = 'putO' 
-		ifTrue: [ self addNewLine: 'O marcó en ', move value asString ]
-		ifFalse: [ self addNewLine: 'O deslizó hasta ', move value value asString, ' desde ' , move value key asString ].
+
 	self addNewLine: 'Estado: jugando X'.
 	
+! !
+
+!TerniLapilliConsole methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/12/2018 11:37:15'!
+visitWinnerO
+	self addNewLine: 'Estado: Juego terminado - ¡Ganó O!!' .
+! !
+
+!TerniLapilliConsole methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/12/2018 11:36:46'!
+visitWinnerX
+	self addNewLine: 'Estado: Juego terminado - ¡Ganó X!!' .
 ! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
@@ -1796,6 +2029,137 @@ TerniLapilliConsole class
 	instanceVariableNames: ''!
 
 !TerniLapilliConsole class methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/8/2018 20:23:32'!
+on: aGame
+ ^self new initializeWith: aGame
+
+! !
+
+
+!classDefinition: #TerniLapilliView category: #TerniLapilli!
+TerniLapilliObserver subclass: #TerniLapilliView
+	instanceVariableNames: 'map stateLine'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'TerniLapilli'!
+
+!TerniLapilliView methodsFor: 'as yet unclassified' stamp: 'GP 11/11/2018 11:44:31'!
+changeStateLineTo: aStateLine
+
+	stateLine := aStateLine 
+	
+! !
+
+!TerniLapilliView methodsFor: 'as yet unclassified' stamp: 'GP 11/11/2018 13:11:37'!
+initializeWith: aGame
+
+	map := ' | | ', Character newLineCharacter asString, '-----', Character newLineCharacter asString,' | | ', Character newLineCharacter asString,'-----' , Character newLineCharacter asString,' | | '.
+	game:=aGame.
+	game addStateObserver: self.
+! !
+
+!TerniLapilliView methodsFor: 'as yet unclassified' stamp: 'GP 11/11/2018 13:10:00'!
+map
+	
+	^ map! !
+
+!TerniLapilliView methodsFor: 'as yet unclassified' stamp: 'GP 11/11/2018 13:12:37'!
+modifyViewWith: aPiece on: aPosition
+
+	| index |
+	index := aPosition x - 1 * 12 + ( aPosition y - 1 * 2 + 1).
+	map at: index put: aPiece asCharacter.! !
+
+!TerniLapilliView methodsFor: 'as yet unclassified' stamp: 'GP 11/11/2018 13:13:23'!
+stateLine
+	
+	^ stateLine! !
+
+!TerniLapilliView methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/12/2018 11:18:12'!
+value: aState
+	game lastPlay accept:self.	
+	aState accept: self.! !
+
+!TerniLapilliView methodsFor: 'as yet unclassified' stamp: 'GP 11/11/2018 14:57:12'!
+visitGameOverState: aGameOverState
+	
+	| move |
+	
+	move := game lastPlay.
+	
+	game hasPlayerOWon 
+		ifTrue: [ 
+			move key = 'putO'
+				ifTrue: [ self modifyViewWith: 'O' on: move value ]
+				ifFalse: [ self modifyViewWith: ' ' on: move value key; modifyViewWith: 'O' on: move value value. ].
+			self changeStateLineTo: 'Estado: Juego terminado - ¡Ganó O!!' ]
+		ifFalse: [ 	
+			move key = 'putX'
+				ifTrue: [ self modifyViewWith: 'X' on: move value ]
+				ifFalse: [ self modifyViewWith: ' ' on: move value key; modifyViewWith: 'X' on: move value value. ].
+			self changeStateLineTo: 'Estado: Juego terminado - ¡Ganó X!!' ]
+
+! !
+
+!TerniLapilliView methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/12/2018 12:30:46'!
+visitPlaceOLastPlay: aLastPlay
+	self modifyViewWith: 'O' on: (aLastPlay position )! !
+
+!TerniLapilliView methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/12/2018 12:30:11'!
+visitPlaceXLastPlay: aLastPlay
+	self modifyViewWith: 'X' on: aLastPlay position ! !
+
+!TerniLapilliView methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/12/2018 12:29:30'!
+visitPlacingO: aPlacingOState
+	self changeStateLineTo: 'Estado: jugando O'.
+	
+! !
+
+!TerniLapilliView methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/12/2018 12:57:31'!
+visitPlacingX: aPlacingXState
+
+	self changeStateLineTo: 'Estado: jugando X'.
+	
+! !
+
+!TerniLapilliView methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/12/2018 13:04:08'!
+visitSlideOLastPlay: aLastPlay
+	self modifyViewWith: ' ' on: aLastPlay fromPosition ; modifyViewWith: 'O' on: aLastPlay toPosition ! !
+
+!TerniLapilliView methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/12/2018 13:03:49'!
+visitSlideXLastPlay: aLastPlay
+	self modifyViewWith: ' ' on: aLastPlay fromPosition ; modifyViewWith: 'X' on: aLastPlay toPosition ! !
+
+!TerniLapilliView methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/12/2018 13:02:52'!
+visitSlidingO: aSlidingXState
+	self changeStateLineTo: 'Estado: Jugando O'.
+	
+! !
+
+!TerniLapilliView methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/12/2018 13:02:11'!
+visitSlidingX: aSlidingXState
+	self changeStateLineTo: 'Estado: Jugando X'.
+	
+! !
+
+!TerniLapilliView methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/12/2018 12:58:57'!
+visitWinnerO
+	self changeStateLineTo: 'Estado: Juego terminado - ¡Ganó O!!' .
+
+! !
+
+!TerniLapilliView methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/12/2018 12:58:45'!
+visitWinnerX
+	self changeStateLineTo: 'Estado: Juego terminado - ¡Ganó X!!' .
+
+! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'TerniLapilliView class' category: #TerniLapilli!
+TerniLapilliView class
+	instanceVariableNames: ''!
+
+!TerniLapilliView class methodsFor: 'as yet unclassified' stamp: 'GP 11/10/2018 19:16:39'!
 on: aGame
  ^self new initializeWith: aGame
 
@@ -1934,10 +2298,61 @@ slideXFrom: aPosition to: anotherPostion
 GameOverState class
 	instanceVariableNames: ''!
 
-!GameOverState class methodsFor: 'state selection' stamp: 'HAW 11/8/2018 12:02:20'!
+!GameOverState class methodsFor: 'state selection' stamp: 'Uriel Jonathan Rozenberg 11/11/2018 18:56:08'!
+isFor: aTerniLapilli 
+	^false.
+	"^ aTerniLapilli hasPlayerXWon or: [ aTerniLapilli hasPlayerOWon ]"! !
+
+
+!classDefinition: #WinnerO category: #TerniLapilli!
+GameOverState subclass: #WinnerO
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'TerniLapilli'!
+
+!WinnerO methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/11/2018 18:49:17'!
+accept: aVisitor
+
+	aVisitor visitWinnerO
+! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'WinnerO class' category: #TerniLapilli!
+WinnerO class
+	instanceVariableNames: ''!
+
+!WinnerO class methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/11/2018 18:55:07'!
 isFor: aTerniLapilli 
 
-	^ aTerniLapilli hasPlayerXWon or: [ aTerniLapilli hasPlayerOWon ]! !
+	^ aTerniLapilli hasPlayerOWon
+! !
+
+
+!classDefinition: #WinnerX category: #TerniLapilli!
+GameOverState subclass: #WinnerX
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'TerniLapilli'!
+
+!WinnerX methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/11/2018 18:49:25'!
+accept: aVisitor
+
+	aVisitor visitWinnerX.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'WinnerX class' category: #TerniLapilli!
+WinnerX class
+	instanceVariableNames: ''!
+
+!WinnerX class methodsFor: 'as yet unclassified' stamp: 'Uriel Jonathan Rozenberg 11/11/2018 18:55:18'!
+isFor: aTerniLapilli 
+
+	^ aTerniLapilli hasPlayerXWon
+! !
 
 
 !classDefinition: #PlayingO category: #TerniLapilli!
@@ -2182,123 +2597,3 @@ SlidingX class
 isFor: aTerniLapilli 
 
 	^aTerniLapilli isPlayingO and: [ aTerniLapilli hasXMorePiecesToPlace not and: [ aTerniLapilli hasPlayerOWon not ]]! !
-
-
-!classDefinition: #TerniLapilliView category: #TerniLapilli!
-Object subclass: #TerniLapilliView
-	instanceVariableNames: 'game map stateLine'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'TerniLapilli'!
-
-!TerniLapilliView methodsFor: 'as yet unclassified' stamp: 'GP 11/11/2018 11:44:31'!
-changeStateLineTo: aStateLine
-
-	stateLine := aStateLine 
-	
-! !
-
-!TerniLapilliView methodsFor: 'as yet unclassified' stamp: 'GP 11/11/2018 13:11:37'!
-initializeWith: aGame
-
-	map := ' | | ', Character newLineCharacter asString, '-----', Character newLineCharacter asString,' | | ', Character newLineCharacter asString,'-----' , Character newLineCharacter asString,' | | '.
-	game:=aGame.
-	game addStateObserver: self.
-! !
-
-!TerniLapilliView methodsFor: 'as yet unclassified' stamp: 'GP 11/11/2018 13:10:00'!
-map
-	
-	^ map! !
-
-!TerniLapilliView methodsFor: 'as yet unclassified' stamp: 'GP 11/11/2018 13:12:37'!
-modifyViewWith: aPiece on: aPosition
-
-	| index |
-	index := aPosition x - 1 * 12 + ( aPosition y - 1 * 2 + 1).
-	map at: index put: aPiece asCharacter.! !
-
-!TerniLapilliView methodsFor: 'as yet unclassified' stamp: 'GP 11/11/2018 13:13:23'!
-stateLine
-	
-	^ stateLine! !
-
-!TerniLapilliView methodsFor: 'as yet unclassified' stamp: 'GP 11/10/2018 19:16:39'!
-value: aState
-	
-	aState accept: self.! !
-
-!TerniLapilliView methodsFor: 'as yet unclassified' stamp: 'GP 11/11/2018 14:57:12'!
-visitGameOverState: aGameOverState
-	
-	| move |
-	
-	move := game lastPlay.
-	
-	game hasPlayerOWon 
-		ifTrue: [ 
-			move key = 'putO'
-				ifTrue: [ self modifyViewWith: 'O' on: move value ]
-				ifFalse: [ self modifyViewWith: ' ' on: move value key; modifyViewWith: 'O' on: move value value. ].
-			self changeStateLineTo: 'Estado: Juego terminado - ¡Ganó O!!' ]
-		ifFalse: [ 	
-			move key = 'putX'
-				ifTrue: [ self modifyViewWith: 'X' on: move value ]
-				ifFalse: [ self modifyViewWith: ' ' on: move value key; modifyViewWith: 'X' on: move value value. ].
-			self changeStateLineTo: 'Estado: Juego terminado - ¡Ganó X!!' ]
-
-! !
-
-!TerniLapilliView methodsFor: 'as yet unclassified' stamp: 'GP 11/11/2018 11:44:10'!
-visitPlacingO: aPlacingOState
-	
-	self modifyViewWith: 'X' on: game lastPlay value.
-	self changeStateLineTo: 'Estado: jugando O'.
-	
-! !
-
-!TerniLapilliView methodsFor: 'as yet unclassified' stamp: 'GP 11/11/2018 14:14:15'!
-visitPlacingX: aPlacingXState
-	
-	self modifyViewWith: 'O' on: game lastPlay value.
-	self changeStateLineTo: 'Estado: jugando X'.
-	
-! !
-
-!TerniLapilliView methodsFor: 'as yet unclassified' stamp: 'GP 11/11/2018 14:44:30'!
-visitSlidingO: aSlidingXState
-	
-	| move |
-	
-	move := game lastPlay.
-	
-	self modifyViewWith: ' ' on: move value key; modifyViewWith: 'X' on: move value value.
-	self changeStateLineTo: 'Estado: Jugando O'.
-	
-! !
-
-!TerniLapilliView methodsFor: 'as yet unclassified' stamp: 'GP 11/11/2018 14:46:39'!
-visitSlidingX: aSlidingXState
-	
-	| move |
-	
-	move := game lastPlay.
-	
-	move key = 'putO' 
-		ifTrue: [ self modifyViewWith: 'O' on: move value ]
-		ifFalse: [ self modifyViewWith: ' ' on: move value key; modifyViewWith: 'O' on: move value value ].
-	self changeStateLineTo: 'Estado: Jugando X'.
-	
-! !
-
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
-
-!classDefinition: 'TerniLapilliView class' category: #TerniLapilli!
-TerniLapilliView class
-	instanceVariableNames: ''!
-
-!TerniLapilliView class methodsFor: 'as yet unclassified' stamp: 'GP 11/10/2018 19:16:39'!
-on: aGame
- ^self new initializeWith: aGame
-
-! !
