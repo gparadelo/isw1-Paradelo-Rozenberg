@@ -294,6 +294,31 @@ test02
 	
 	self assert: ( interface cartIsEmpty: cartId )! !
 
+!InternalAccessInterfaceTest methodsFor: 'as yet unclassified' stamp: 'GP 11/25/2018 11:37:38'!
+test03
+
+	| interface |
+
+	interface := InternalAccessInterface withUsers: testObjectsFactory defaultUsers withCatalog: testObjectsFactory defaultCatalog .
+	
+	self 
+		should: [ interface cartIsEmpty: 0 ]
+		raise: Error - MessageNotUnderstood
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = InternalAccessInterface invalidCartIdErrorMessage. ]! !
+
+!InternalAccessInterfaceTest methodsFor: 'as yet unclassified' stamp: 'GP 11/25/2018 11:49:46'!
+test04
+
+	| interface cartId |
+
+	interface := InternalAccessInterface withUsers: testObjectsFactory defaultUsers withCatalog: testObjectsFactory defaultCatalog .
+	cartId := interface createCartFor: testObjectsFactory userInDatabase withPassword: testObjectsFactory passwordForUser.
+	
+	interface add: 1 of: testObjectsFactory itemSellByTheStore to: cartId.
+ 	
+	self assert: ( interface cartIsNotEmpty: cartId )! !
+
 
 !classDefinition: #Cart category: #TusLibros!
 Object subclass: #Cart
@@ -516,10 +541,20 @@ initializeWithUsers: aUserDatabase withCatalog: aCatalog
 	carts := Dictionary new.! !
 
 
-!InternalAccessInterface methodsFor: 'cart' stamp: 'GP 11/24/2018 12:42:43'!
+!InternalAccessInterface methodsFor: 'cart' stamp: 'GP 11/25/2018 11:49:26'!
+add: anAmount of: anItem to: aCartId
+	
+	( carts at: aCartId ifAbsent: [ self error: self class invalidCartIdErrorMessage ] ) add: anAmount of: anItem.! !
+
+!InternalAccessInterface methodsFor: 'cart' stamp: 'GP 11/25/2018 11:39:37'!
 cartIsEmpty: aCartId
 
-	^ ( carts at: aCartId ) isEmpty.! !
+	^ ( carts at: aCartId ifAbsent: [ self error: self class invalidCartIdErrorMessage ] ) isEmpty.! !
+
+!InternalAccessInterface methodsFor: 'cart' stamp: 'GP 11/25/2018 11:51:52'!
+cartIsNotEmpty: aCartId
+
+	^ ( self cartIsEmpty: aCartId ) not! !
 
 !InternalAccessInterface methodsFor: 'cart' stamp: 'GP 11/24/2018 12:07:25'!
 createCartFor: aUser withPassword: aPassword 
@@ -557,6 +592,10 @@ withUsers: aUserDatabase withCatalog: aCatalog
 	
  	^ self new initializeWithUsers: aUserDatabase withCatalog: aCatalog! !
 
+
+!InternalAccessInterface class methodsFor: 'error messages' stamp: 'GP 11/25/2018 11:38:27'!
+invalidCartIdErrorMessage
+	^ 'Invalid cart id'! !
 
 !InternalAccessInterface class methodsFor: 'error messages' stamp: 'GP 11/24/2018 12:13:56'!
 userNotRegisteredErrorMessage
