@@ -319,6 +319,76 @@ test04
  	
 	self assert: ( interface cartIsNotEmpty: cartId )! !
 
+!InternalAccessInterfaceTest methodsFor: 'as yet unclassified' stamp: 'GP 11/26/2018 15:16:13'!
+test05
+
+	| interface cartId |
+
+	interface := InternalAccessInterface withUsers: testObjectsFactory defaultUsers withCatalog: testObjectsFactory defaultCatalog .
+	cartId := interface createCartFor: testObjectsFactory userInDatabase withPassword: testObjectsFactory passwordForUser.
+	
+	interface add: 1 of: testObjectsFactory itemSellByTheStore to: cartId.
+ 	
+	self 
+		should: [ interface add: 1 of: testObjectsFactory itemNotSellByTheStore to: cartId ]
+		raise: Error - MessageNotUnderstood
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = Cart new invalidItemErrorMessage . ]! !
+
+!InternalAccessInterfaceTest methodsFor: 'as yet unclassified' stamp: 'GP 11/26/2018 15:16:52'!
+test06
+
+	| interface cartId |
+
+	interface := InternalAccessInterface withUsers: testObjectsFactory defaultUsers withCatalog: testObjectsFactory defaultCatalog .
+	cartId := 0.
+	
+	self 
+		should: [ interface add: 1 of: testObjectsFactory itemSellByTheStore to: cartId ]
+		raise: Error - MessageNotUnderstood
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = InternalAccessInterface invalidCartIdErrorMessage . ]! !
+
+!InternalAccessInterfaceTest methodsFor: 'as yet unclassified' stamp: 'GP 11/26/2018 15:18:11'!
+test07
+
+	| interface cartId |
+
+	interface := InternalAccessInterface withUsers: testObjectsFactory defaultUsers withCatalog: testObjectsFactory defaultCatalog .
+	cartId := interface createCartFor: testObjectsFactory userInDatabase withPassword: testObjectsFactory passwordForUser.
+	
+	self 
+		should: [ interface add: -1 of: testObjectsFactory itemSellByTheStore to: cartId ]
+		raise: Error - MessageNotUnderstood
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = Cart new invalidQuantityErrorMessage. ]! !
+
+!InternalAccessInterfaceTest methodsFor: 'as yet unclassified' stamp: 'GP 11/26/2018 15:24:41'!
+test08
+
+	| interface cartId |
+
+	interface := InternalAccessInterface withUsers: testObjectsFactory defaultUsers withCatalog: testObjectsFactory defaultCatalog .
+	cartId := interface createCartFor: testObjectsFactory userInDatabase withPassword: testObjectsFactory passwordForUser.
+	
+	interface add: 1 of: testObjectsFactory itemSellByTheStore to: cartId.
+ 	
+	self assert: ( interface listCart: cartId ) = ( Bag with: testObjectsFactory itemSellByTheStore )! !
+
+!InternalAccessInterfaceTest methodsFor: 'as yet unclassified' stamp: 'GP 11/26/2018 15:26:42'!
+test09
+
+	| interface cartId |
+
+	interface := InternalAccessInterface withUsers: testObjectsFactory defaultUsers withCatalog: testObjectsFactory defaultCatalog .
+	cartId := 0.
+	
+	self 
+		should: [ interface listCart: cartId ]
+		raise: Error - MessageNotUnderstood
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = InternalAccessInterface invalidCartIdErrorMessage . ]! !
+
 
 !classDefinition: #Cart category: #TusLibros!
 Object subclass: #Cart
@@ -349,11 +419,11 @@ assertIsValidQuantity: aQuantity
 	aQuantity strictlyPositive ifFalse: [ self error: self invalidQuantityErrorMessage ]! !
 
 
-!Cart methodsFor: 'initialization' stamp: 'HernanWilkinson 6/17/2013 17:48'!
+!Cart methodsFor: 'initialization' stamp: 'GP 11/26/2018 15:21:30'!
 initializeAcceptingItemsOf: aCatalog
 
 	catalog := aCatalog.
-	items := OrderedCollection new.! !
+	items := Bag new.! !
 
 
 !Cart methodsFor: 'queries' stamp: 'HernanWilkinson 6/17/2013 17:45'!
@@ -384,13 +454,20 @@ add: anItem
 
 	^ self add: 1 of: anItem ! !
 
-!Cart methodsFor: 'adding' stamp: 'HernanWilkinson 6/17/2013 17:51'!
+!Cart methodsFor: 'adding' stamp: 'GP 11/26/2018 15:22:32'!
 add: aQuantity of: anItem
 
 	self assertIsValidQuantity: aQuantity.
 	self assertIsValidItem: anItem.
 
-	1 to: aQuantity do: [ :aNumber | items add: anItem ]! !
+	items add: anItem withOccurrences: aQuantity.
+! !
+
+
+!Cart methodsFor: 'observation' stamp: 'GP 11/26/2018 15:26:01'!
+list
+	
+	^ items copy.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -569,6 +646,11 @@ createCartFor: aUser withPassword: aPassword
 	res := nextCartId.
 	nextCartId := nextCartId + 1.
 	^ res! !
+
+!InternalAccessInterface methodsFor: 'cart' stamp: 'GP 11/26/2018 15:25:12'!
+listCart: aCartId
+	
+	^ ( carts at: aCartId ifAbsent: [ self error: self class invalidCartIdErrorMessage ] ) list.! !
 
 
 !InternalAccessInterface methodsFor: 'asserting' stamp: 'GP 11/24/2018 12:35:15'!
