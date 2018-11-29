@@ -253,23 +253,18 @@ TestCase subclass: #InternalAccessInterfaceTest
 	poolDictionaries: ''
 	category: 'TusLibros'!
 
-!InternalAccessInterfaceTest methodsFor: 'as yet unclassified' stamp: 'GP 11/29/2018 13:49:44'!
-debit: anAmount from: aCreditCard 
-
-	^debitBehavior value: anAmount value: aCreditCard ! !
-
-!InternalAccessInterfaceTest methodsFor: 'as yet unclassified' stamp: 'GP 11/29/2018 13:49:34'!
+!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 11/29/2018 13:49:34'!
 setUp
 
 	testObjectsFactory := StoreTestObjectsFactory new.
 	debitBehavior := [ :anAmount :aCreditCard | ]! !
 
-!InternalAccessInterfaceTest methodsFor: 'as yet unclassified' stamp: 'GP 11/24/2018 12:11:55'!
+!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 11/29/2018 14:32:17'!
 test00
 
 	| interface |
 
-	interface := InternalAccessInterface withUsers: testObjectsFactory defaultUsers withCatalog: testObjectsFactory defaultCatalog .
+	interface := InternalAccessInterface withUsers: testObjectsFactory defaultUsers withCatalog: testObjectsFactory defaultCatalog withMerchant: self.
 	
 	self 
 		should: [ interface createCartFor: testObjectsFactory userNotInDatabase withPassword: testObjectsFactory passwordForUser ]
@@ -277,12 +272,12 @@ test00
 		withExceptionDo: [ :anError |
 			self assert: anError messageText = InternalAccessInterface userNotRegisteredErrorMessage. ]! !
 
-!InternalAccessInterfaceTest methodsFor: 'as yet unclassified' stamp: 'GP 11/24/2018 12:14:42'!
+!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 11/29/2018 14:32:20'!
 test01
 
 	| interface |
 
-	interface := InternalAccessInterface withUsers: testObjectsFactory defaultUsers withCatalog: testObjectsFactory defaultCatalog .
+	interface := InternalAccessInterface withUsers: testObjectsFactory defaultUsers withCatalog: testObjectsFactory defaultCatalog withMerchant: self.
 	
 	self 
 		should: [ interface createCartFor: testObjectsFactory userInDatabase withPassword: testObjectsFactory wrongPasswordForUser ]
@@ -290,22 +285,22 @@ test01
 		withExceptionDo: [ :anError |
 			self assert: anError messageText = InternalAccessInterface wrongPasswordErrorMessage. ]! !
 
-!InternalAccessInterfaceTest methodsFor: 'as yet unclassified' stamp: 'GP 11/24/2018 12:24:15'!
+!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 11/29/2018 14:32:22'!
 test02
 
 	| interface cartId |
 
-	interface := InternalAccessInterface withUsers: testObjectsFactory defaultUsers withCatalog: testObjectsFactory defaultCatalog .
+	interface := InternalAccessInterface withUsers: testObjectsFactory defaultUsers withCatalog: testObjectsFactory defaultCatalog withMerchant: self.
 	cartId := interface createCartFor: testObjectsFactory userInDatabase withPassword: testObjectsFactory passwordForUser.
 	
 	self assert: ( interface cartIsEmpty: cartId )! !
 
-!InternalAccessInterfaceTest methodsFor: 'as yet unclassified' stamp: 'GP 11/25/2018 11:37:38'!
+!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 11/29/2018 14:32:24'!
 test03
 
 	| interface |
 
-	interface := InternalAccessInterface withUsers: testObjectsFactory defaultUsers withCatalog: testObjectsFactory defaultCatalog .
+	interface := InternalAccessInterface withUsers: testObjectsFactory defaultUsers withCatalog: testObjectsFactory defaultCatalog withMerchant: self.
 	
 	self 
 		should: [ interface cartIsEmpty: 0 ]
@@ -313,24 +308,24 @@ test03
 		withExceptionDo: [ :anError |
 			self assert: anError messageText = InternalAccessInterface invalidCartIdErrorMessage. ]! !
 
-!InternalAccessInterfaceTest methodsFor: 'as yet unclassified' stamp: 'GP 11/25/2018 11:49:46'!
+!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 11/29/2018 14:32:27'!
 test04
 
 	| interface cartId |
 
-	interface := InternalAccessInterface withUsers: testObjectsFactory defaultUsers withCatalog: testObjectsFactory defaultCatalog .
+	interface := InternalAccessInterface withUsers: testObjectsFactory defaultUsers withCatalog: testObjectsFactory defaultCatalog withMerchant: self.
 	cartId := interface createCartFor: testObjectsFactory userInDatabase withPassword: testObjectsFactory passwordForUser.
 	
 	interface add: 1 of: testObjectsFactory itemSellByTheStore to: cartId.
  	
 	self assert: ( interface cartIsNotEmpty: cartId )! !
 
-!InternalAccessInterfaceTest methodsFor: 'as yet unclassified' stamp: 'GP 11/26/2018 15:16:13'!
+!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 11/29/2018 14:32:29'!
 test05
 
 	| interface cartId |
 
-	interface := InternalAccessInterface withUsers: testObjectsFactory defaultUsers withCatalog: testObjectsFactory defaultCatalog .
+	interface := InternalAccessInterface withUsers: testObjectsFactory defaultUsers withCatalog: testObjectsFactory defaultCatalog withMerchant: self.
 	cartId := interface createCartFor: testObjectsFactory userInDatabase withPassword: testObjectsFactory passwordForUser.
 	
 	interface add: 1 of: testObjectsFactory itemSellByTheStore to: cartId.
@@ -341,12 +336,12 @@ test05
 		withExceptionDo: [ :anError |
 			self assert: anError messageText = Cart new invalidItemErrorMessage . ]! !
 
-!InternalAccessInterfaceTest methodsFor: 'as yet unclassified' stamp: 'GP 11/26/2018 15:16:52'!
+!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 11/29/2018 14:32:31'!
 test06
 
 	| interface cartId |
 
-	interface := InternalAccessInterface withUsers: testObjectsFactory defaultUsers withCatalog: testObjectsFactory defaultCatalog .
+	interface := InternalAccessInterface withUsers: testObjectsFactory defaultUsers withCatalog: testObjectsFactory defaultCatalog withMerchant: self.
 	cartId := 0.
 	
 	self 
@@ -355,12 +350,12 @@ test06
 		withExceptionDo: [ :anError |
 			self assert: anError messageText = InternalAccessInterface invalidCartIdErrorMessage . ]! !
 
-!InternalAccessInterfaceTest methodsFor: 'as yet unclassified' stamp: 'GP 11/26/2018 15:18:11'!
+!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 11/29/2018 14:32:34'!
 test07
 
 	| interface cartId |
 
-	interface := InternalAccessInterface withUsers: testObjectsFactory defaultUsers withCatalog: testObjectsFactory defaultCatalog .
+	interface := InternalAccessInterface withUsers: testObjectsFactory defaultUsers withCatalog: testObjectsFactory defaultCatalog withMerchant: self.
 	cartId := interface createCartFor: testObjectsFactory userInDatabase withPassword: testObjectsFactory passwordForUser.
 	
 	self 
@@ -369,24 +364,24 @@ test07
 		withExceptionDo: [ :anError |
 			self assert: anError messageText = Cart new invalidQuantityErrorMessage. ]! !
 
-!InternalAccessInterfaceTest methodsFor: 'as yet unclassified' stamp: 'GP 11/26/2018 15:24:41'!
+!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 11/29/2018 14:32:37'!
 test08
 
 	| interface cartId |
 
-	interface := InternalAccessInterface withUsers: testObjectsFactory defaultUsers withCatalog: testObjectsFactory defaultCatalog .
+	interface := InternalAccessInterface withUsers: testObjectsFactory defaultUsers withCatalog: testObjectsFactory defaultCatalog withMerchant: self.
 	cartId := interface createCartFor: testObjectsFactory userInDatabase withPassword: testObjectsFactory passwordForUser.
 	
 	interface add: 1 of: testObjectsFactory itemSellByTheStore to: cartId.
  	
 	self assert: ( interface listCart: cartId ) = ( Bag with: testObjectsFactory itemSellByTheStore )! !
 
-!InternalAccessInterfaceTest methodsFor: 'as yet unclassified' stamp: 'GP 11/26/2018 15:26:42'!
+!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 11/29/2018 14:32:39'!
 test09
 
 	| interface cartId |
 
-	interface := InternalAccessInterface withUsers: testObjectsFactory defaultUsers withCatalog: testObjectsFactory defaultCatalog .
+	interface := InternalAccessInterface withUsers: testObjectsFactory defaultUsers withCatalog: testObjectsFactory defaultCatalog withMerchant: self.
 	cartId := 0.
 	
 	self 
@@ -395,12 +390,12 @@ test09
 		withExceptionDo: [ :anError |
 			self assert: anError messageText = InternalAccessInterface invalidCartIdErrorMessage . ]! !
 
-!InternalAccessInterfaceTest methodsFor: 'as yet unclassified' stamp: 'GP 11/29/2018 13:52:10'!
+!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 11/29/2018 14:32:41'!
 test10
 
 	| interface cartId |
 
-	interface := InternalAccessInterface withUsers: testObjectsFactory defaultUsers withCatalog: testObjectsFactory defaultCatalog .
+	interface := InternalAccessInterface withUsers: testObjectsFactory defaultUsers withCatalog: testObjectsFactory defaultCatalog withMerchant: self.
 	cartId := interface createCartFor: testObjectsFactory userInDatabase withPassword: testObjectsFactory passwordForUser.
 	
 	self 
@@ -410,9 +405,9 @@ test10
 			on: testObjectsFactory today. ]
 		raise: Error - MessageNotUnderstood
 		withExceptionDo: [ :anError |
-			self assert: anError messageText = InternalAccessInterface emptyCartErrorMessage. ]! !
+			self assert: anError messageText = Cashier cartCanNotBeEmptyErrorMessage . ]! !
 
-!InternalAccessInterfaceTest methodsFor: 'as yet unclassified' stamp: 'GP 11/29/2018 13:40:53'!
+!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 11/29/2018 13:40:53'!
 test11
 
 	| interface cartId cost |
@@ -428,6 +423,47 @@ test11
 		on: testObjectsFactory today.
 
 	self assert: cost = (testObjectsFactory itemSellByTheStorePrice * 2)! !
+
+!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 11/29/2018 14:32:49'!
+test12
+
+	| interface |
+
+	interface := InternalAccessInterface withUsers: testObjectsFactory defaultUsers withCatalog: testObjectsFactory defaultCatalog withMerchant: self.
+	
+	self 
+		should: [ interface 
+			checkout: 0 
+			charging: testObjectsFactory notExpiredCreditCard 
+			on: testObjectsFactory today. ]
+		raise: Error - MessageNotUnderstood
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = InternalAccessInterface invalidCartIdErrorMessage . ]! !
+
+!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 11/29/2018 14:32:52'!
+test13
+
+	| interface cartId |
+
+	interface := InternalAccessInterface withUsers: testObjectsFactory defaultUsers withCatalog: testObjectsFactory defaultCatalog withMerchant: self.
+	cartId := interface createCartFor: testObjectsFactory userInDatabase withPassword: testObjectsFactory passwordForUser.
+	interface add: 1 of: testObjectsFactory itemSellByTheStore to: cartId.
+	
+	self 
+		should: [ interface 
+			checkout: cartId 
+			charging: testObjectsFactory expiredCreditCard 
+			on: testObjectsFactory today. ]
+		raise: Error - MessageNotUnderstood
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = Cashier canNotChargeAnExpiredCreditCardErrorMessage. ]! !
+
+
+!InternalAccessInterfaceTest methodsFor: 'merchant processor protocol' stamp: 'GP 11/29/2018 13:49:44'!
+debit: anAmount from: aCreditCard 
+
+	^debitBehavior value: anAmount value: aCreditCard ! !
+
 
 
 !classDefinition: #Cart category: #TusLibros!
@@ -649,14 +685,6 @@ Object subclass: #InternalAccessInterface
 	poolDictionaries: ''
 	category: 'TusLibros'!
 
-!InternalAccessInterface methodsFor: 'initialization' stamp: 'GP 11/24/2018 12:42:22'!
-initializeWithUsers: aUserDatabase withCatalog: aCatalog
-	
-	users := aUserDatabase.
-	catalog := aCatalog.
-	nextCartId := 0.
-	carts := Dictionary new.! !
-
 !InternalAccessInterface methodsFor: 'initialization' stamp: 'GP 11/29/2018 13:45:18'!
 initializeWithUsers: aUserDatabase withCatalog: aCatalog withMerchant: aMerchant 
 	
@@ -668,30 +696,33 @@ initializeWithUsers: aUserDatabase withCatalog: aCatalog withMerchant: aMerchant
 	purchases := OrderedCollection new.! !
 
 
-!InternalAccessInterface methodsFor: 'cart' stamp: 'GP 11/25/2018 11:49:26'!
+!InternalAccessInterface methodsFor: 'cart' stamp: 'GP 11/29/2018 14:23:36'!
 add: anAmount of: anItem to: aCartId
 	
-	( carts at: aCartId ifAbsent: [ self error: self class invalidCartIdErrorMessage ] ) add: anAmount of: anItem.! !
+	( self cartAt: aCartId ) add: anAmount of: anItem.! !
 
-!InternalAccessInterface methodsFor: 'cart' stamp: 'GP 11/25/2018 11:39:37'!
+!InternalAccessInterface methodsFor: 'cart' stamp: 'GP 11/29/2018 14:22:53'!
+cartAt: aCartId
+
+	^ carts at: aCartId ifAbsent: [ self error: self class invalidCartIdErrorMessage ]! !
+
+!InternalAccessInterface methodsFor: 'cart' stamp: 'GP 11/29/2018 14:22:38'!
 cartIsEmpty: aCartId
 
-	^ ( carts at: aCartId ifAbsent: [ self error: self class invalidCartIdErrorMessage ] ) isEmpty.! !
+	^ ( self cartAt: aCartId ) isEmpty.! !
 
 !InternalAccessInterface methodsFor: 'cart' stamp: 'GP 11/25/2018 11:51:52'!
 cartIsNotEmpty: aCartId
 
 	^ ( self cartIsEmpty: aCartId ) not! !
 
-!InternalAccessInterface methodsFor: 'cart' stamp: 'GP 11/29/2018 13:49:05'!
+!InternalAccessInterface methodsFor: 'cart' stamp: 'GP 11/29/2018 14:31:50'!
 checkout: aCartId charging: aCard on: aDate
 	
 	| cashier |
 	
-	self assertIsNotEmpty: aCartId.
-	
 	cashier := Cashier
-		toCheckout: ( carts at: aCartId )
+		toCheckout: ( self cartAt: aCartId )
 		charging: aCard 
 		throught: merchant
 		on: aDate 
@@ -713,10 +744,10 @@ createCartFor: aUser withPassword: aPassword
 	nextCartId := nextCartId + 1.
 	^ res! !
 
-!InternalAccessInterface methodsFor: 'cart' stamp: 'GP 11/26/2018 15:25:12'!
+!InternalAccessInterface methodsFor: 'cart' stamp: 'GP 11/29/2018 14:27:52'!
 listCart: aCartId
 	
-	^ ( carts at: aCartId ifAbsent: [ self error: self class invalidCartIdErrorMessage ] ) list.! !
+	^ ( self cartAt: aCartId ) list.! !
 
 
 !InternalAccessInterface methodsFor: 'asserting' stamp: 'GP 11/29/2018 13:22:08'!
@@ -739,11 +770,6 @@ assertUserIsInDatabase: aUser
 !classDefinition: 'InternalAccessInterface class' category: #TusLibros!
 InternalAccessInterface class
 	instanceVariableNames: ''!
-
-!InternalAccessInterface class methodsFor: 'instance creation' stamp: 'GP 11/24/2018 12:08:31'!
-withUsers: aUserDatabase withCatalog: aCatalog
-	
- 	^ self new initializeWithUsers: aUserDatabase withCatalog: aCatalog! !
 
 !InternalAccessInterface class methodsFor: 'instance creation' stamp: 'GP 11/29/2018 13:42:48'!
 withUsers: aUserDatabase withCatalog: aCatalog withMerchant: aMerchant 
