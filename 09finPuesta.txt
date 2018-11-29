@@ -1,0 +1,31 @@
+"TusLibrosSystemFacade"
+setUp  le manda valid users catalogo, salesbook, el merchantProcessor, y el clock.
+
+el init inicia cartSessions 
+CartSession:owner carrito cartSessions
+createCartFor (es el createCart del coso) que agrega una cartSession
+generateCartId (nosotros hicimos lo mismo)
+
+el list devuelve un bag(hicimos lo mismo)
+no se pueden agregar items que no se venden
+
+encapsular en la fachada ese mensaje (o ahgo un mensaje del fachade que llame al mensaje de cart)
+mario jazz
+testcancheckoutaCart chequea si la fecha esta bien fechada
+
+no hay que parsear las fechas!
+
+para checkear el checkout hay q hacer listPurchases
+
+COMO RESOLVER EL TEMA DEL PASO DEL TIEMPO:
+-le indicamos cual es el reloj
+-puede ser un reloj manual
+-jerarquia de clock  implementar un hijo de clock
+
+
+CADA CART ESTA EN EL SESSSION ID Y LUEGO HACES UN DO RARO QUE TOME UN BLOCK PARA QUE EJECUTE EN ESE CARTID Y EL DO VERIFICA QUE NO ESTE EXPIRADO y cambia la ultima vez que se usó el carrito y aserte si expiró
+mirar  ensure
+
+
+cartSession tiene el checkoutCart y crea el cashier
+setup inicia el clock como manual clock
