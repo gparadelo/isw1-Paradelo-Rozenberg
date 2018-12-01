@@ -259,8 +259,8 @@ setUp
 	testObjectsFactory := StoreTestObjectsFactory new.
 	debitBehavior := [ :anAmount :aCreditCard | ]! !
 
-!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 11/29/2018 14:32:17'!
-test00
+!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 12/1/2018 20:23:32'!
+test00CanNotCreateCartForUserNotInDatabase
 
 	| interface |
 
@@ -272,8 +272,8 @@ test00
 		withExceptionDo: [ :anError |
 			self assert: anError messageText = InternalAccessInterface userNotRegisteredErrorMessage. ]! !
 
-!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 11/29/2018 14:32:20'!
-test01
+!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 12/1/2018 20:23:53'!
+test01CanNotCreateCartWithWrongPassword
 
 	| interface |
 
@@ -285,8 +285,8 @@ test01
 		withExceptionDo: [ :anError |
 			self assert: anError messageText = InternalAccessInterface wrongPasswordErrorMessage. ]! !
 
-!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 11/29/2018 14:32:22'!
-test02
+!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 12/1/2018 20:24:16'!
+test02CartCreatedIsEmpty
 
 	| interface cartId |
 
@@ -295,8 +295,8 @@ test02
 	
 	self assert: ( interface cartIsEmpty: cartId )! !
 
-!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 11/29/2018 14:32:24'!
-test03
+!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 12/1/2018 20:24:53'!
+test03CanNotCheckCartEmptyWithWrongId
 
 	| interface |
 
@@ -308,8 +308,8 @@ test03
 		withExceptionDo: [ :anError |
 			self assert: anError messageText = InternalAccessInterface invalidCartIdErrorMessage. ]! !
 
-!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 11/29/2018 14:32:27'!
-test04
+!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 12/1/2018 20:25:19'!
+test04CartWithOneItemIsNotEmpty
 
 	| interface cartId |
 
@@ -320,8 +320,8 @@ test04
  	
 	self assert: ( interface cartIsNotEmpty: cartId )! !
 
-!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 11/29/2018 14:32:29'!
-test05
+!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 12/1/2018 20:25:55'!
+test05CanNotAddItemNotSoldByTheStoreToACart
 
 	| interface cartId |
 
@@ -336,8 +336,8 @@ test05
 		withExceptionDo: [ :anError |
 			self assert: anError messageText = Cart new invalidItemErrorMessage . ]! !
 
-!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 11/29/2018 14:32:31'!
-test06
+!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 12/1/2018 20:27:07'!
+test06CanNotAddItemToNonExistentCartId
 
 	| interface cartId |
 
@@ -350,8 +350,8 @@ test06
 		withExceptionDo: [ :anError |
 			self assert: anError messageText = InternalAccessInterface invalidCartIdErrorMessage . ]! !
 
-!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 11/29/2018 14:32:34'!
-test07
+!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 12/1/2018 20:27:39'!
+test07CanNotAddNegativeQuantityOfItemsToCart
 
 	| interface cartId |
 
@@ -364,8 +364,8 @@ test07
 		withExceptionDo: [ :anError |
 			self assert: anError messageText = Cart new invalidQuantityErrorMessage. ]! !
 
-!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 11/29/2018 14:32:37'!
-test08
+!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 12/1/2018 20:28:10'!
+test08CartListContainsAddedItem
 
 	| interface cartId |
 
@@ -376,8 +376,8 @@ test08
  	
 	self assert: ( interface listCart: cartId ) = ( Bag with: testObjectsFactory itemSellByTheStore )! !
 
-!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 11/29/2018 14:32:39'!
-test09
+!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 12/1/2018 20:28:33'!
+test09CanNotListCartWithNonExistentCartId
 
 	| interface cartId |
 
@@ -390,8 +390,8 @@ test09
 		withExceptionDo: [ :anError |
 			self assert: anError messageText = InternalAccessInterface invalidCartIdErrorMessage . ]! !
 
-!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 12/1/2018 20:09:32'!
-test10
+!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 12/1/2018 20:29:05'!
+test10CanNotCheckoutEmptyCart
 
 	| interface cartId |
 
@@ -401,14 +401,15 @@ test10
 	self 
 		should: [ interface 
 			checkout: cartId 
-			of: user charging: testObjectsFactory notExpiredCreditCard 
+			of: testObjectsFactory userInDatabase 
+			charging: testObjectsFactory notExpiredCreditCard 
 			on: testObjectsFactory today. ]
 		raise: Error - MessageNotUnderstood
 		withExceptionDo: [ :anError |
 			self assert: anError messageText = Cashier cartCanNotBeEmptyErrorMessage . ]! !
 
-!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 12/1/2018 20:09:54'!
-test11
+!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 12/1/2018 20:30:07'!
+test11CanCheckoutACartAndTheTotalCostIsReturned
 
 	| interface cartId cost |
 
@@ -425,8 +426,8 @@ test11
 
 	self assert: cost = (testObjectsFactory itemSellByTheStorePrice * 2)! !
 
-!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 12/1/2018 20:09:59'!
-test12
+!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 12/1/2018 20:31:59'!
+test12CanNotCheckoutWithInvalidCartId
 
 	| interface |
 
@@ -442,8 +443,8 @@ test12
 		withExceptionDo: [ :anError |
 			self assert: anError messageText = InternalAccessInterface invalidCartIdErrorMessage . ]! !
 
-!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 12/1/2018 20:10:05'!
-test13
+!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 12/1/2018 20:31:44'!
+test13CanNotCheckoutWithExpiredCard
 
 	| interface cartId |
 
@@ -461,8 +462,8 @@ test13
 		withExceptionDo: [ :anError |
 			self assert: anError messageText = Cashier canNotChargeAnExpiredCreditCardErrorMessage. ]! !
 
-!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 12/1/2018 19:42:13'!
-test14
+!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 12/1/2018 20:32:27'!
+test14CanNotListPurchasesOfUserNotInDatabase
 
 	| interface |
 
@@ -474,8 +475,8 @@ test14
 		withExceptionDo: [ :anError |
 			self assert: anError messageText = InternalAccessInterface userNotRegisteredErrorMessage. ]! !
 
-!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 12/1/2018 19:46:17'!
-test15
+!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 12/1/2018 20:32:49'!
+test15CanNotListPurchasesWithWrongPassword
 
 	| interface |
 
@@ -487,8 +488,8 @@ test15
 		withExceptionDo: [ :anError |
 			self assert: anError messageText = InternalAccessInterface wrongPasswordErrorMessage . ]! !
 
-!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 12/1/2018 20:03:49'!
-test16
+!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 12/1/2018 20:33:31'!
+test16ListOfPurchasesForUserStartsEmpty
 
 	| interface purchases |
 
@@ -497,8 +498,8 @@ test16
 	
 	self assert: Bag new equals: purchases! !
 
-!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 12/1/2018 20:11:34'!
-test17
+!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 12/1/2018 20:34:14'!
+test17ListOfPurchasesOfUserHasBoughtItem
 
 	| interface cartId purchases |
 
