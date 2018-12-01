@@ -390,7 +390,7 @@ test09
 		withExceptionDo: [ :anError |
 			self assert: anError messageText = InternalAccessInterface invalidCartIdErrorMessage . ]! !
 
-!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 11/29/2018 14:32:41'!
+!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 12/1/2018 20:09:32'!
 test10
 
 	| interface cartId |
@@ -401,13 +401,13 @@ test10
 	self 
 		should: [ interface 
 			checkout: cartId 
-			charging: testObjectsFactory notExpiredCreditCard 
+			of: user charging: testObjectsFactory notExpiredCreditCard 
 			on: testObjectsFactory today. ]
 		raise: Error - MessageNotUnderstood
 		withExceptionDo: [ :anError |
 			self assert: anError messageText = Cashier cartCanNotBeEmptyErrorMessage . ]! !
 
-!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 11/29/2018 13:40:53'!
+!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 12/1/2018 20:09:54'!
 test11
 
 	| interface cartId cost |
@@ -419,12 +419,13 @@ test11
 
 	cost := interface 
 		checkout: cartId 
+		of: testObjectsFactory userInDatabase 
 		charging: testObjectsFactory notExpiredCreditCard 
 		on: testObjectsFactory today.
 
 	self assert: cost = (testObjectsFactory itemSellByTheStorePrice * 2)! !
 
-!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 11/29/2018 14:32:49'!
+!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 12/1/2018 20:09:59'!
 test12
 
 	| interface |
@@ -434,13 +435,14 @@ test12
 	self 
 		should: [ interface 
 			checkout: 0 
+			of: testObjectsFactory userInDatabase 
 			charging: testObjectsFactory notExpiredCreditCard 
 			on: testObjectsFactory today. ]
 		raise: Error - MessageNotUnderstood
 		withExceptionDo: [ :anError |
 			self assert: anError messageText = InternalAccessInterface invalidCartIdErrorMessage . ]! !
 
-!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 11/29/2018 14:32:52'!
+!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 12/1/2018 20:10:05'!
 test13
 
 	| interface cartId |
@@ -452,18 +454,72 @@ test13
 	self 
 		should: [ interface 
 			checkout: cartId 
+			of: testObjectsFactory userInDatabase 
 			charging: testObjectsFactory expiredCreditCard 
 			on: testObjectsFactory today. ]
 		raise: Error - MessageNotUnderstood
 		withExceptionDo: [ :anError |
 			self assert: anError messageText = Cashier canNotChargeAnExpiredCreditCardErrorMessage. ]! !
 
+!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 12/1/2018 19:42:13'!
+test14
+
+	| interface |
+
+	interface := InternalAccessInterface withUsers: testObjectsFactory defaultUsers withCatalog: testObjectsFactory defaultCatalog withMerchant: self.
+	
+	self 
+		should: [ interface listPurchasesOf: testObjectsFactory userNotInDatabase withPassword: testObjectsFactory passwordForUser ]
+		raise: Error - MessageNotUnderstood
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = InternalAccessInterface userNotRegisteredErrorMessage. ]! !
+
+!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 12/1/2018 19:46:17'!
+test15
+
+	| interface |
+
+	interface := InternalAccessInterface withUsers: testObjectsFactory defaultUsers withCatalog: testObjectsFactory defaultCatalog withMerchant: self.
+	
+	self 
+		should: [ interface listPurchasesOf: testObjectsFactory userInDatabase withPassword: testObjectsFactory wrongPasswordForUser ]
+		raise: Error - MessageNotUnderstood
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = InternalAccessInterface wrongPasswordErrorMessage . ]! !
+
+!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 12/1/2018 20:03:49'!
+test16
+
+	| interface purchases |
+
+	interface := InternalAccessInterface withUsers: testObjectsFactory defaultUsers withCatalog: testObjectsFactory defaultCatalog withMerchant: self.
+	purchases := interface listPurchasesOf: testObjectsFactory userInDatabase withPassword: testObjectsFactory passwordForUser.
+	
+	self assert: Bag new equals: purchases! !
+
+!InternalAccessInterfaceTest methodsFor: 'testing' stamp: 'GP 12/1/2018 20:11:34'!
+test17
+
+	| interface cartId purchases |
+
+	interface := InternalAccessInterface withUsers: testObjectsFactory defaultUsers withCatalog: testObjectsFactory defaultCatalog withMerchant: self.
+	
+	cartId := interface createCartFor: testObjectsFactory userInDatabase withPassword: testObjectsFactory passwordForUser.	
+	interface add: 1 of: testObjectsFactory itemSellByTheStore to: cartId.
+ 	interface 
+		checkout: cartId 
+		of: testObjectsFactory userInDatabase 
+		charging: testObjectsFactory notExpiredCreditCard 
+		on: testObjectsFactory today.
+	purchases := interface listPurchasesOf: testObjectsFactory userInDatabase withPassword: testObjectsFactory passwordForUser.
+	
+	self assert: (  Bag with: testObjectsFactory itemSellByTheStore ) equals: purchases.! !
+
 
 !InternalAccessInterfaceTest methodsFor: 'merchant processor protocol' stamp: 'GP 11/29/2018 13:49:44'!
 debit: anAmount from: aCreditCard 
 
 	^debitBehavior value: anAmount value: aCreditCard ! !
-
 
 
 !classDefinition: #Cart category: #TusLibros!
@@ -685,7 +741,12 @@ Object subclass: #InternalAccessInterface
 	poolDictionaries: ''
 	category: 'TusLibros'!
 
-!InternalAccessInterface methodsFor: 'initialization' stamp: 'GP 11/29/2018 13:45:18'!
+!InternalAccessInterface methodsFor: 'initialization' stamp: 'GP 12/1/2018 20:05:45'!
+initializePurchasesForUsers: aUserDatabase.
+
+	aUserDatabase keys do: [ :aUser | purchases at: aUser put: Bag new ]! !
+
+!InternalAccessInterface methodsFor: 'initialization' stamp: 'GP 12/1/2018 19:57:18'!
 initializeWithUsers: aUserDatabase withCatalog: aCatalog withMerchant: aMerchant 
 	
 	users := aUserDatabase.
@@ -693,7 +754,9 @@ initializeWithUsers: aUserDatabase withCatalog: aCatalog withMerchant: aMerchant
 	merchant := aMerchant.
 	nextCartId := 0.
 	carts := Dictionary new.
-	purchases := OrderedCollection new.! !
+	purchases := Dictionary new.
+	
+	self initializePurchasesForUsers: aUserDatabase.! !
 
 
 !InternalAccessInterface methodsFor: 'cart' stamp: 'GP 11/29/2018 14:23:36'!
@@ -716,19 +779,21 @@ cartIsNotEmpty: aCartId
 
 	^ ( self cartIsEmpty: aCartId ) not! !
 
-!InternalAccessInterface methodsFor: 'cart' stamp: 'GP 11/29/2018 14:31:50'!
-checkout: aCartId charging: aCard on: aDate
+!InternalAccessInterface methodsFor: 'cart' stamp: 'GP 12/1/2018 20:18:43'!
+checkout: aCartId of: aUser charging: aCard on: aDate
 	
-	| cashier |
+	| cashier total |
 	
 	cashier := Cashier
 		toCheckout: ( self cartAt: aCartId )
 		charging: aCard 
 		throught: merchant
 		on: aDate 
-		registeringOn: purchases.
-		
-	^ cashier checkOut.! !
+		registeringOn: Bag new.
+	total := cashier checkOut.
+	( purchases at: aUser ) addAll: ( ( self cartAt: aCartId )  list ).	
+	
+	^ total.! !
 
 !InternalAccessInterface methodsFor: 'cart' stamp: 'GP 11/24/2018 12:07:25'!
 createCartFor: aUser withPassword: aPassword 
@@ -764,6 +829,15 @@ assertPasswordFor: aUser is: aPassword
 assertUserIsInDatabase: aUser
 
 	( users includesKey: aUser ) ifFalse: [ self error: self class userNotRegisteredErrorMessage]! !
+
+
+!InternalAccessInterface methodsFor: 'purchases list' stamp: 'GP 12/1/2018 20:06:11'!
+listPurchasesOf: aUser withPassword: aPassword 
+	
+	self assertUserIsInDatabase: aUser.
+	self assertPasswordFor: aUser is: aPassword .
+	
+	^ purchases at: aUser! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
